@@ -8,9 +8,10 @@ ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="RAsunrise"
 
 ### Aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias zshconfig="sublime ~/.zshrc"
+alias ohmyzsh="sublime ~/.oh-my-zsh"
 alias git="hub"
+alias localmongod='mongod --config /usr/local/etc/mongod.conf'
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -33,8 +34,6 @@ alias git="hub"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(git pip)
 
 source $ZSH/oh-my-zsh.sh
-
-# Customize to your needs...
