@@ -1,0 +1,7 @@
+[dotfiles]
+ignore = [
+    '.git',
+    '.gitignore',
+    '*.swp']
+packages = [
+	'oh-my-zsh']
