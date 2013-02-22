@@ -12,6 +12,7 @@ alias zshconfig="sublime ~/.zshrc"
 alias ohmyzsh="sublime ~/.oh-my-zsh"
 alias git="hub"
 alias localmongod='mongod --config /usr/local/etc/mongod.conf'
+alias cpdir="cp -R"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
