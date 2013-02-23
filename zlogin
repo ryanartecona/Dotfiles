@@ -11,11 +11,8 @@ pathdirs=(
 
 path=($^pathdirs(N)) # as per http://stackoverflow.com/questions/9347478/how-to-edit-path-variable-in-zsh
 
-# # debug PATH
-# for dir in $path 
-# do
-# 	echo $dir
-# done
+## helpful directories
+alias m101p="~/Code/M101P/"
 
 # Load RVM into a shell session *as a function*
 # and add rvm bin locations to PATH
