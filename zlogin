@@ -1,7 +1,8 @@
 ### PATH
 pathdirs=(
 	/Library/Frameworks/EPD64.framework/Versions/Current/bin
-	# path+=/Library/Frameworks/Python.framework/Versions/2.7/bin
+	# /Library/Frameworks/Python.framework/Versions/2.7/bin
+	$HOME/Library/Haskell/bin
 	/usr/local/bin
 	/usr/local/sbin
 	/usr/bin
@@ -13,6 +14,7 @@ path=($^pathdirs(N)) # as per http://stackoverflow.com/questions/9347478/how-to-
 
 ## helpful directories
 alias m101p="~/Code/M101P/"
+alias haskelldocs="open ~/Library/Haskell/doc/index.html"
 
 # Load RVM into a shell session *as a function*
 # and add rvm bin locations to PATH
