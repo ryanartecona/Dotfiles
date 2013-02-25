@@ -10,7 +10,7 @@ ZSH_THEME="RAsunrise"
 ### Aliases
 alias zshconfig="sublime ~/.zshrc"
 alias ohmyzsh="sublime ~/.oh-my-zsh"
-alias git="hub"
+alias g="hub"
 alias localmongod='mongod --config /usr/local/etc/mongod.conf'
 alias cpdir="cp -R"
 
@@ -27,11 +27,24 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=()
 
 ### Custom functions
-parray () {
+
+# pretty-print a zsh array
+parray () { 
 	echo ${(pj:\n:)*}
+}
+# git prompt helpers
+function current_branch() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+  echo ${ref#refs/heads/}
+}
+function current_repository() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+  echo $(git remote -v | cut -d':' -f 2)
 }
 
 ## Load OhMyZsh
