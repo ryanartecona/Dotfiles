@@ -49,3 +49,6 @@ function current_repository() {
 
 ## Load OhMyZsh
 source $ZSH/oh-my-zsh.sh
+
+## Enable zsh syntax highlighting
+source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
