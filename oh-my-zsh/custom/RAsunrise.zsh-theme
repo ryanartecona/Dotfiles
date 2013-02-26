@@ -108,7 +108,7 @@ ZSH_THEME_GIT_PROMPT_UNMERGED="%{$Y%}UU"
 # Additional customizaiton for zsh-syntax-highlighting
 # ====================================================
 
-typeset -ga ZSH_HIGHLIGHT_HIGHLIGHTERS
+typeset -gA ZSH_HIGHLIGHT_STYLES
 
 ZSH_HIGHLIGHT_STYLES[default]=fg=magenta
 ZSH_HIGHLIGHT_STYLES[alias]=fg=magenta,bold
