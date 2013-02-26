@@ -44,6 +44,9 @@ function current_repository() {
   echo $(git remote -v | cut -d':' -f 2)
 }
 
+## Enable zsh syntax highlighting
+source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 ## Load OhMyZsh
 source $ZSH/oh-my-zsh.sh
 
@@ -54,6 +57,3 @@ alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
 alias ll="ls -l -hgG" # human sizes, no owner/group
 alias la="ls"
 alias l="ls -1"
-
-## Enable zsh syntax highlighting
-source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
