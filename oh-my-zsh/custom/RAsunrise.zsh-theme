@@ -5,13 +5,18 @@
 #-------------------------------------------------------------------------------
 
 # Color shortcuts
+Y=$fg[yellow]
 R=$fg[red]
 G=$fg[green]
-B=$fg[blue] #
+B=$fg[blue] 
 M=$fg[magenta]
+L=$fg[black]
+W=$fg[white]
 RB=$fg_bold[red]
+GB=$fg_bold[green]
 YB=$fg_bold[yellow]
 BB=$fg_bold[blue]
+LB=$fg_bold[black]
 RESET=$reset_color
 
 me="$(whoami)"
@@ -21,7 +26,7 @@ else
     PROMPTCOLOR="" PREFIX="---";
 fi
 
-local return_code="%(?..%{$R%}%? ↵%{$RESET%})"
+local return_code="%(?..%{$RB%}%? ↵%{$RESET%})"
 
 # Get the status of the working tree (copied and modified from git.zsh)
 custom_git_prompt_status() {
@@ -72,17 +77,18 @@ function custom_git_prompt() {
 }
 
 # %B sets bold text
-PROMPT='%B$PREFIX %2~ $(custom_git_prompt)
-%{$M%}%B>%b%{$RESET%} '
+PROMPT='
+%{$L%}$PREFIX %2~ $(custom_git_prompt)
+%{$BB%}>%{$RESET%} '
 RPS1="${return_code}"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$YB%}‹"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$YB%}›%{$RESET%} "
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$L%}%B‹"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$L%}%B›%b%{$RESET%} "
 
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$R%}*"
+ZSH_THEME_GIT_PROMPT_DIRTY="%b%{$R%}*"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 
-ZSH_THEME_GIT_PROMPT_AHEAD="%{$BB%}➔"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{$GB%}➔ "
 
 ZSH_THEME_GIT_STATUS_PREFIX=" "
 
@@ -93,7 +99,24 @@ ZSH_THEME_GIT_PROMPT_STAGED_RENAMED="%{$G%}R"
 ZSH_THEME_GIT_PROMPT_STAGED_DELETED="%{$G%}D"
 
 # Not-staged
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$R%}⁇"
-ZSH_THEME_GIT_PROMPT_MODIFIED="%{$R%}M"
-ZSH_THEME_GIT_PROMPT_DELETED="%{$R%}D"
-ZSH_THEME_GIT_PROMPT_UNMERGED="%{$R%}UU"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$Y%}⁇"
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{$Y%}M"
+ZSH_THEME_GIT_PROMPT_DELETED="%{$Y%}D"
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{$Y%}UU"
+
+
+# Additional customizaiton for zsh-syntax-highlighting
+# ====================================================
+
+typeset -ga ZSH_HIGHLIGHT_HIGHLIGHTERS
+
+ZSH_HIGHLIGHT_STYLES[default]=fg=magenta
+ZSH_HIGHLIGHT_STYLES[alias]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[builtin]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[command]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=magenta
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=blue,bold
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=blue
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=blue
+ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline
