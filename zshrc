@@ -47,9 +47,10 @@ function current_repository() {
 ## Load OhMyZsh
 source $ZSH/oh-my-zsh.sh
 
-## Override stupid OhMyZsh ls aliases
-# GNU ls from coreutils (installed via brew: prefixed with g)
+# use GNU ls from coreutils (installed via brew: prefixed with g)
+eval `gdircolors $HOME/.dircolors-ansi-universal`
 alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
+# Override stupid OhMyZsh ls aliases
 alias ll="ls -l -hgG" # human sizes, no owner/group
 alias la="ls"
 alias l="ls -1"
