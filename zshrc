@@ -14,9 +14,6 @@ alias g="hub"
 alias localmongod='mongod --config /usr/local/etc/mongod.conf'
 alias cpdir="cp -R"
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
 # Disable bi-weekly auto-update checks
 # `upgrade_oh_my_zsh` to run manually
 DISABLE_AUTO_UPDATE="true"
@@ -49,6 +46,13 @@ function current_repository() {
 
 ## Load OhMyZsh
 source $ZSH/oh-my-zsh.sh
+
+## Override stupid OhMyZsh ls aliases
+# GNU ls from coreutils (installed via brew: prefixed with g)
+alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
+alias ll="ls -l -hgG" # human sizes, no owner/group
+alias la="ls"
+alias l="ls -1"
 
 ## Enable zsh syntax highlighting
 source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
