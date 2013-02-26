@@ -26,6 +26,17 @@ else
     PROMPTCOLOR="" PREFIX="---";
 fi
 
+# virtualenv support
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+custom_venv_prompt() {
+  local VENV_STATUS=""
+  if [[ -n $VIRTUAL_ENV ]]; then
+    VENV_STATUS="%{$G%}(venv)%{$RESET%}"
+  fi
+  echo $VENV_STATUS
+}  
+
 local return_code="%(?..%{$RB%}%? ↵%{$RESET%})"
 
 # Get the status of the working tree (copied and modified from git.zsh)
@@ -78,7 +89,7 @@ function custom_git_prompt() {
 
 # %B sets bold text
 PROMPT='
-%{$L%}$PREFIX %2~ $(custom_git_prompt)
+%{$L%}$PREFIX %2~ $(custom_git_prompt)$(custom_venv_prompt)
 %{$BB%}>%{$RESET%} '
 RPS1="${return_code}"
 
