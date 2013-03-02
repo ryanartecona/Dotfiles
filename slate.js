@@ -86,10 +86,10 @@ var resizeBy = function(amtByX, amtByY) {
 		var rowHeight = screenHeight / numRows;
 
 		var widthOffset = (colWidth * (amtByX>0)) + ((winWidth % colWidth) * -amtByX);
-		widthOffset = amtByX && (Math.floor(Math.max(0, widthOffset)) || Math.ceil(colWidth));
+		widthOffset = amtByX && ((widthOffset > 15 ? widthOffset : 0) || Math.ceil(colWidth + widthOffset));
 
 		var heightOffset = (rowHeight * (amtByY>0)) + ((winHeight % rowHeight) * -amtByY);
-		heightOffset = amtByY && (Math.floor(Math.max(0, heightOffset)) || Math.ceil(rowHeight));
+		heightOffset = amtByY && ((heightOffset > 15 ? heightOffset : 0) || Math.ceil(rowHeight + heightOffset));
 
 		window.resize({
 			'width': winWidth + (amtByX * widthOffset),
