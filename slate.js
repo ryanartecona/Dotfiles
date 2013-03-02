@@ -109,16 +109,16 @@ slate.bindAll({
 	// 'key:mod1,mod2': [operation, isRepeatable]
 
 	// growing/shrinking current window
-	'left:ctrl': [contractWidth, true],
-	'right:ctrl': [extendWidth, true],
-	'up:ctrl': [contractHeight, true],
-	'down:ctrl': [extendHeight, true],
+	'left:ctrl,alt': [contractWidth, true],
+	'right:ctrl,alt': [extendWidth, true],
+	'up:ctrl,alt': [contractHeight, true],
+	'down:ctrl,alt': [extendHeight, true],
 
 	// moving current window
-	'left:ctrl,alt': [nudgeLeft, true], 
-	'right:ctrl,alt': [nudgeRight, true],
-	'up:ctrl,alt': [nudgeUp, true],
-	'down:ctrl,alt': [nudgeDown, true],
+	'left:ctrl': [nudgeLeft, true], 
+	'right:ctrl': [nudgeRight, true],
+	'up:ctrl': [nudgeUp, true],
+	'down:ctrl': [nudgeDown, true],
 
 	// shooting current window to sides/corners
 	'left:shift,ctrl': [pushLeft, true],
