@@ -55,7 +55,7 @@ var nudgeUp    = nudgeBy(0, -1);
 var nudgeDown  = nudgeBy(0, 1);
 
 // factory for directional resize functions
-var resizeBy = function(amtByX, amtByY) {
+var resizeBy = function(amtByX, amtByY, nudgeBack) {
 	return function(window) {
 		var winWidth = window.rect().width;
 		var winHeight = window.rect().height;
@@ -70,10 +70,20 @@ var resizeBy = function(amtByX, amtByY) {
 		var heightOffset = (rowHeight * (amtByY>0)) + ((winHeight % rowHeight) * -amtByY);
 		heightOffset = amtByY && ((heightOffset > 15 ? heightOffset : 0) || Math.ceil(rowHeight + heightOffset));
 
+		var doNudge = function() {
+			window.doop(S.op('nudge', {
+				'x': (amtByX > 0 ? '-' : '+') + (widthOffset * Math.abs(amtByX)),
+				'y': (amtByY > 0 ? '-' : '+') + (heightOffset * Math.abs(amtByY))
+			}));
+		};
+
+		if (nudgeBack) {doNudge()}
+
 		window.resize({
 			'width': winWidth + (amtByX * widthOffset),
 			'height': winHeight + (amtByY * heightOffset)
 		});
+
 	};
 };
 
@@ -81,6 +91,11 @@ var extendWidth = resizeBy(1, 0);
 var contractWidth = resizeBy(-1, 0);
 var extendHeight = resizeBy(0, 1);
 var contractHeight = resizeBy(0, -1);
+
+var extendWidthLeft = resizeBy(1, 0, true);
+var contractWidthLeft = resizeBy(-1, 0, true);
+var extendHeightUp = resizeBy(0, 1, true);
+var contractHeightUp = resizeBy(0, -1, true);
 
 
 // Key Bindings
@@ -92,6 +107,12 @@ slate.bindAll({
 	'right:ctrl,alt': [extendWidth, true],
 	'up:ctrl,alt': [contractHeight, true],
 	'down:ctrl,alt': [extendHeight, true],
+
+	// growing/shrinking current window, in up/left direction
+	'left:ctrl,alt,cmd': [extendWidthLeft, true],
+	'right:ctrl,alt,cmd': [contractWidthLeft, true],
+	'up:ctrl,alt,cmd': [extendHeightUp, true],
+	'down:ctrl,alt,cmd': [contractHeightUp, true],
 
 	// moving current window
 	'left:ctrl': [nudgeLeft, true], 
