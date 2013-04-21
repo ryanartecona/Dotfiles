@@ -23,59 +23,38 @@ var pushRight = slate.operation('push', {'direction': 'right'});
 var pushUp = slate.operation('push', {'direction': 'up'});
 var pushDown = slate.operation('push', {'direction': 'down'});
 
-var nudgeLeft = function(window) {
-	var winX = window.rect().x;
-	var screenWidth = window.screen().visibleRect().width;
-	var colWidth = screenWidth / numCols;
+// factory for directional nudge functions
+var nudgeBy = function(factorX, factorY) {
+    return function (window) {
+        var winX = window.rect().x;
+        var winY = window.rect().y - menuBarHeight;
+        var screenWidth = window.screen().visibleRect().width;
+        var screenHeight = window.screen().visibleRect().height;
+        var colWidth = screenWidth / numCols;
+        var rowHeight = screenHeight / numRows;
+        
+        var offsetX = (colWidth * (factorX>0)) + ((winX % colWidth) * -factorX)
+        offsetX = factorX && ((offsetX > 15 ? offsetX : 0) || Math.ceil(colWidth + offsetX));
+        
+        var offsetY = (rowHeight * (factorY>0)) + ((winY % rowHeight) * -factorY)
+        offsetY = factorY && ((offsetY > 15 ? offsetY : 0) || Math.ceil(rowHeight + offsetY));
+        
+        var signX = factorX < 0 ? '-' : '+';
+        var signY = factorY < 0 ? '-' : '+';
 
-	var nudgeByX = Math.floor(Math.max(0, winX % colWidth)) || Math.ceil(colWidth);
-
-	window.doop(S.op('nudge', {
-		'x': '-'+nudgeByX,
-		'y': '+0',
-	}));
+        window.doop(S.op('nudge', {
+        	'x': signX + offsetX,
+        	'y': signY + offsetY
+        }));
+    };
 };
 
-var nudgeRight = function(window) {
-	var winX = window.rect().x;
-	var screenWidth = window.screen().visibleRect().width;
-	var colWidth = screenWidth / numCols;
+var nudgeLeft  = nudgeBy(-1, 0);
+var nudgeRight = nudgeBy(1, 0);
+var nudgeUp    = nudgeBy(0, -1);
+var nudgeDown  = nudgeBy(0, 1);
 
-	var nudgeByX = Math.floor(Math.max(0, colWidth-(winX % colWidth))) || Math.ceil(colWidth);
-
-	window.doop(S.op('nudge', {
-		'x': '+'+nudgeByX,
-		'y': '+0'
-	}));
-};
-
-var nudgeUp = function(window) {
-	var winY = window.rect().y - menuBarHeight;
-	var screenHeight = window.screen().visibleRect().height;
-	var rowHeight = screenHeight / numRows;
-
-	var nudgeByY = Math.floor(Math.max(0, winY % rowHeight)) || Math.ceil(rowHeight);
-
-	window.doop(S.op('nudge', {
-		'x': '+0',
-		'y': '-'+nudgeByY
-	}));
-};
-
-var nudgeDown = function(window) {
-	var winY = window.rect().y - menuBarHeight;
-	var screenHeight = window.screen().visibleRect().height;
-	var rowHeight = screenHeight / numRows;
-
-	var nudgeByY = Math.floor(Math.max(0, rowHeight-(winY % rowHeight))) || Math.ceil(rowHeight);
-
-	window.doop(S.op('nudge', {
-		'x': '+0',
-		'y': '+'+nudgeByY
-	}));
-};
-
-
+// factory for directional resize functions
 var resizeBy = function(amtByX, amtByY) {
 	return function(window) {
 		var winWidth = window.rect().width;
@@ -95,7 +74,7 @@ var resizeBy = function(amtByX, amtByY) {
 			'width': winWidth + (amtByX * widthOffset),
 			'height': winHeight + (amtByY * heightOffset)
 		});
-	}
+	};
 };
 
 var extendWidth = resizeBy(1, 0);
