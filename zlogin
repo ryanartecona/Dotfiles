@@ -1,11 +1,9 @@
 ### PATH
 pathdirs=(
-	# /Library/Frameworks/EPD64.framework/Versions/Current/bin
-	# /Library/Frameworks/Python.framework/Versions/2.7/bin
-	# use the brew python version (2.7.3) instead
-	$(brew --prefix)/share/python # for Homebrew python cli's
+	$(brew --prefix)/share/python
+	$(brew --prefix)/share/npm/bin
 	$HOME/Library/Haskell/bin
-	/usr/local/bin
+	/usr/local/bin # Homebrew
 	/usr/local/sbin
 	/usr/bin
 	/bin
