@@ -2,3 +2,5 @@
 	name = Ryan Artecona
 	email = rartecona@linkedin.com
 
+[push]
+	default = simple
