@@ -1,6 +1,5 @@
 ### PATH
 pathdirs=(
-	$(brew --prefix)/share/python
 	$(brew --prefix)/share/npm/bin
 	$HOME/Library/Haskell/bin
 	/usr/local/bin # Homebrew
@@ -10,7 +9,9 @@ pathdirs=(
 	/usr/sbin
 	/sbin)
 
-path=($^pathdirs(N)) # as per http://stackoverflow.com/questions/9347478/how-to-edit-path-variable-in-zsh
+# auto-prune nonexistent directories
+# as per http://stackoverflow.com/questions/9347478/how-to-edit-path-variable-in-zsh
+path=($^pathdirs(N)) 
 
 ## helpful directories
 alias m101p="~/Code/M101P/"

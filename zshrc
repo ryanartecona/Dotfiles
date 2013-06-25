@@ -55,5 +55,9 @@ alias ll="ls -l -hgG" # human sizes, no owner/group
 alias la="ls"
 alias l="ls -1"
 
+alias symlink="ln -s"
+
+export EDITOR=$(whence sublime)
+
 ## Enable zsh syntax highlighting
 source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
