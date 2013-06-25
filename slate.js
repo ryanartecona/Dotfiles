@@ -87,10 +87,10 @@ var resizeBy = function(amtByX, amtByY, nudgeBack) {
 	};
 };
 
-var extendWidth = resizeBy(1, 0);
-var contractWidth = resizeBy(-1, 0);
-var extendHeight = resizeBy(0, 1);
-var contractHeight = resizeBy(0, -1);
+var extendWidthRight = resizeBy(1, 0);
+var contractWidthRight = resizeBy(-1, 0);
+var extendHeightDown = resizeBy(0, 1);
+var contractHeightDown = resizeBy(0, -1);
 
 var extendWidthLeft = resizeBy(1, 0, true);
 var contractWidthLeft = resizeBy(-1, 0, true);
@@ -103,15 +103,27 @@ slate.bindAll({
 	// 'key:mod1,mod2': [operation, isRepeatable]
 
 	// growing/shrinking current window
-	'left:ctrl,alt': [contractWidth, true],
-	'right:ctrl,alt': [extendWidth, true],
-	'up:ctrl,alt': [contractHeight, true],
-	'down:ctrl,alt': [extendHeight, true],
+	// 'left:ctrl,alt': [contractWidthRight, true],
+	// 'right:ctrl,alt': [extendWidthRight, true],
+	// 'up:ctrl,alt': [contractHeightDown, true],
+	// 'down:ctrl,alt': [extendHeightDown, true],
 
 	// growing/shrinking current window, in up/left direction
-	'left:ctrl,alt,cmd': [extendWidthLeft, true],
+	// 'left:ctrl,alt,cmd': [extendWidthLeft, true],
+	// 'right:ctrl,alt,cmd': [contractWidthLeft, true],
+	// 'up:ctrl,alt,cmd': [extendHeightUp, true],
+	// 'down:ctrl,alt,cmd': [contractHeightUp, true],
+
+	// growing current window
+	'left:ctrl,alt': [extendWidthLeft, true],
+	'right:ctrl,alt': [extendWidthRight, true],
+	'up:ctrl,alt': [extendHeightUp, true],
+	'down:ctrl,alt': [extendHeightDown, true],
+
+	// shrinking current window
+	'left:ctrl,alt,cmd': [contractWidthRight, true],
 	'right:ctrl,alt,cmd': [contractWidthLeft, true],
-	'up:ctrl,alt,cmd': [extendHeightUp, true],
+	'up:ctrl,alt,cmd': [contractHeightDown, true],
 	'down:ctrl,alt,cmd': [contractHeightUp, true],
 
 	// moving current window
