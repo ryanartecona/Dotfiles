@@ -1,63 +1,64 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+{
+	# -----------------------------
+	# --------- oh-my-zsh ---------
+	# -----------------------------
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="RAsunrise"
+	# Path to your oh-my-zsh configuration.
+	ZSH=$HOME/.oh-my-zsh
 
-### Aliases
-alias zshconfig="sublime ~/.zshrc"
-alias ohmyzsh="sublime ~/.oh-my-zsh"
-alias g="hub"
-alias localmongod='mongod --config /usr/local/etc/mongod.conf'
-alias cpdir="cp -R"
+	# from $ZSH/themes or $ZSH/custom
+	ZSH_THEME="RAsunrise"
 
-# Disable bi-weekly auto-update checks
-# `upgrade_oh_my_zsh` to run manually
-DISABLE_AUTO_UPDATE="true"
+	DISABLE_AUTO_UPDATE="true"
+	COMPLETION_WAITING_DOTS="true"
 
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-COMPLETION_WAITING_DOTS="true"
+	# enabled oh-my-zsh plugins
+	# format: plugins=(rails git textmate ruby lighthouse)
+	plugins=()
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=()
+	# Load OhMyZsh
+	source $ZSH/oh-my-zsh.sh
 
-### Custom functions
-
-# pretty-print a zsh array
-parray () { 
-	echo ${(pj:\n:)*}
-}
-# git prompt helpers
-function current_branch() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
-  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
-  echo ${ref#refs/heads/}
-}
-function current_repository() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || \
-  ref=$(git rev-parse --short HEAD 2> /dev/null) || return
-  echo $(git remote -v | cut -d':' -f 2)
+	# Enable zsh syntax highlighting
+	source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 }
 
-## Load OhMyZsh
-source $ZSH/oh-my-zsh.sh
+if [[ $(uname) == Linux ]] {
+	# -----------------------------
+	# ----------- Linux -----------
+	# -----------------------------
+}
 
-# use GNU ls from coreutils (installed via brew: prefixed with g)
-eval `gdircolors $HOME/.dircolors-ansi-universal`
-alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
-# Override stupid OhMyZsh ls aliases
-alias ll="ls -l -hgG" # human sizes, no owner/group
-alias la="ls"
-alias l="ls -1"
+if [[ $(uname) == Darwin && -n $(whence brew) ]] {
+	# ------------------------------
+	# ----- Mac OSX, with brew -----
+	# ------------------------------
 
-alias symlink="ln -s"
+	# use GNU ls from coreutils (installed via brew: prefixed with g)
+	eval `gdircolors $HOME/.dircolors-ansi-universal`
+	alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
 
-export EDITOR=$(whence sublime)
+	alias g="hub" # github-flavored git, via brew
+}
 
-## Enable zsh syntax highlighting
-source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{
+	# -----------------------------
+	# ------- All platforms -------
+	# -----------------------------
+
+	# pretty-print a zsh array, e.g. $PATH
+	parray () { 
+		echo ${(pj:\n:)*}
+	}
+
+	# Override stupid OhMyZsh ls aliases
+	alias ll="ls -l -hgG" # human sizes, no owner/group
+	alias la="ls"
+	alias l="ls -1"
+
+	alias symlink="ln -s"
+	alias cpdir="cp -R"
+
+	export EDITOR=$(whence sublime)
+}
+
