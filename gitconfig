@@ -2,3 +2,5 @@
 	name = Ryan Artecona
 	email = ryanartecona@gmail.com
 
+[push]
+	default = simple
