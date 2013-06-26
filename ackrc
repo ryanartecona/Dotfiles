@@ -1,0 +1,4 @@
+# Custom file-types
+############################
+--type-add=jsp:ext:tmpl
+--type-add=css:ext:scss
