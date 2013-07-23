@@ -1,9 +1,10 @@
 # $PATH
 pathdirs=(
 	$(brew --prefix)/share/npm/bin
-	$(brew --prefix)/bin
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
+	/usr/local/linkedin/bin
+	$(brew --prefix)/bin
 	/usr/local/sbin
 	/usr/bin
 	/bin
