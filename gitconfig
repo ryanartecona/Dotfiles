@@ -1,6 +1,9 @@
 [user]
 	name = Ryan Artecona
 	email = ryanartecona@gmail.com
-
 [push]
 	default = simple
+[color]
+	ui = true
+[core]
+	excludesfile = /Users/ryanartecona/.gitignore
