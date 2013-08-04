@@ -103,28 +103,28 @@ slate.bindAll({
 	// 'key:mod1,mod2': [operation, isRepeatable]
 
 	// growing/shrinking current window
-	// 'left:ctrl,alt': [contractWidthRight, true],
-	// 'right:ctrl,alt': [extendWidthRight, true],
-	// 'up:ctrl,alt': [contractHeightDown, true],
-	// 'down:ctrl,alt': [extendHeightDown, true],
-
-	// growing/shrinking current window, in up/left direction
-	// 'left:ctrl,alt,cmd': [extendWidthLeft, true],
-	// 'right:ctrl,alt,cmd': [contractWidthLeft, true],
-	// 'up:ctrl,alt,cmd': [extendHeightUp, true],
-	// 'down:ctrl,alt,cmd': [contractHeightUp, true],
-
-	// growing current window
-	'left:ctrl,alt': [extendWidthLeft, true],
+	'left:ctrl,alt': [contractWidthRight, true],
 	'right:ctrl,alt': [extendWidthRight, true],
-	'up:ctrl,alt': [extendHeightUp, true],
+	'up:ctrl,alt': [contractHeightDown, true],
 	'down:ctrl,alt': [extendHeightDown, true],
 
-	// shrinking current window
-	'left:ctrl,alt,cmd': [contractWidthRight, true],
+	// growing/shrinking current window, in up/left direction
+	'left:ctrl,alt,cmd': [extendWidthLeft, true],
 	'right:ctrl,alt,cmd': [contractWidthLeft, true],
-	'up:ctrl,alt,cmd': [contractHeightDown, true],
+	'up:ctrl,alt,cmd': [extendHeightUp, true],
 	'down:ctrl,alt,cmd': [contractHeightUp, true],
+
+	// growing current window
+	// 'left:ctrl,alt': [extendWidthLeft, true],
+	// 'right:ctrl,alt': [extendWidthRight, true],
+	// 'up:ctrl,alt': [extendHeightUp, true],
+	// 'down:ctrl,alt': [extendHeightDown, true],
+
+	// shrinking current window
+	// 'left:ctrl,alt,cmd': [contractWidthRight, true],
+	// 'right:ctrl,alt,cmd': [contractWidthLeft, true],
+	// 'up:ctrl,alt,cmd': [contractHeightDown, true],
+	// 'down:ctrl,alt,cmd': [contractHeightUp, true],
 
 	// moving current window
 	'left:ctrl': [nudgeLeft, true], 
