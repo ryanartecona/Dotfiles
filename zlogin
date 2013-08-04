@@ -1,6 +1,7 @@
 # $PATH
 pathdirs=(
 	$(brew --prefix)/share/npm/bin
+	$HOME/.rvm/bin
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
 	/usr/local/linkedin/bin
