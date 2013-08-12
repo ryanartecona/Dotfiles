@@ -33,6 +33,13 @@ if [[ $(uname) == Darwin && -n $(whence brew) ]] {
 	# ------------------------------
 	# ----- Mac OSX, with brew -----
 	# ------------------------------
+	
+	# --- Finder preferences ---
+	# show hidden files by default
+	defaults write com.apple.finder AppleShowAllFiles -bool true
+	# Display full POSIX path as window title
+	defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
 
 	# use GNU ls from coreutils (installed via brew: prefixed with g)
 	eval `gdircolors $HOME/.dircolors-ansi-universal`
