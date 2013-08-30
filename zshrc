@@ -27,6 +27,9 @@ if [[ $(uname) == Linux ]] {
 	# -----------------------------
 	# ----------- Linux -----------
 	# -----------------------------
+
+	alias ls="ls --color=auto -Ap" # list dotfiles, trail dirs with /
+	alias g="git" 
 }
 
 if [[ $(uname) == Darwin && -n $(whence brew) ]] {
