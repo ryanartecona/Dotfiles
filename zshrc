@@ -69,3 +69,9 @@ if [[ $(uname) == Darwin && -n $(whence brew) ]] {
 	export EDITOR="$(whence sublime) --new-window --wait"
 }
 
+# sensitive machine-specific config
+if [[ -f ~/.local.zshrc ]] {
+
+	source ~/.local.zshrc
+
+}
