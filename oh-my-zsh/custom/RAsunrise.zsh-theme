@@ -140,6 +140,10 @@ ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
 ZSH_HIGHLIGHT_STYLES[command]=fg=magenta,bold
 ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=magenta
 ZSH_HIGHLIGHT_STYLES[precommand]=fg=blue,bold
+ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=bold
+ZSH_HIGHLIGHT_STYLES[assign]=fg=yellow
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=blue
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=blue
-ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline
+ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline,bold
+ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
+ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=cyan,underline
