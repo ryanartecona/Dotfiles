@@ -147,3 +147,4 @@ ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=blue
 ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline,bold
 ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
 ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=cyan,underline
+ZSH_HIGHLIGHT_STYLES[globbing]=fg=cyan,bold
