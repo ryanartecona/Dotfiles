@@ -24,6 +24,11 @@
 	<true/>
 	<key>Control</key>
 	<integer>1</integer>
+	<key>Coprocess MRU</key>
+	<array>
+		<string>say "c.s.s. done""</string>
+		<string></string>
+	</array>
 	<key>CopyLastNewline</key>
 	<false/>
 	<key>CopySelection</key>
@@ -610,6 +615,8 @@
 	<string>3</string>
 	<key>NSNavLastRootDirectory</key>
 	<string>~/Dotfiles/iterm2</string>
+	<key>NSNavPanelExpandedStateForSaveMode</key>
+	<true/>
 	<key>NSQuotedKeystrokeBinding</key>
 	<string></string>
 	<key>NSRepeatCountBinding</key>
@@ -643,7 +650,7 @@
 	<key>NSWindow Frame NSColorPanel</key>
 	<string>2720 372 201 309 1920 0 1920 1200 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>172 223 924 485 0 0 1280 778 </string>
+	<string>2400 395 924 485 1920 0 1920 1200 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>3040 22 809 1178 1920 0 1920 1200 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -1364,7 +1371,16 @@
 			<key>Transparency</key>
 			<real>0.0</real>
 			<key>Triggers</key>
-			<array/>
+			<array>
+				<dict>
+					<key>action</key>
+					<string>ScriptTrigger</string>
+					<key>parameter</key>
+					<string>say \1</string>
+					<key>regex</key>
+					<string>^alert (.*)</string>
+				</dict>
+			</array>
 			<key>Unlimited Scrollback</key>
 			<false/>
 			<key>Use Bold Font</key>
@@ -3655,7 +3671,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2013-10-28T07:57:17Z</date>
+	<date>2013-11-05T06:43:02Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
