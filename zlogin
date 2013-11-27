@@ -5,6 +5,7 @@ pathdirs=(
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
 	/usr/local/linkedin/bin
+	$(brew --prefix)/share/python
 	$(brew --prefix)/bin
 	/usr/local/sbin
 	/usr/bin
