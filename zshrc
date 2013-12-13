@@ -42,6 +42,8 @@ if [[ $(uname) == Darwin && -n $(whence brew) ]] {
 	defaults write com.apple.finder AppleShowAllFiles -bool true
 	# Display full POSIX path as window title
 	defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+	# Allow text selection in QuickLook
+	defaults write com.apple.finder QLEnableTextSelection -bool true
 
 
 	# use GNU ls from coreutils (installed via brew: prefixed with g)
