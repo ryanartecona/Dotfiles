@@ -7,3 +7,5 @@
 	ui = true
 [core]
 	excludesfile = /Users/ryanartecona/.gitignore
+[alias]
+	php-lint = !sh ~/bin/git-php-lint
