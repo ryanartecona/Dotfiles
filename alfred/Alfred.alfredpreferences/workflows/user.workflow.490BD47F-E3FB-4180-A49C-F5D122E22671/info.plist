@@ -412,6 +412,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -431,6 +435,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>1</integer>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -1477,7 +1485,7 @@ You can edit this extension to always include a keyword by editing the Script Fi
 		<key>b16f231d-2be2-431e-bf14-85af38ba7d80</key>
 		<dict>
 			<key>ypos</key>
-			<real>690</real>
+			<real>680</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>

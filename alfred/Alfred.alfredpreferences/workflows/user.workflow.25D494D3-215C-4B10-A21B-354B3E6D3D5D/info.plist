@@ -61,6 +61,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>5140E495-9495-4A38-AD0F-E19DFD784DD7</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>E24CDF92-61A0-4DB7-94E3-AB041940266D</key>
 		<array>
 			<dict>
@@ -219,7 +230,7 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Mail.app</string>
+					<string>/Applications/Microsoft Office 2011/Microsoft Outlook.app</string>
 				</array>
 				<key>toggle</key>
 				<false/>
@@ -441,6 +452,48 @@
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>34</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>I</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>994AA06E-F5F6-489C-AADE-B963008610C3</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/iTunes.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>5140E495-9495-4A38-AD0F-E19DFD784DD7</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -476,6 +529,11 @@
 			<key>ypos</key>
 			<real>850</real>
 		</dict>
+		<key>5140E495-9495-4A38-AD0F-E19DFD784DD7</key>
+		<dict>
+			<key>ypos</key>
+			<real>970</real>
+		</dict>
 		<key>79A62EE0-DB80-4898-B30F-DB6A34C4A613</key>
 		<dict>
 			<key>ypos</key>
@@ -495,6 +553,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>130</real>
+		</dict>
+		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
+		<dict>
+			<key>ypos</key>
+			<real>970</real>
 		</dict>
 		<key>AAE4DE48-0FCE-4D6F-B987-DD0A92A30134</key>
 		<dict>
