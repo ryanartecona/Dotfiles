@@ -1,14 +1,14 @@
 # $PATH
 pathdirs=(
 	$HOME/bin
-	$(brew --prefix)/share/npm/bin
-	$(brew --prefix)/opt/php54/bin
+	/usr/local/share/npm/bin
+	/usr/local/opt/php54/bin
 	$HOME/.rvm/bin
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
 	/usr/local/linkedin/bin
-	$(brew --prefix)/share/python
-	$(brew --prefix)/bin
+	/usr/local/share/python
+	/usr/local/bin
 	/usr/local/sbin
 	/usr/bin
 	/bin
