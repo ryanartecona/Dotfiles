@@ -1,5 +1,6 @@
 # $PATH
 pathdirs=(
+	$HOME/bin
 	$(brew --prefix)/share/npm/bin
 	$(brew --prefix)/opt/php54/bin
 	$HOME/.rvm/bin
