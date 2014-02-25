@@ -149,6 +149,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>5241215A-3B9E-4C19-8EE4-79AFCFC26925</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>93F7A067-A613-4F70-99D8-7522C3F1DC37</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>570A0ED6-73B1-46DA-9F10-89A949FEA2A0</key>
 		<array>
 			<dict>
@@ -249,6 +260,17 @@
 			</dict>
 		</array>
 		<key>9F2FE4E2-809B-4E48-96F3-43F1AB8CE856</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>93F7A067-A613-4F70-99D8-7522C3F1DC37</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>C7EDC1F4-283F-417A-B5B0-F83DE012486A</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -1309,6 +1331,93 @@
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>117</integer>
+				<key>keyword</key>
+				<string>scala</string>
+				<key>runningsubtext</key>
+				<string>Searching for "{query}"</string>
+				<key>script</key>
+				<string>./dashAlfredWorkflow "scala:{query}"</string>
+				<key>subtext</key>
+				<string>Search Scala in Dash for "{query}"</string>
+				<key>title</key>
+				<string>Search Scala in Dash</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>C7EDC1F4-283F-417A-B5B0-F83DE012486A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>117</integer>
+				<key>keyword</key>
+				<string>playjava</string>
+				<key>runningsubtext</key>
+				<string>Searching for "{query}"</string>
+				<key>script</key>
+				<string>./dashAlfredWorkflow "playjava:{query}"</string>
+				<key>subtext</key>
+				<string>Searching Play (Java) in Dash for "{query}"</string>
+				<key>title</key>
+				<string>Search Play (Java) in Dash</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>5241215A-3B9E-4C19-8EE4-79AFCFC26925</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>117</integer>
+				<key>keyword</key>
+				<string>playscala</string>
+				<key>runningsubtext</key>
+				<string>Searching for "{query}"</string>
+				<key>script</key>
+				<string>./dashAlfredWorkflow "playscala:{query}"f</string>
+				<key>subtext</key>
+				<string>Search Play (Scala) in Dash for "{query}"</string>
+				<key>title</key>
+				<string>Search Play (Scala) in Dash</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>B5E425B8-33C2-40E4-A05E-1D1DD9A95DBE</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Usage:
@@ -1375,7 +1484,7 @@ You can edit this extension to always include a keyword by editing the Script Fi
 		<key>3FADCB8A-83A3-45F2-8E56-41F344708D43</key>
 		<dict>
 			<key>ypos</key>
-			<real>3480</real>
+			<real>3470</real>
 		</dict>
 		<key>48AF5EDC-87EA-4958-B1BE-71EC5AEA8A2A</key>
 		<dict>
@@ -1386,6 +1495,11 @@ You can edit this extension to always include a keyword by editing the Script Fi
 		<dict>
 			<key>ypos</key>
 			<real>1920</real>
+		</dict>
+		<key>5241215A-3B9E-4C19-8EE4-79AFCFC26925</key>
+		<dict>
+			<key>ypos</key>
+			<real>3710</real>
 		</dict>
 		<key>570A0ED6-73B1-46DA-9F10-89A949FEA2A0</key>
 		<dict>
@@ -1441,6 +1555,16 @@ You can edit this extension to always include a keyword by editing the Script Fi
 		<dict>
 			<key>ypos</key>
 			<real>1690</real>
+		</dict>
+		<key>B5E425B8-33C2-40E4-A05E-1D1DD9A95DBE</key>
+		<dict>
+			<key>ypos</key>
+			<real>3830</real>
+		</dict>
+		<key>C7EDC1F4-283F-417A-B5B0-F83DE012486A</key>
+		<dict>
+			<key>ypos</key>
+			<real>3590</real>
 		</dict>
 		<key>C82F501E-51E8-4BCE-9D3A-24ECEFA9AC42</key>
 		<dict>
