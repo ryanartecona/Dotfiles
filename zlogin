@@ -6,6 +6,7 @@ pathdirs=(
 	$HOME/.rvm/bin
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
+	/export/apps/xtools/bin
 	/usr/local/linkedin/bin
 	/usr/local/share/python
 	/usr/local/bin
