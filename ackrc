@@ -5,4 +5,4 @@
 jsp=.tmpl
 
 --type-add
-css=.scss
+scss=.scss
