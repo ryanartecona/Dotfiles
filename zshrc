@@ -71,7 +71,7 @@ if [[ $(uname) == Darwin && -n $(whence brew) ]] {
 	alias symlink="ln -s"
 	alias cpdir="cp -R"
 
-	export EDITOR="$(whence sublime) --new-window --wait"
+	whence sublime && export EDITOR="$(whence sublime) --new-window --wait"
 }
 
 # sensitive machine-specific config
