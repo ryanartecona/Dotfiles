@@ -3,6 +3,9 @@ ignore = [
     '.git',
     '.gitignore',
     '*.swp',
-    '.DS_Store']
+    '.DS_Store',
+    'alfred',
+    'iterm2',
+    'Sublime Text 2']
 packages = [
 	'oh-my-zsh']

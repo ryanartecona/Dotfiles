@@ -2,7 +2,6 @@
 pathdirs=(
 	$HOME/bin
 	/usr/local/share/npm/bin
-	/usr/local/opt/php54/bin
 	$HOME/.rvm/bin
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
