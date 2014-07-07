@@ -8,4 +8,5 @@ ignore = [
     'iterm2',
     'Sublime Text 2']
 packages = [
-	'oh-my-zsh']
+    'oh-my-zsh',
+    'config']
