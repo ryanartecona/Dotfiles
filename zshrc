@@ -16,7 +16,7 @@
 	# format: plugins=(rails git textmate ruby lighthouse)
 	plugins=()
 
-	Load OhMyZsh
+	# Load OhMyZsh
 	if [[ -d $ZSH ]] {
 		source $ZSH/oh-my-zsh.sh
 	}
