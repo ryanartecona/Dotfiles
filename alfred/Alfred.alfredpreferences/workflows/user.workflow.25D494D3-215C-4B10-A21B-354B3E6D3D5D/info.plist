@@ -87,7 +87,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>AAE4DE48-0FCE-4D6F-B987-DD0A92A30134</string>
+				<string>E778DD19-4CCD-4D99-8951-AC56CB52D5EE</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -269,7 +269,7 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Microsoft Office 2011/Microsoft Outlook.app</string>
+					<string>/Applications/Mail.app</string>
 				</array>
 				<key>toggle</key>
 				<false/>
@@ -277,7 +277,7 @@
 			<key>type</key>
 			<string>alfred.workflow.action.launchfiles</string>
 			<key>uid</key>
-			<string>AAE4DE48-0FCE-4D6F-B987-DD0A92A30134</string>
+			<string>E778DD19-4CCD-4D99-8951-AC56CB52D5EE</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -772,11 +772,6 @@
 			<key>ypos</key>
 			<real>970</real>
 		</dict>
-		<key>AAE4DE48-0FCE-4D6F-B987-DD0A92A30134</key>
-		<dict>
-			<key>ypos</key>
-			<real>250</real>
-		</dict>
 		<key>CE3A2B29-CF53-466A-B97D-E9B1CC7EEF43</key>
 		<dict>
 			<key>ypos</key>
@@ -791,6 +786,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
+		</dict>
+		<key>E778DD19-4CCD-4D99-8951-AC56CB52D5EE</key>
+		<dict>
+			<key>ypos</key>
+			<real>250</real>
 		</dict>
 		<key>F1CCFF48-6424-45D5-94F9-442F41EC0D68</key>
 		<dict>
