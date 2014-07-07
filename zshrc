@@ -16,11 +16,15 @@
 	# format: plugins=(rails git textmate ruby lighthouse)
 	plugins=()
 
-	# Load OhMyZsh
-	source $ZSH/oh-my-zsh.sh
+	Load OhMyZsh
+	if [[ -d $ZSH ]] {
+		source $ZSH/oh-my-zsh.sh
+	}
 
 	# Enable zsh syntax highlighting
-	source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+	if [[ -d $HOME/.zsh-syntax-highlighting ]] {
+		source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+	}
 }
 
 if [[ $(uname) == Linux ]] {
@@ -47,10 +51,16 @@ if [[ $(uname) == Darwin && -n $(whence brew) ]] {
 
 
 	# use GNU ls from coreutils (installed via brew: prefixed with g)
-	eval `gdircolors $HOME/.dircolors-ansi-universal`
-	alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
-
-	alias g="hub" # github-flavored git, via brew
+	if ( which gdircolors > /dev/null ) {
+		eval `gdircolors $HOME/Dotfiles/dircolors-ansi-universal`
+	}
+	if ( which gls > /dev/null ) {
+		alias ls="gls --color=auto -Ap" # list dotfiles, trail dirs with /
+	}
+	
+	if ( which hub > /dev/null ) {
+		alias g="hub" # github-flavored git, via brew
+	}
 }
 
 {
