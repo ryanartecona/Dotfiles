@@ -5,11 +5,11 @@
 	<key>Ansi 0 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.088537320494651794</real>
+		<real>0.1995140149643021</real>
 		<key>Green Component</key>
-		<real>0.21732597053050995</real>
+		<real>0.25357422201523033</real>
 		<key>Red Component</key>
-		<real>0.17365005612373352</real>
+		<real>0.29026442307692313</real>
 	</dict>
 	<key>Ansi 1 Color</key>
 	<dict>
@@ -23,11 +23,11 @@
 	<key>Ansi 10 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.053495530039072037</real>
+		<real>0.083617678013660629</real>
 		<key>Green Component</key>
-		<real>0.50467151403427124</real>
+		<real>0.56750212104072406</real>
 		<key>Red Component</key>
-		<real>0.2503240704536438</real>
+		<real>0.34563749834465829</real>
 	</dict>
 	<key>Ansi 11 Color</key>
 	<dict>
@@ -52,18 +52,18 @@
 		<key>Blue Component</key>
 		<real>0.88676494359970093</real>
 		<key>Green Component</key>
-		<real>0.21271881461143494</real>
+		<real>0.27260289086115441</real>
 		<key>Red Component</key>
-		<real>0.5675736665725708</real>
+		<real>0.59589831218331046</real>
 	</dict>
 	<key>Ansi 14 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.48110547661781311</real>
+		<real>0.51623787498534057</real>
 		<key>Green Component</key>
-		<real>0.49586465954780579</real>
+		<real>0.53517392533936659</real>
 		<key>Red Component</key>
-		<real>0.13377358019351959</real>
+		<real>0.14485227600950185</real>
 	</dict>
 	<key>Ansi 15 Color</key>
 	<dict>
@@ -77,47 +77,47 @@
 	<key>Ansi 2 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.13504622876644135</real>
+		<real>0.12722511466576819</real>
 		<key>Green Component</key>
-		<real>0.3725762665271759</real>
+		<real>0.41588305995475117</real>
 		<key>Red Component</key>
-		<real>0.2439504861831665</real>
+		<real>0.27392898380609959</real>
 	</dict>
 	<key>Ansi 3 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.11092981696128845</real>
+		<real>0.024336719560342279</real>
 		<key>Green Component</key>
-		<real>0.3150794506072998</real>
+		<real>0.44599752255199826</real>
 		<key>Red Component</key>
-		<real>0.56582450866699219</real>
+		<real>0.57602163461538458</real>
 	</dict>
 	<key>Ansi 4 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.49094527959823608</real>
+		<real>0.56080316742081449</real>
 		<key>Green Component</key>
-		<real>0.33457505702972412</real>
+		<real>0.35408010662481876</real>
 		<key>Red Component</key>
-		<real>0.31890210509300232</real>
+		<real>0.32483020342074626</real>
 	</dict>
 	<key>Ansi 5 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.44019392132759094</real>
+		<real>0.52580599547511309</real>
 		<key>Green Component</key>
-		<real>0.29501250386238098</real>
+		<real>0.30813547092736565</real>
 		<key>Red Component</key>
-		<real>0.3703366219997406</real>
+		<real>0.4265872407312325</real>
 	</dict>
 	<key>Ansi 6 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.40873026847839355</real>
+		<real>0.42732280828348984</real>
 		<key>Green Component</key>
-		<real>0.4212687611579895</real>
+		<real>0.43023543552036203</real>
 		<key>Red Component</key>
-		<real>0.24969027936458588</real>
+		<real>0.21833249176837261</real>
 	</dict>
 	<key>Ansi 7 Color</key>
 	<dict>
@@ -131,11 +131,11 @@
 	<key>Ansi 8 Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.13966447114944458</real>
+		<real>0.26754976058951202</real>
 		<key>Green Component</key>
-		<real>0.35764786601066589</real>
+		<real>0.34351833624343342</real>
 		<key>Red Component</key>
-		<real>0.29055359959602356</real>
+		<real>0.39081942873303166</real>
 	</dict>
 	<key>Ansi 9 Color</key>
 	<dict>
@@ -185,11 +185,11 @@
 	<key>Foreground Color</key>
 	<dict>
 		<key>Blue Component</key>
-		<real>0.32730743288993835</real>
+		<real>0.39011994001111788</real>
 		<key>Green Component</key>
-		<real>0.43166378140449524</real>
+		<real>0.48550334751650565</real>
 		<key>Red Component</key>
-		<real>0.48533019423484802</real>
+		<real>0.56264140271493213</real>
 	</dict>
 	<key>Selected Text Color</key>
 	<dict>
