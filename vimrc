@@ -1,3 +1,7 @@
+if &shell =~# 'fish$'
+  set shell=/usr/local/bin/zsh
+endif
+
 set history=700
 
 filetype plugin on
@@ -71,6 +75,8 @@ set tabstop=4
 set autoindent
 set smartindent
 
+set listchars=tab:⇢\ ,trail:·,eol:◦
+
 set nowrap
 
 set foldmethod=indent
@@ -131,6 +137,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'bling/vim-airline'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdtree'
+Plugin 'dag/vim-fish'
 
 call vundle#end()
 filetype plugin indent on
