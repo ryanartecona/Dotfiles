@@ -6,7 +6,7 @@ pathdirs=(
 	$HOME/.cabal/bin
 	$HOME/Library/Haskell/bin
 	/export/apps/xtools/bin
-	/usr/local/linkedin/bin
+	/Applications/ghc-7.8.2.app/Contents/bin
 	/usr/local/share/python
 	/usr/local/bin
 	/usr/local/sbin
