@@ -2,7 +2,7 @@ function fish_git_prompt --description 'Write out the git prompt'
 
   if test -z $fish_prompt_git_status_order[1]
     # hack to get some variables populated
-	__terlar_git_prompt >/dev/null
+    __terlar_git_prompt >/dev/null
   end
 
   set -l branch (git rev-parse --abbrev-ref HEAD ^/dev/null)
@@ -15,11 +15,13 @@ function fish_git_prompt --description 'Write out the git prompt'
   set_color normal
 
   set -l index (git status --porcelain ^/dev/null|cut -c 1-2|sort -u)
-
   if test -z "$index"
     set_color $fish_color_git_clean
     echo -n $branch'✓'
     set_color normal
+  end
+
+  if test -z "$index"
     return
   end
 
@@ -58,6 +60,13 @@ function fish_git_prompt --description 'Write out the git prompt'
       set_color $$color_name
       echo -n $$status_name
     end
+  end
+
+  set -l ahead (git log origin/{$branch}..HEAD 2>/dev/null | grep '^commit' >/dev/null)
+  if test -z "$ahead"
+    set_color $fish_color_git_ahead
+    echo -n '⇡'
+    set_color normal
   end
 
   set_color normal
