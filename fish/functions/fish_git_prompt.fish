@@ -21,8 +21,10 @@ function fish_git_prompt --description 'Write out the git prompt'
     set_color normal
   end
 
+  set -l ahead (git log origin/{$branch}..HEAD 2>/dev/null | grep '^commit' >/dev/null; echo -n $status)
+
   if test -z "$index"
-    return
+    # return
   end
 
   set -l gs
@@ -44,13 +46,16 @@ function fish_git_prompt --description 'Write out the git prompt'
     end
   end
 
-  if set -q staged[1]
-    set_color $fish_color_git_staged
-  else
-    set_color $fish_color_git_dirty
-  end
+  if test -n "$index"
+    if set -q staged[1]
+      set_color $fish_color_git_staged
+    else
+      set_color $fish_color_git_dirty
+    end
 
-  echo -n $branch'⚡'
+    echo -n $branch'⚡'
+    set_color normal
+  end
 
   for i in $fish_prompt_git_status_order
     if contains $i in $gs
@@ -62,8 +67,7 @@ function fish_git_prompt --description 'Write out the git prompt'
     end
   end
 
-  set -l ahead (git log origin/{$branch}..HEAD 2>/dev/null | grep '^commit' >/dev/null)
-  if test -z "$ahead"
+  if test "$ahead" -eq 0
     set_color $fish_color_git_ahead
     echo -n '⇡'
     set_color normal
