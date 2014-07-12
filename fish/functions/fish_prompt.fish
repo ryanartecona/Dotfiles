@@ -26,7 +26,7 @@ function fish_prompt --description 'Write out the prompt'
   set_color $fish_color_prompt_delimiter
 
   set_color normal
-  __terlar_git_prompt
+  fish_git_prompt
   set_color normal
 
   echo
