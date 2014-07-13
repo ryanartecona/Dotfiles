@@ -139,6 +139,7 @@ Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdtree'
 Plugin 'dag/vim-fish'
 Plugin 'terryma/vim-multiple-cursors'
+Plugin 'Lokaltog/vim-easymotion'
 
 call vundle#end()
 filetype plugin indent on
