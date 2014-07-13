@@ -69,7 +69,7 @@ set showmatch
 set mat=2
 
 set smarttab
-set noexpandtab
+set expandtab
 set shiftwidth=2
 set tabstop=4
 set autoindent
@@ -138,6 +138,7 @@ Plugin 'bling/vim-airline'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdtree'
 Plugin 'dag/vim-fish'
+Plugin 'terryma/vim-multiple-cursors'
 
 call vundle#end()
 filetype plugin indent on
