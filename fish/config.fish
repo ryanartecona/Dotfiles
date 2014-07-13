@@ -3,7 +3,7 @@ if which hub  >/dev/null
 end
 
 if status --is-interactive
-  set -g EDITOR                           (which vim)
+  set -xg EDITOR                          (which vim)
 
   set -g fish_prompt_git_prefix           ' | '
 
@@ -51,6 +51,13 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /sbin
 end
 
-if status --is-login
-  set -g PATH (allowed_paths)
+function valid_allowed_paths --description "User-allowed \$path dirs (that currently exist)"
+  for p in (allowed_paths)
+    if test -d "$p"
+      echo "$p"
+    end
+  end
 end
+
+# $fish_user_paths is a magic variable that prepends to $PATH
+set fish_user_paths (valid_allowed_paths)
