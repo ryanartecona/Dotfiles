@@ -1,6 +1,11 @@
 function fish_prompt --description 'Write out the prompt'
   set -l last_status $status
 
+  if test $last_status -ne 0
+    set_color $fish_color_error
+    echo "✖ $last_status"
+  end
+
   echo
 
   # User
@@ -31,11 +36,7 @@ function fish_prompt --description 'Write out the prompt'
 
   echo
 
-  if not test $last_status -eq 0
-    set_color $fish_color_error
-  else
-    set_color $fish_color_prompt_symbol
-  end
+  set_color $fish_color_prompt_symbol
 
   echo -n '> '
   set_color normal
