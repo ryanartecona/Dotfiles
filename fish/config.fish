@@ -42,7 +42,6 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/Library/Haskell/bin
   echo /export/apps/xtools/bin
   echo /Applications/ghc-7.8.2.app/Contents/bin
-  echo /usr/local/share/python
   echo /usr/local/bin
   echo /usr/local/sbin
   echo /usr/bin
