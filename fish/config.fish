@@ -60,3 +60,6 @@ end
 
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
+
+# RVM needs to be run once to add stuff to $PATH
+rvm >/dev/null ^/dev/null
