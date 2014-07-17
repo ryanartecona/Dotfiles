@@ -1,2 +1,5 @@
 set guioptions=gtrLme
-colorscheme slate
+set guitablabel=%M\ %t
+
+set background=dark
+colorscheme solarized
