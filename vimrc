@@ -105,6 +105,7 @@ set laststatus=2
 
 set background=dark
 set t_Co=256
+colorscheme slate
 
 
 
@@ -112,7 +113,11 @@ set t_Co=256
 "=== Airline ===
 "===============
 
-let g:airline_theme='solarized'
+if has("gui_running")
+  let g:airline_theme='solarized'
+else
+  let g:airline_theme='bubblegum'
+endif
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
 
