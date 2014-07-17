@@ -25,7 +25,7 @@ nmap <leader>w :w<cr>
 :vnoremap ' "zdi'<C-R>z'<ESC>
 :vnoremap " "zdi"<C-R>z"<ESC>
 
-command W w !sudo tee % > /dev/null
+command! W w !sudo tee % > /dev/null
 
 " Autocompletion using the TAB key
 " This function determines, whether we are on the start of the line text (then tab indents) or
@@ -106,12 +106,6 @@ set laststatus=2
 set background=dark
 set t_Co=256
 
-" Set extra options when running in GUI mode
-if has("gui_running")
-    set guioptions-=T
-    set guioptions-=e
-    set guitablabel=%M\ %t
-endif
 
 
 "===============
