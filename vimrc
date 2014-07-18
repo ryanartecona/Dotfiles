@@ -155,6 +155,7 @@ Plugin 'dag/vim-fish'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'kien/ctrlp.vim'
+Plugin 'tommcdo/exchange.vim'
 
 " Colors
 Plugin 'altercation/vim-colors-solarized'
