@@ -107,6 +107,18 @@ set background=dark
 set t_Co=256
 colorscheme slate
 
+"===================
+"=== GUI Options ===
+"===================
+if has("gui_running")
+
+  set guioptions=gtrLme
+  set guitablabel=%M\ %t
+
+  set background=dark
+  colorscheme solarized
+
+endif
 
 
 "===============
