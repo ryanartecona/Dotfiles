@@ -50,7 +50,6 @@ set wildignore=*.o,*~,*.pyc,.git\*,.hg\*,.svn\*
 set ruler
 set foldcolumn=1
 set number
-set cursorline
 
 set cmdheight=1
 set scrolloff=4
@@ -108,40 +107,16 @@ set laststatus=2
 "=============
 
 " Split line to the left of the cursor
-nmap K i<CR><Esc>
+nnoremap K i<CR><Esc>
 
 " Toggle invis chars
-nmap <leader>l :set list!<CR>
+nnoremap <leader>l :set list!<CR>
 
 " Toggle recent search highlight
-nmap <leader>h :set hlsearch!<CR>
+nnoremap <leader>/ :nohlsearch<CR>
 
 " Quick-open ~/.vimrc
-nmap <leader>v :tabnew $MYVIMRC<CR>
-
-
-"==========
-"=== UI ===
-"==========
-
-set background=dark
-set t_Co=256
-colorscheme slate
-
-
-"===================
-"=== GUI Options ===
-"===================
-if has("gui_running")
-
-  set guioptions=gtrLme
-  set guitablabel=%M\ %t
-
-  set background=dark
-  colorscheme solarized
-  highlight! link SignColumn Normal
-
-endif
+nnoremap <leader>v :tabnew $MYVIMRC<CR>
 
 
 "===============
@@ -164,7 +139,7 @@ let g:airline_right_sep=' '
 highlight! link GitGutterAdd          DiffAdd
 highlight! link GitGutterChange       DiffChange
 highlight! link GitGutterDelete       DiffDelete
-highlight! link GitGutterChangeDelete DiffChangeDelete
+highlight! link GitGutterChangeDelete DiffDelete
 
 
 "==============
@@ -198,3 +173,29 @@ Plugin 'kchmck/vim-coffee-script'
 
 call vundle#end()
 filetype plugin indent on
+
+
+"==========
+"=== UI ===
+"==========
+
+set background=dark
+set t_Co=256
+colorscheme slate
+
+
+"===================
+"=== GUI Options ===
+"===================
+if has("gui_running")
+
+  set guioptions=gtrLme
+  set guitablabel=%M\ %t
+
+  set background=dark
+  colorscheme solarized
+  highlight! link SignColumn Normal
+
+  set cursorline
+
+endif
