@@ -1,5 +1,5 @@
 if &shell =~# 'fish$'
-  set shell=/usr/local/bin/zsh
+  set shell=/bin/bash
 endif
 
 set history=700
@@ -16,8 +16,6 @@ set autoread
 let mapleader = ","
 let g:mapleader = ","
 
-nmap <leader>w :w<cr>
-
 "Wrap visual selections with chars
 :vnoremap ( "zdi(<C-R>z)<ESC>
 :vnoremap { "zdi{<C-R>z}<ESC>
@@ -25,6 +23,7 @@ nmap <leader>w :w<cr>
 :vnoremap ' "zdi'<C-R>z'<ESC>
 :vnoremap " "zdi"<C-R>z"<ESC>
 
+nmap <leader>w :w<cr>
 command! W w !sudo tee % > /dev/null
 
 " Autocompletion using the TAB key
@@ -51,6 +50,7 @@ set wildignore=*.o,*~,*.pyc,.git\*,.hg\*,.svn\*
 set ruler
 set foldcolumn=1
 set number
+set cursorline
 
 set cmdheight=1
 set scrolloff=4
@@ -94,18 +94,40 @@ set viminfo^=%
 
 autocmd FileType c,cpp,java,php,js,css,xml,xsl,s,go,py,hs,h,m autocmd BufWritePre * :%s/[ \t\r]\+$//e
 
+autocmd BufWritePost .vimrc source $MYVIMRC
+
 set nobackup
 
 "Printing (:hardcopy) options
 set printoptions=paper:letter,syntax:y,number:y,duplex:off,left:5pc
 
-
-
 set laststatus=2
+
+"=============
+"=== Keys! ===
+"=============
+
+" Split line to the left of the cursor
+nmap K i<CR><Esc>
+
+" Toggle invis chars
+nmap <leader>l :set list!<CR>
+
+" Toggle recent search highlight
+nmap <leader>h :set hlsearch!<CR>
+
+" Quick-open ~/.vimrc
+nmap <leader>v :tabnew $MYVIMRC<CR>
+
+
+"==========
+"=== UI ===
+"==========
 
 set background=dark
 set t_Co=256
 colorscheme slate
+
 
 "===================
 "=== GUI Options ===
@@ -117,6 +139,7 @@ if has("gui_running")
 
   set background=dark
   colorscheme solarized
+  highlight! link SignColumn Normal
 
 endif
 
@@ -132,6 +155,16 @@ else
 endif
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
+
+
+"=================
+"=== GitGutter ===
+"=================
+
+highlight! link GitGutterAdd          DiffAdd
+highlight! link GitGutterChange       DiffChange
+highlight! link GitGutterDelete       DiffDelete
+highlight! link GitGutterChangeDelete DiffChangeDelete
 
 
 "==============
