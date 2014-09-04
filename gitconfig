@@ -9,3 +9,6 @@
 	excludesfile = /Users/ryanartecona/.gitignore
 [alias]
 	php-lint = !sh ~/bin/git-php-lint
+	ls = ls-tree -r HEAD --name-only
+[credential]
+	helper = osxkeychain
