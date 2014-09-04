@@ -54,7 +54,8 @@ set number
 set cmdheight=1
 set scrolloff=4
 
-set hid
+" I don't want to deal with hidden buffers
+set nohidden
 
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
@@ -84,16 +85,21 @@ set nofoldenable
 
 
 " Return to last edit position when opening files
-autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-     \   exe "normal! g`\"" |
-     \ endif
+augroup RememberLastPosition
+  autocmd!
+  autocmd BufReadPost *
+       \ if line("'\"") > 0 && line("'\"") <= line("$") |
+       \   exe "normal! g`\"" |
+       \ endif
+augroup END
+
 " Remember info about open buffers on close
 set viminfo^=%
 
-autocmd FileType c,cpp,java,php,js,css,xml,xsl,s,go,py,hs,h,m autocmd BufWritePre * :%s/[ \t\r]\+$//e
-
-autocmd BufWritePost .vimrc source $MYVIMRC
+augroup TrimTrailingWhitespace
+  autocmd!
+  autocmd FileType c,cpp,java,php,js,css,xml,xsl,s,go,py,hs,h,m autocmd BufWritePre * :%s/[ \t\r]\+$//e
+augroup END
 
 set nobackup
 
@@ -102,12 +108,32 @@ set printoptions=paper:letter,syntax:y,number:y,duplex:off,left:5pc
 
 set laststatus=2
 
+"=================
+"=== FileTypes ===
+"=================
+
+augroup Markdown
+  autocmd!
+  autocmd BufRead,BufNewFile *.md setlocal filetype=markdown
+  autocmd FileType markdown setlocal wrap linebreak
+augroup END
+
+augroup Haskell
+  autocmd!
+  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+  let g:haddock_browser="open"
+augroup END
+
+
 "=============
 "=== Keys! ===
 "=============
 
 " Split line to the left of the cursor
 nnoremap K i<CR><Esc>
+
+" Select previous selection
+nnoremap gV `[v`]
 
 " Toggle invis chars
 nnoremap <leader>l :set list!<CR>
@@ -117,6 +143,11 @@ nnoremap <leader>/ :nohlsearch<CR>
 
 " Quick-open ~/.vimrc
 nnoremap <leader>v :tabnew $MYVIMRC<CR>
+" Quick-source ~/.vimrc
+nnoremap <leader>V :source $MYVIMRC<CR>
+
+" Toggle file browser sidebar
+nnoremap <leader>o :NERDTreeToggle<CR>
 
 
 "===============
@@ -142,6 +173,14 @@ highlight! link GitGutterDelete       DiffDelete
 highlight! link GitGutterChangeDelete DiffDelete
 
 
+"================
+"=== NERDTree ===
+"================
+
+" Show hidden files by default (togglable with I)
+let NERDTreeShowHidden=1
+
+
 "==============
 "=== Vundle ===
 "==============
@@ -164,12 +203,22 @@ Plugin 'terryma/vim-multiple-cursors'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'kien/ctrlp.vim'
 Plugin 'tommcdo/vim-exchange'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'mileszs/ack.vim'
 
 " Colors
 Plugin 'altercation/vim-colors-solarized'
 
 " Syntaxes
 Plugin 'kchmck/vim-coffee-script'
+
+" Haskell
+"Plugin 'eagletmt/ghcmod-vim'
+"Plugin 'lukerandall/haskellmode-vim'
+Plugin 'eagletmt/neco-ghc'
 
 call vundle#end()
 filetype plugin indent on
@@ -179,7 +228,7 @@ filetype plugin indent on
 "=== UI ===
 "==========
 
-set background=dark
+set background=light
 set t_Co=256
 colorscheme slate
 
@@ -189,12 +238,12 @@ colorscheme slate
 "===================
 if has("gui_running")
 
-  set guioptions=gtrLme
+  set guioptions=gtrLmec
   set guitablabel=%M\ %t
 
-  set background=dark
+  set background=light
   colorscheme solarized
-  highlight! link SignColumn Normal
+  highlight! link SignColumn LineNr
 
   set cursorline
 
