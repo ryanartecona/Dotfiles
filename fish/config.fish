@@ -63,3 +63,6 @@ set fish_user_paths (valid_allowed_paths)
 
 # RVM needs to be run once to add stuff to $PATH
 rvm >/dev/null ^/dev/null
+
+# Tell Docker where it should connect
+set -x DOCKER_HOST "tcp://localhost:2375"
