@@ -21,7 +21,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>98D0EFBB-C39A-4F91-8C23-138CDA9A37B6</string>
+				<string>D90045F4-AB10-4CA7-9431-AFFD32805F12</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -111,7 +111,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>A3620079-01D1-4185-B0C7-EE2B692D07FD</string>
+				<string>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -249,7 +249,7 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Sublime Text 2.app</string>
+					<string>/Applications/Safari.app</string>
 				</array>
 				<key>toggle</key>
 				<false/>
@@ -257,7 +257,7 @@
 			<key>type</key>
 			<string>alfred.workflow.action.launchfiles</string>
 			<key>uid</key>
-			<string>98D0EFBB-C39A-4F91-8C23-138CDA9A37B6</string>
+			<string>D90045F4-AB10-4CA7-9431-AFFD32805F12</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -266,7 +266,7 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Mailbox (Beta).app</string>
+					<string>/Applications/Mail.app</string>
 				</array>
 				<key>toggle</key>
 				<false/>
@@ -274,7 +274,7 @@
 			<key>type</key>
 			<string>alfred.workflow.action.launchfiles</string>
 			<key>uid</key>
-			<string>A3620079-01D1-4185-B0C7-EE2B692D07FD</string>
+			<string>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -308,6 +308,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/iTerm.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>79A62EE0-DB80-4898-B30F-DB6A34C4A613</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
@@ -331,23 +348,6 @@
 			<string>F1CCFF48-6424-45D5-94F9-442F41EC0D68</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/iTerm.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>79A62EE0-DB80-4898-B30F-DB6A34C4A613</string>
-			<key>version</key>
-			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -948,17 +948,12 @@
 			<key>ypos</key>
 			<real>850</real>
 		</dict>
-		<key>98D0EFBB-C39A-4F91-8C23-138CDA9A37B6</key>
-		<dict>
-			<key>ypos</key>
-			<real>130</real>
-		</dict>
 		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
 		<dict>
 			<key>ypos</key>
 			<real>970</real>
 		</dict>
-		<key>A3620079-01D1-4185-B0C7-EE2B692D07FD</key>
+		<key>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</key>
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
@@ -967,6 +962,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
+		</dict>
+		<key>D90045F4-AB10-4CA7-9431-AFFD32805F12</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
 		</dict>
 		<key>DE7A65D3-6347-42F4-B64C-81C56795F91A</key>
 		<dict>
