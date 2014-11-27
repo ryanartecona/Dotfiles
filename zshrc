@@ -90,3 +90,5 @@ if [[ -f ~/.local.zshrc ]] {
 	source ~/.local.zshrc
 
 }
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

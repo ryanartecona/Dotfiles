@@ -639,7 +639,7 @@
 		BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU1N0cmluZwGEhAhOU09iamVjdACF
 		hAErATGG
 		</data>
-		<string>302</string>
+		<string>319</string>
 	</array>
 	<key>NSTableView Hidden Columns KeyBingingTable</key>
 	<array/>
@@ -648,7 +648,7 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>0 293 924 485 0 0 1280 778 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>641 4 639 774 0 0 1280 778 </string>
+	<string>600 470 585 401 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>641 26 640 752 0 0 1280 778 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -3667,7 +3667,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2014-08-07T20:49:32Z</date>
+	<date>2014-10-28T03:17:08Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -3705,7 +3705,7 @@
 	<key>WebKitDefaultFontSize</key>
 	<integer>11</integer>
 	<key>WebKitStandardFont</key>
-	<string>Lucida Grande</string>
+	<string>.Helvetica Neue DeskInterface</string>
 	<key>WindowNumber</key>
 	<true/>
 	<key>WindowStyle</key>
