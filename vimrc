@@ -163,6 +163,14 @@ nnoremap <leader>o :NERDTreeToggle<CR>
 nnoremap <leader>tw :%s/[ \t\r]\+$//e<CR>
 
 
+"================
+"=== Commands ===
+"================
+
+" Get wordcount of current file
+nnoremap <leader>wc :!wc -w %<CR>
+
+
 "=======================
 "=== EasyMotion keys ===
 "=======================

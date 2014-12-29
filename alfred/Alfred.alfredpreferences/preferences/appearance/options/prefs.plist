@@ -6,8 +6,12 @@
 	<true/>
 	<key>hidehat</key>
 	<true/>
+	<key>hidemenu</key>
+	<true/>
 	<key>saveposition</key>
 	<true/>
+	<key>showOnScreen</key>
+	<integer>2</integer>
 	<key>xPoint</key>
 	<integer>0</integer>
 	<key>yPoint</key>
