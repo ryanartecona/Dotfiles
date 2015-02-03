@@ -13,34 +13,6 @@ set selectmode-=mouse
 
 set autoread
 
-let mapleader = ","
-let g:mapleader = ","
-
-"Wrap visual selections with chars
-:vnoremap ( "zdi(<C-R>z)<ESC>
-:vnoremap { "zdi{<C-R>z}<ESC>
-:vnoremap [ "zdi[<C-R>z]<ESC>
-:vnoremap ' "zdi'<C-R>z'<ESC>
-:vnoremap " "zdi"<C-R>z"<ESC>
-
-nmap <leader>w :w<cr>
-command! W w !sudo tee % > /dev/null
-
-" Autocompletion using the TAB key
-" This function determines, whether we are on the start of the line text (then tab indents) or
-" if we want to try autocompletion
-function! InsertTabWrapper()
-  let col = col('.') - 1
-  if !col || getline('.')[col - 1] !~ '\k'
-    return "\<tab>"
-  else
-    return "\<c-p>"
-  endif
-endfunction
-" Remap the tab key to select action with InsertTabWrapper
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-
 set so=7
 
 set wildmenu
@@ -137,6 +109,31 @@ augroup END
 "=============
 "=== Keys! ===
 "=============
+
+" Remap <leader> from \ to ,
+let mapleader = ","
+let g:mapleader = ","
+
+" Add a ,w shortcut for :w
+" and add a capital W version for sudo
+" (useful to avoid opening vim as sudo)
+nmap <leader>w :w<cr>
+command! W w !sudo tee % > /dev/null
+nmap <leader>W :W<CR>
+
+" Autocompletion using the TAB key
+" This function determines, whether we are on the start of the line text (then tab indents) or
+" if we want to try autocompletion
+function! InsertTabWrapper()
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<tab>"
+  else
+    return "\<c-p>"
+  endif
+endfunction
+" Remap the tab key to select action with InsertTabWrapper
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
 " Split line to the left of the cursor,
 " intended as the opposite of J
