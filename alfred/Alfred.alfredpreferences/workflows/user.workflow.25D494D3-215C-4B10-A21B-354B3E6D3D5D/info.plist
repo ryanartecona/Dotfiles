@@ -138,6 +138,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>9A9616F9-B7DE-4872-938C-4753D333A2B2</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>78AEBB5B-820B-4966-AB83-88CEC0022AE8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>E24CDF92-61A0-4DB7-94E3-AB041940266D</key>
 		<array>
 			<dict>
@@ -410,11 +421,11 @@
 				<key>argument</key>
 				<integer>0</integer>
 				<key>hotkey</key>
-				<integer>0</integer>
+				<integer>32</integer>
 				<key>hotmod</key>
 				<integer>1966080</integer>
 				<key>hotstring</key>
-				<string>A</string>
+				<string>U</string>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -823,11 +834,11 @@
 				<key>argument</key>
 				<integer>0</integer>
 				<key>hotkey</key>
-				<integer>5</integer>
+				<integer>0</integer>
 				<key>hotmod</key>
 				<integer>1966080</integer>
 				<key>hotstring</key>
-				<string>G</string>
+				<string>A</string>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -839,6 +850,50 @@
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
 			<string>157871BA-9B06-463F-BA06-6317CF44CE4F</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/Colloquy.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>78AEBB5B-820B-4966-AB83-88CEC0022AE8</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>31</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>O</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>9A9616F9-B7DE-4872-938C-4753D333A2B2</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -922,6 +977,11 @@
 			<key>ypos</key>
 			<real>1330</real>
 		</dict>
+		<key>78AEBB5B-820B-4966-AB83-88CEC0022AE8</key>
+		<dict>
+			<key>ypos</key>
+			<real>1930</real>
+		</dict>
 		<key>78C9AF81-2301-41FF-BA0E-19B983C8E38D</key>
 		<dict>
 			<key>ypos</key>
@@ -956,6 +1016,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>970</real>
+		</dict>
+		<key>9A9616F9-B7DE-4872-938C-4753D333A2B2</key>
+		<dict>
+			<key>ypos</key>
+			<real>1930</real>
 		</dict>
 		<key>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</key>
 		<dict>
