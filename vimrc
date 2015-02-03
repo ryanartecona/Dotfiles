@@ -177,39 +177,30 @@ nnoremap <leader>wc :!wc -w %<CR>
 " normal (nmap) and operator-pending (omap) modes
 
 " gf{c} -> find a char
-nmap gf <Plug>(easymotion-s)
-omap gf <Plug>(easymotion-s)
+map gf <Plug>(easymotion-s)
 " gs    -> jump to any word or camelCase boundary
-nmap gs <Plug>(easymotion-jumptoanywhere)
-omap gs <Plug>(easymotion-jumptoanywhere)
+map gs <Plug>(easymotion-jumptoanywhere)
 
 " gj, gk -> jump to any beginning of line
-nmap gj <Plug>(easymotion-bd-jk)
-omap gj <Plug>(easymotion-bd-jk)
-nmap gk <Plug>(easymotion-bd-jk)
-omap gk <Plug>(easymotion-bd-jk)
+map gj <Plug>(easymotion-bd-jk)
+map gk <Plug>(easymotion-bd-jk)
 " gh, gl -> jump to any word boundary in line
-nmap gl <Plug>(easymotion-lineforward)
-omap gl <Plug>(easymotion-lineforward)
-nmap gh <Plug>(easymotion-linebackward)
-omap gh <Plug>(easymotion-linebackward)
+map gl <Plug>(easymotion-lineforward)
+map gh <Plug>(easymotion-linebackward)
 " gw     -> jump to any beginning of word
-nmap gw <Plug>(easymotion-bd-w)
-omap gw <Plug>(easymotion-bd-w)
+map gw <Plug>(easymotion-bd-w)
 " ge     -> jump to any end of word
-nmap ge <Plug>(easymotion-bd-e)
-omap ge <Plug>(easymotion-bd-e)
+map ge <Plug>(easymotion-bd-e)
 
 " Use easymotion search instead of default,
 " for incremental highlighting and auto-unhighlighting
-nmap / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-sn)
-nmap n <Plug>(easymotion-next)
+map / <Plug>(easymotion-sn)
+map n <Plug>(easymotion-next)
 "omap n <Plug>(easymotion-next)
-nmap N <Plug>(easymotion-prev)
+map N <Plug>(easymotion-prev)
 "omap N <Plug>(easymotion-prev)
 " Rebind '*' to search for word under cursor
-nmap * <Plug>(easymotion-sn)<C-r><C-w><CR>
+map * <Plug>(easymotion-sn)<C-r><C-w><CR>
 "omap * <Plug>(easymotion-sn)<C-r><C-w><CR>
 
 " Remap the default search bindings behind 'g' leader
