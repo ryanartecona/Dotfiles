@@ -26,8 +26,8 @@ set number
 set cmdheight=1
 set scrolloff=4
 
-" I don't want to deal with hidden buffers
-set nohidden
+" Allow hidden buffers
+set hidden
 
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
@@ -114,10 +114,13 @@ augroup END
 let mapleader = ","
 let g:mapleader = ","
 
-" Add a ,w shortcut for :w
+" Add <leader> based shortcuts for q/x/w
+nmap <leader>q :q<CR>
+nmap <leader>Q :q!<CR>
+nmap <leader>x :x<CR>
+"nmap <leader>w :w<CR>
 " and add a capital W version for sudo
 " (useful to avoid opening vim as sudo)
-nmap <leader>w :w<cr>
 command! W w !sudo tee % > /dev/null
 nmap <leader>W :W<CR>
 
@@ -135,6 +138,16 @@ endfunction
 " Remap the tab key to select action with InsertTabWrapper
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
+" Make j/k move up/down through visual rows,
+" not lines (for wrapped lines)
+" ...there may be a better way to do this
+noremap j gj
+nnoremap <Down> gj
+vnoremap <Down> gj
+noremap k gk
+nnoremap <Up> gk
+vnoremap <Up> gk
+
 " Split line to the left of the cursor,
 " intended as the opposite of J
 nnoremap K i<CR><Esc>k$
@@ -149,15 +162,47 @@ nnoremap <leader>l :set list!<CR>
 nnoremap <leader>/ :set hlsearch!<CR>
 
 " Quick-open ~/.vimrc
-nnoremap <leader>v :tabnew $MYVIMRC<CR>
+nnoremap <leader>v :edit $MYVIMRC<CR>
 " Quick-source ~/.vimrc
 nnoremap <leader>V :source $MYVIMRC<CR>
 
-" Toggle file browser sidebar
+" Toggle file browser left sidebar
 nnoremap <leader>o :NERDTreeToggle<CR>
+
+" Toggle Tagbar right sidebar
+nnoremap <leader>tt :TagbarToggle<CR>
 
 " Trim trailing whitespace on every line of file
 nnoremap <leader>tw :%s/[ \t\r]\+$//e<CR>
+
+" Window movement and splitting
+" -----------------------------
+
+" Alias <C-w> window movement prefix to ,w
+nnoremap <leader>w <C-w>
+" Split with ,s<direction>
+nnoremap <leader>sh :leftabove vsplit<CR>
+nnoremap <leader>sj :rightbelow split<CR>
+nnoremap <leader>sk :leftabove split<CR>
+nnoremap <leader>sl :rightbelow vsplit<CR>
+
+" MiniBufExpl buffer navigation
+" -----------------------------
+
+" Toggle MiniBufExpl
+nmap <leader>bt :MBEToggle<CR>
+nmap <leader>bb :MBEToggle<CR>
+" Next/Previous buffer (listed)
+nmap <leader>bl :MBEbn<CR>
+nmap <leader>bh :MBEbp<CR>
+" Next/Previous buffer (used)
+nmap <leader>bo :MBEbb<CR>
+nmap <leader>bi :MBEbf<CR>
+" Create a new buffer
+nmap <leader>bn :enew<CR>
+" Delete buffer
+nmap <leader>bq :MBEbd<CR>
+nmap <leader>bd :MBEbd<CR>
 
 
 "================
@@ -225,6 +270,11 @@ endif
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
 
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#show_buffers=0
+let g:airline#extensions#tabline#left_sep=' '
+let g:airline#extensions#tabline#left_alt_sep=' '
+
 
 "=================
 "=== GitGutter ===
@@ -263,6 +313,36 @@ let g:showmarks_textlower="\t "
 let g:showmarks_textupper="\t "
 let g:showmarks_textother="\t "
 
+"==================
+"=== ConqueTerm ===
+"==================
+
+" currently unused...
+let g:ConqueTerm_InsertOnEnter=1
+let g:ConqueTerm_Color=1
+let g:ConqueTerm_CWInsert=1
+let g:ConqueTerm_Syntax=''
+let g:ConqueTerm_TERM='xterm'
+
+"==============
+"=== Tagbar ===
+"==============
+
+let g:tagbar_autoclose=1
+let g:tagbar_compact=0
+let g:tagbar_indent=1
+let g:tagbar_autoshowtag=1
+
+let g:tagbar_type_coffee = {
+    \ 'ctagstype' : 'coffee',
+    \ 'kinds'     : [
+        \ 'c:classes',
+        \ 'm:methods',
+        \ 'f:functions',
+        \ 'v:variables',
+        \ 'f:fields',
+    \ ]
+\ }
 
 "==============
 "=== Vundle ===
@@ -293,6 +373,8 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-surround'
 Plugin 'mileszs/ack.vim'
 Plugin 'vim-scripts/ShowMarks'
+Plugin 'majutsushi/tagbar'
+Plugin 'fholgado/minibufexpl.vim'
 
 " Colors
 Plugin 'altercation/vim-colors-solarized'
@@ -321,17 +403,42 @@ colorscheme slate
 
 
 "===================
+"=== MiniBufExpl ===
+"===================
+
+if has('gui_running')
+  " These are convenient links to work with solarized (dark)
+  highlight! link MBENormal Comment
+  highlight! link MBEChanged Type
+  highlight! link MBEVisibleNormal Normal
+  highlight! link MBEVisibleChanged DiffChange
+  highlight! link MBEVisibleActiveNormal StatusLine
+  highlight! link MBEVisibleActiveChanged Search
+end
+
+
+"===================
 "=== GUI Options ===
 "===================
 if has("gui_running")
 
-  set guioptions=gtrLmec
+  " set guioptions=gtrLmec
+  set guioptions=gtmc
   set guitablabel=%M\ %t
 
-  set background=dark
-  colorscheme solarized
-  highlight! link SignColumn LineNr
+  augroup SolarizedFixup
+    autocmd!
+    autocmd ColorScheme * call SolarizedFixup()
+  augroup END
 
+  function! SolarizedFixup()
+    if g:colors_name ==? "solarized"
+      highlight! link SignColumn LineNr
+    endif
+  endfunction
+
+  set background=dark
   set cursorline
+  colorscheme solarized
 
 endif
