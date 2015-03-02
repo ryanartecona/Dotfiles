@@ -1,2 +1,5 @@
 .DS_Store
 
+# Emacs workspace save files
+emacs.d/.emacs.desktop
+emacs.d/.emacs.desktop.lock
