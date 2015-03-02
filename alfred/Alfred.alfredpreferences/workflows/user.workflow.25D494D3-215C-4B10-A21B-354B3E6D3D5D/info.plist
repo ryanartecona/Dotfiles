@@ -32,7 +32,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>D90045F4-AB10-4CA7-9431-AFFD32805F12</string>
+				<string>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -240,6 +240,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/Emacs.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
@@ -263,23 +280,6 @@
 			<string>220CE0F7-7F59-468E-9D1C-A4070FFCFBB1</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Safari.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>D90045F4-AB10-4CA7-9431-AFFD32805F12</string>
-			<key>version</key>
-			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -997,6 +997,11 @@
 			<key>ypos</key>
 			<real>250</real>
 		</dict>
+		<key>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
 		<key>94489529-B207-44B1-95BB-6A766BEB1F7E</key>
 		<dict>
 			<key>ypos</key>
@@ -1036,11 +1041,6 @@
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
-		</dict>
-		<key>D90045F4-AB10-4CA7-9431-AFFD32805F12</key>
-		<dict>
-			<key>ypos</key>
-			<real>130</real>
 		</dict>
 		<key>DE7A65D3-6347-42F4-B64C-81C56795F91A</key>
 		<dict>
