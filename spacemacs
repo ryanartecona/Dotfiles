@@ -19,6 +19,7 @@
  '(custom-safe-themes
    (quote
     ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
+ '(evil-shift-width 2)
  '(fci-rule-color "#eee8d5")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
