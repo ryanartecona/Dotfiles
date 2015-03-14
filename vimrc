@@ -110,15 +110,16 @@ augroup END
 "=== Keys! ===
 "=============
 
-" Remap <leader> from \ to ,
-let mapleader = ","
-let g:mapleader = ","
+" Remap <leader> from \ to <SPACE>
+let mapleader = "\<SPACE>"
+let g:mapleader = "\<SPACE>"
 
-" Add <leader> based shortcuts for q/x/w
+" Add <leader> based shortcuts for q/x/s/bw
 nmap <leader>q :q<CR>
 nmap <leader>Q :q!<CR>
 nmap <leader>x :x<CR>
-"nmap <leader>w :w<CR>
+nmap <leader>s :w<CR>
+nmap <leader>bw :w<CR>
 " and add a capital W version for sudo
 " (useful to avoid opening vim as sudo)
 command! W w !sudo tee % > /dev/null
@@ -372,7 +373,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-surround'
 Plugin 'mileszs/ack.vim'
-Plugin 'vim-scripts/ShowMarks'
+" Plugin 'vim-scripts/ShowMarks'
 Plugin 'majutsushi/tagbar'
 Plugin 'fholgado/minibufexpl.vim'
 
