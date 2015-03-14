@@ -180,12 +180,15 @@ nnoremap <leader>tw :%s/[ \t\r]\+$//e<CR>
 " -----------------------------
 
 " Alias <C-w> window movement prefix to ,w
-nnoremap <leader>w <C-w>
-" Split with ,s<direction>
-nnoremap <leader>sh :leftabove vsplit<CR>
-nnoremap <leader>sj :rightbelow split<CR>
-nnoremap <leader>sk :leftabove split<CR>
-nnoremap <leader>sl :rightbelow vsplit<CR>
+nnoremap <leader>wh <C-w>h
+nnoremap <leader>wj <C-w>j
+nnoremap <leader>wk <C-w>k
+nnoremap <leader>wl <C-w>l
+" Split with -, / (spacemacs habit)
+nnoremap <leader>w- :leftabove split<CR>
+nnoremap <leader>w_ :rightbelow split<CR>
+nnoremap <leader>w/ :leftabove vsplit<CR>
+nnoremap <leader>w? :rightbelow vsplit<CR>
 
 " MiniBufExpl buffer navigation
 " -----------------------------
