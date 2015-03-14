@@ -42,6 +42,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/Library/Haskell/bin
   echo /export/apps/xtools/bin
   echo /Applications/ghc-7.8.3.app/Contents/bin
+  echo $HOME/.opam/system/bin
   echo /usr/local/bin
   echo /usr/local/sbin
   echo /usr/bin
@@ -66,3 +67,6 @@ rvm >/dev/null ^/dev/null
 
 # Tell Docker where it should connect
 set -x DOCKER_HOST "tcp://localhost:2375"
+
+# OPAM configuration
+. /Users/ryanartecona/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
