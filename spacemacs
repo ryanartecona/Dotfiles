@@ -48,6 +48,8 @@
  '(mac-system-move-file-to-trash-use-finder t)
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
+ '(neo-show-updir-line t)
+ '(neo-theme (quote nerd))
  '(paradox-github-token t)
  '(pos-tip-background-color "#eee8d5" t)
  '(pos-tip-foreground-color "#586e75" t)

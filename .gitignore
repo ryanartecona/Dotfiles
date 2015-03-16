@@ -3,6 +3,7 @@
 # Emacs workspace save files
 emacs.d/.emacs.desktop
 emacs.d/.emacs.desktop.lock
+emacs.d/abbrev_defs
 
 # Other junk
 emacs.d/rake.cache

@@ -56,7 +56,9 @@
                       ruby-enable-ruby-on-rails-support t)
                 (haskell :variables
                          haskell-enable-shm-support t)
+                html
                 markdown
+                ocaml
 
                 ; Themes
                 ;; themes-megapack
@@ -65,6 +67,11 @@
 (defun dotspacemacs/config ()
   "Called at the end of spacemacs configuration sequence"
   (setq powerline-default-separator 'nil))
+
+  ; OPAM OCaml stuff
+  (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+  (setq merlin-command 'opam)
 
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
 ;;
