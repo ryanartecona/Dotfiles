@@ -34,8 +34,10 @@
                 solarized-light
                 ))
 
-; (setq-default dotspacemacs-configuration-layer-path
-;               '((concat user-emacs-directory "spacemacs-layers/")))
+(setq-default dotspacemacs-configuration-layer-path
+              (list
+               (concat user-emacs-directory "spacemacs-layers/")
+               ))
 
 (setq-default dotspacemacs-configuration-layers
               '(
@@ -66,6 +68,11 @@
                 ;; themes-megapack
                 ))
 
+(defun dotspacemacs/config ()
+  "Called at the end of spacemacs configuration sequence"
+  (setq powerline-default-separator 'slant)
+  )
+
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
 ;;
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs
@@ -77,7 +84,5 @@
 
 (load "~/.emacs.d/spacemacs/init")
 
-(defun dotspacemacs/config ()
-  "Called at the end of spacemacs configuration sequence"
+(setq user-emacs-directory backup-user-emacs-directory)
 
-  (setq user-emacs-directory backup-user-emacs-directory))
