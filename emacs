@@ -13,8 +13,7 @@
 ;; UI
 ;; --
 
-(setq solarized-high-contrast-mode-line t
-      solarized-distinct-fringe-background t)
+(setq solarized-distinct-fringe-background t)
 
 ;; ================
 ;; Spacemacs config
@@ -31,9 +30,12 @@
 
 (setq-default dotspacemacs-themes
               '(
-                solarized-light
                 solarized-dark
+                solarized-light
                 ))
+
+; (setq-default dotspacemacs-configuration-layer-path
+;               '((concat user-emacs-directory "spacemacs-layers/")))
 
 (setq-default dotspacemacs-configuration-layers
               '(
@@ -64,15 +66,6 @@
                 ;; themes-megapack
                 ))
 
-(defun dotspacemacs/config ()
-  "Called at the end of spacemacs configuration sequence"
-  (setq powerline-default-separator 'nil))
-
-  ; OPAM OCaml stuff
-  (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-  (setq merlin-command 'opam)
-
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
 ;;
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs
@@ -84,4 +77,7 @@
 
 (load "~/.emacs.d/spacemacs/init")
 
-(setq user-emacs-directory backup-user-emacs-directory)
+(defun dotspacemacs/config ()
+  "Called at the end of spacemacs configuration sequence"
+
+  (setq user-emacs-directory backup-user-emacs-directory))
