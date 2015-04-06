@@ -39,8 +39,9 @@
 
 (setq-default dotspacemacs-configuration-layers
               '(
-                ; My own layer
+                ; My own layers
                 ra
+                org
 
                 ; Contrib layers (included in spacemacs)
                 (git :variables
