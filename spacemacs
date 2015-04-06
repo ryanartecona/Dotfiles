@@ -20,7 +20,10 @@
    (quote
     ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
  '(evil-shift-width 2)
+ '(expand-region-contract-fast-key "V")
+ '(expand-region-reset-fast-key "r")
  '(fci-rule-color "#eee8d5")
+ '(git-gutter-fr:side (quote left-fringe))
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -55,7 +58,16 @@
  '(pos-tip-foreground-color "#586e75")
  '(powerline-default-separator (quote slant))
  '(ring-bell-function (quote ignore) t)
+ '(safe-local-variable-values
+   (quote
+    ((eval when
+           (fboundp
+            (quote rainbow-mode))
+           (rainbow-mode 1)))))
+ '(scroll-step 1)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
+ '(smooth-scroll-strict-margins nil)
+ '(solarized-distinct-fringe-background t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -87,4 +99,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(variable-pitch ((t nil))))

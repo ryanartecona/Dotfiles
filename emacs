@@ -3,17 +3,15 @@
 ;; ============
 
 ; save emacs sessions by default
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 
 ; open new stuff in new graphical windows (instead of buffers)
 ;; (setq pop-up-frames 'graphic-only) ; opens too many frames, need to figure it out
 (setq display-buffer-reuse-frames t
       display-buffer-reuse-window t)
 
-;; UI
-;; --
-
-(setq solarized-distinct-fringe-background t)
+; fix window scroll jumping when point moves near beginning/end of buffer
+(setq auto-window-vscroll nil)
 
 ;; ================
 ;; Spacemacs config
@@ -53,6 +51,8 @@
                 osx
                 vim-empty-lines
                 company-mode
+                ;; (perspectives :variables
+                ;;               perspective-enable-persp-projectile t)
 
                 ; Langs
                 (ruby :variables
@@ -68,9 +68,23 @@
                 ;; themes-megapack
                 ))
 
+(defun dotspacemacs/init ()
+  "Called at the beginning of spacemacs configuration sequence"
+
+  ; some solarized options
+  (setq solarized-distinct-fringe-background t)
+  (setq solarized-scale-org-headlines nil)
+  (setq solarized-high-contrast-mode-line t)
+  )
+
 (defun dotspacemacs/config ()
   "Called at the end of spacemacs configuration sequence"
+
   (setq powerline-default-separator 'slant)
+
+  ; enable left fringe, disable right fringe
+  (fringe-mode '(nil . 0))
+  (setq git-gutter-fr:side 'left-fringe)
   )
 
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
