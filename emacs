@@ -42,6 +42,7 @@
                 ; My own layers
                 ra
                 org
+                workgroups2
 
                 ; Contrib layers (included in spacemacs)
                 (git :variables
@@ -86,6 +87,9 @@
   ; enable left fringe, disable right fringe
   (fringe-mode '(nil . 0))
   (setq git-gutter-fr:side 'left-fringe)
+
+  ; enable and load workgroups session
+  (workgroups-mode 1)
   )
 
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
