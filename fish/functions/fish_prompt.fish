@@ -4,25 +4,26 @@ function fish_prompt --description 'Write out the prompt'
   if test $last_status -ne 0
     set_color $fish_color_error
     echo "✖ $last_status"
+    set_color normal
   end
 
   echo
 
-  # User
-  set_color $fish_color_user
-  echo -n (whoami)
-  set_color normal
-  set_color $fish_color_prompt_delimiter
+  # # User
+  # set_color $fish_color_user
+  # echo -n (whoami)
+  # set_color normal
+  # set_color $fish_color_prompt_delimiter
 
-  echo -n ' @ '
+  # echo -n ' @ '
 
-  # Host
-  set_color $fish_color_host
-  echo -n (hostname -s)
-  set_color normal
-  set_color $fish_color_prompt_delimiter
+  # # Host
+  # set_color $fish_color_host
+  # echo -n (hostname -s)
+  # set_color normal
+  # set_color $fish_color_prompt_delimiter
 
-  echo -n ' : '
+  # echo -n ' : '
 
   # PWD
   set_color $fish_color_cwd

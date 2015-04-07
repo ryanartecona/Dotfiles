@@ -5,12 +5,12 @@ end
 if status --is-interactive
   set -xg EDITOR                          (which vim)
 
-  set -g fish_prompt_git_prefix           ' | '
+  set -g fish_prompt_git_prefix           ' ± '
 
   set -g fish_color_autosuggestion        black
   set -g fish_color_command               magenta --bold
   set -g fish_color_comment               red
-  set -g fish_color_cwd                   green
+  set -g fish_color_cwd                   cyan
   set -g fish_color_cwd_root              red
   set -g fish_color_error                 red --bold
   set -g fish_color_escape                cyan
