@@ -13,6 +13,8 @@
 ; fix window scroll jumping when point moves near beginning/end of buffer
 (setq auto-window-vscroll nil)
 
+(setq system-uses-terminfo nil)
+
 ;; ================
 ;; Spacemacs config
 ;; ================
@@ -41,18 +43,21 @@
               '(
                 ; My own layers
                 ra
-                org
+                ra-org
                 workgroups2
 
                 ; Contrib layers (included in spacemacs)
                 (git :variables
                      git-enable-github-support t
                      git-gutter-use-fringe t)
-                smex
-                dash
                 osx
+                dash
+                (org :variables
+                     org-startup-indented t)
                 vim-empty-lines
-                company-mode
+                (auto-completion :variables
+                                 company-idle-delay 0.0)
+                syntax-checking
                 ;; (perspectives :variables
                 ;;               perspective-enable-persp-projectile t)
 
@@ -62,13 +67,23 @@
                       ruby-enable-ruby-on-rails-support t)
                 (haskell :variables
                          haskell-enable-shm-support t)
-                html
+                (html :variables
+                      web-mode-markup-indent-offset 2
+                      web-mode-css-indent-offset 2
+                      web-mode-code-indent-offset 2
+                      scss-compile-at-save nil)
                 markdown
                 ocaml
 
                 ; Themes
                 ;; themes-megapack
                 ))
+
+(setq dotspacemacs-excluded-packages
+      '(
+        org-bullets
+        magit-gh-pulls
+        ))
 
 (defun dotspacemacs/init ()
   "Called at the beginning of spacemacs configuration sequence"
@@ -77,6 +92,10 @@
   (setq solarized-distinct-fringe-background t)
   (setq solarized-scale-org-headlines nil)
   (setq solarized-high-contrast-mode-line t)
+
+  ; tabbing: 2 spaces
+  (setq evil-shift-width 2
+        helm-pt-insert-at-point nil)
   )
 
 (defun dotspacemacs/config ()
@@ -89,7 +108,10 @@
   (setq git-gutter-fr:side 'left-fringe)
 
   ; enable and load workgroups session
-  (workgroups-mode 1)
+  (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
+  (golden-ratio-mode -1)
+  ;; (workgroups-mode 1)
+  (golden-ratio-mode 1)
   )
 
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d

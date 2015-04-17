@@ -25,5 +25,7 @@ which require an initialization must be listed explicitly in the list.")
       "mpj" 'org-priority-down
       "mpk" 'org-priority-up
       "mt" nil "mtl" 'org-toggle-link-display
+      "mi" 'org-clock-in
+      "mo" 'org-clock-out
      ))
   )
