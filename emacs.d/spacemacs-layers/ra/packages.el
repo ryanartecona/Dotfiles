@@ -5,21 +5,14 @@
     flycheck
     rainbow-mode
     magit
+    macrostep
+    pandoc-mode
     )
   "List of all packages to install and/or initialize.")
 
 (defvar ra-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function ra/init-<package-ra>
-;;
-;; (defun ra/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
 
 (defun ra/init-coffee-mode ()
   "Setup coffee-mode"
@@ -62,3 +55,25 @@
 
       (add-hook 'magit-mode-hook #'endless/add-PR-fetch)
     )))
+
+(defun ra/init-macrostep ()
+  (use-package macrostep
+    :defer t
+    :config ())
+  )
+
+(defun ra/init-pandoc-mode ()
+  "Add pandoc-mode hooks"
+  (use-package pandoc-mode
+    :defer t
+    :commands pandoc-mode
+    :diminish pandoc-mode
+    :init
+    (progn
+      (add-hook 'markdown-mode-hook 'pandoc-mode)
+      (add-hook 'org-mode-hook 'pandoc-mode)
+      )
+    :config
+    (progn
+      (spacemacs|diminish pandoc-mode " ⇔" " pd"))
+    ))
