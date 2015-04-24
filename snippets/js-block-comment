@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: js-block-comment
+# key: /**
+# condition: (eq major-mode 'js-mode)
+# binding: direct-keybinding
+# --
+/**
+ * $1
+ */
