@@ -186,7 +186,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>09E6AB03-C2F7-4EE9-8BA3-85D5092DB33F</string>
+				<string>7FCE9480-6CF8-4773-929D-74EEF2A83E3E</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -393,7 +393,7 @@
 			<key>type</key>
 			<string>alfred.workflow.action.launchfiles</string>
 			<key>uid</key>
-			<string>09E6AB03-C2F7-4EE9-8BA3-85D5092DB33F</string>
+			<string>7FCE9480-6CF8-4773-929D-74EEF2A83E3E</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -641,6 +641,50 @@
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
 			<string>55808A08-AC87-422F-B3E1-3D6F4784225B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/Gitter.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>BB158701-6D9A-4D95-BAB9-CBFFA1A7E774</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>5</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>G</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>CDAEE338-4779-4FEE-9B36-64507B0C0F3C</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -908,50 +952,6 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Gitter.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>BB158701-6D9A-4D95-BAB9-CBFFA1A7E774</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>hotkey</key>
-				<integer>5</integer>
-				<key>hotmod</key>
-				<integer>1966080</integer>
-				<key>hotstring</key>
-				<string>G</string>
-				<key>leftcursor</key>
-				<false/>
-				<key>modsmode</key>
-				<integer>0</integer>
-				<key>relatedAppsMode</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
-			<key>uid</key>
-			<string>CDAEE338-4779-4FEE-9B36-64507B0C0F3C</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -961,11 +961,6 @@
 		<dict>
 			<key>ypos</key>
 			<real>610</real>
-		</dict>
-		<key>09E6AB03-C2F7-4EE9-8BA3-85D5092DB33F</key>
-		<dict>
-			<key>ypos</key>
-			<real>490</real>
 		</dict>
 		<key>157871BA-9B06-463F-BA06-6317CF44CE4F</key>
 		<dict>
@@ -1052,6 +1047,11 @@
 			<key>ypos</key>
 			<real>370</real>
 		</dict>
+		<key>7FCE9480-6CF8-4773-929D-74EEF2A83E3E</key>
+		<dict>
+			<key>ypos</key>
+			<real>490</real>
+		</dict>
 		<key>8B6E90B1-2C92-4AEC-B261-83F905597E63</key>
 		<dict>
 			<key>ypos</key>
@@ -1095,12 +1095,12 @@
 		<key>BB158701-6D9A-4D95-BAB9-CBFFA1A7E774</key>
 		<dict>
 			<key>ypos</key>
-			<real>2050</real>
+			<real>1210</real>
 		</dict>
 		<key>CDAEE338-4779-4FEE-9B36-64507B0C0F3C</key>
 		<dict>
 			<key>ypos</key>
-			<real>2050</real>
+			<real>1210</real>
 		</dict>
 		<key>CE3A2B29-CF53-466A-B97D-E9B1CC7EEF43</key>
 		<dict>
