@@ -1,14 +1,14 @@
-(defvar org-packages
+(defvar ra-org-packages
   '(
     org
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar org-excluded-packages '()
+(defvar ra-org-excluded-packages '()
   "List of packages to exclude.")
 
-(defun org/init-org ()
+(defun ra-org/init-org ()
   "Define decent org-mode evil keybindings."
   (use-package org
     :config
@@ -22,6 +22,7 @@ which require an initialization must be listed explicitly in the list.")
       "mK" 'org-shiftmetaup
       "mL" 'org-shiftmetaright
       "mS" 'org-sort
+      "mr" 'org-refile
       "mpj" 'org-priority-down
       "mpk" 'org-priority-up
       "mt" nil "mtl" 'org-toggle-link-display
