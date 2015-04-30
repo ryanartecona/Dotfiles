@@ -142,7 +142,7 @@
   ; enable and load workgroups session
   (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
   ;; (golden-ratio-mode -1)
-  ;; (workgroups-mode 1)
+  (workgroups-mode 1)
   ;; (golden-ratio-mode 1)
   )
 
