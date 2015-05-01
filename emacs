@@ -41,11 +41,6 @@
     '("~/.emacs.d/spacemacs-layers/")
    dotspacemacs-configuration-layers
     '(
-      ; My own layers
-      ra
-      ra-org
-      workgroups2
-
       ; Contrib layers (included in spacemacs)
       (git :variables
             git-enable-github-support t
@@ -76,6 +71,11 @@
 
       ; Themes
       ;; themes-megapack
+
+      ; My own layers
+      ra
+      ra-org
+      workgroups2
       )
    dotspacemacs-excluded-packages
     '(
