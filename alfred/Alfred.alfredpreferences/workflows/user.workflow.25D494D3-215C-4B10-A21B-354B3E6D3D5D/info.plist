@@ -127,6 +127,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>924F8FAD-54F0-4509-9680-68C863E1765C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
 		<array>
 			<dict>
@@ -952,6 +963,50 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>35</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>P</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>924F8FAD-54F0-4509-9680-68C863E1765C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/Preview.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -1001,6 +1056,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>850</real>
+		</dict>
+		<key>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</key>
+		<dict>
+			<key>ypos</key>
+			<real>2050</real>
 		</dict>
 		<key>5140E495-9495-4A38-AD0F-E19DFD784DD7</key>
 		<dict>
@@ -1056,6 +1116,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
+		</dict>
+		<key>924F8FAD-54F0-4509-9680-68C863E1765C</key>
+		<dict>
+			<key>ypos</key>
+			<real>2050</real>
 		</dict>
 		<key>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</key>
 		<dict>
