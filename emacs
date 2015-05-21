@@ -125,7 +125,8 @@
    org-startup-indented t
    org-todo-keywords
    '(
-     (sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+     (sequence "PLAN(p)" "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+     (sequence "STALE(s)" "BLOCKED(b@/!)" "VERIFY(v)" "|" "CANCELLED(c@/!)")
      )
    org-log-done 'time)
   )
@@ -141,9 +142,23 @@
 
   ; enable and load workgroups session
   (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
-  ;; (golden-ratio-mode -1)
   (workgroups-mode 1)
-  ;; (golden-ratio-mode 1)
+  (golden-ratio-mode 1)
+
+  (ido-mode -1)
+
+  (when (equal system-type 'darwin)
+    ;; Make some OSX idioms work
+    (global-set-key (kbd "s-n") 'make-frame-command)
+    (global-set-key (kbd "s-a") 'mark-whole-buffer)
+    (global-set-key (kbd "s-w") 'delete-window)
+    (global-set-key (kbd "s-<right>") 'evil-end-of-line)
+    (global-set-key (kbd "s-<left>") 'evil-first-non-blank)
+    (global-set-key (kbd "s-S-<up>") 'evil-window-up)
+    (global-set-key (kbd "s-S-<down>") 'evil-window-down)
+    (global-set-key (kbd "s-S-<left>") 'evil-window-left)
+    (global-set-key (kbd "s-S-<right>") 'evil-window-right)
+    )
   )
 
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d

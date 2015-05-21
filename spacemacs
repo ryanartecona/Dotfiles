@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-ispell-requires 4 t)
+ '(ac-ispell-requires 4)
  '(ahs-case-fold-search nil)
  '(ahs-default-range (quote ahs-range-whole-buffer))
  '(ahs-idle-interval 0.25)
@@ -19,6 +19,7 @@
  '(custom-safe-themes
    (quote
     ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
+ '(enh-ruby-deep-indent-paren nil)
  '(evil-shift-width 2)
  '(expand-region-contract-fast-key "V")
  '(expand-region-reset-fast-key "r")
@@ -51,8 +52,13 @@
  '(mac-system-move-file-to-trash-use-finder t)
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
+ '(markdown-command "pandoc")
  '(neo-show-updir-line t t)
  '(neo-theme (quote nerd))
+ '(org-refile-targets
+   (quote
+    ((org-agenda-files :maxlevel . 2)
+     (nil :maxlevel . 2))))
  '(paradox-github-token t)
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
@@ -65,6 +71,7 @@
             (quote rainbow-mode))
            (rainbow-mode 1)))))
  '(scroll-step 1)
+ '(shm-display-quarantine nil)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
  '(smooth-scroll-strict-margins nil)
  '(solarized-distinct-fringe-background t)
