@@ -5,6 +5,7 @@ emacs.d/.emacs.desktop
 emacs.d/.emacs.desktop.lock
 emacs.d/abbrev_defs
 emacs.d/.emacs_workgroups
+emacs.d/.emacs_workgroups.bak
 
 # Other junk
 emacs.d/rake.cache
