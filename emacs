@@ -76,6 +76,7 @@
       ra
       ra-org
       workgroups2
+      purescript
       )
    dotspacemacs-excluded-packages
     '(
