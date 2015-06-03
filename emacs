@@ -52,12 +52,13 @@
       (auto-completion :variables
                         company-idle-delay 0.0)
       syntax-checking
+      shell
       ;; (perspectives :variables
       ;;               perspective-enable-persp-projectile t)
 
       ; Langs
       (ruby :variables
-            ruby-version-manager rvm
+            ruby-version-manager 'rvm
             ruby-enable-ruby-on-rails-support t)
       (haskell :variables
                 haskell-enable-shm-support t)
@@ -68,6 +69,7 @@
             scss-compile-at-save nil)
       markdown
       ocaml
+      emacs-lisp
 
       ; Themes
       ;; themes-megapack

@@ -1,12 +1,10 @@
-(defvar ra-org-packages
+(setq ra-org-packages
   '(
     org
     )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
+  )
 
-(defvar ra-org-excluded-packages '()
-  "List of packages to exclude.")
+(setq ra-org-excluded-packages '())
 
 (defun ra-org/init-org ()
   "Define decent org-mode evil keybindings."

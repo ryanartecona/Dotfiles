@@ -1,4 +1,4 @@
-(defvar ra-packages
+(setq ra-packages
   '(
     coffee-mode
     sass-mode
@@ -8,10 +8,10 @@
     macrostep
     pandoc-mode
     )
-  "List of all packages to install and/or initialize.")
+  )
 
-(defvar ra-excluded-packages '()
-  "List of packages to exclude.")
+(setq ra-excluded-packages '()
+  )
 
 
 (defun ra/init-coffee-mode ()

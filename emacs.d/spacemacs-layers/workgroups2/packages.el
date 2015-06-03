@@ -1,14 +1,14 @@
-(defvar workgroups2-packages
+(setq workgroups2-packages
   '(
     workgroups2
     )
-  "List of all packages to install to support workgroups2")
+  )
 
-(defvar workgroups2-excluded-packages
+(setq workgroups2-excluded-packages
   '(
     workgroups
     )
-  "List of packages that conflict with workgroups2")
+  )
 
 (defun workgroups2/init-workgroups2 ()
   "Setup workgroups2"

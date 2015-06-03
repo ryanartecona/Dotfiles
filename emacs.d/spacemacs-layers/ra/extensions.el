@@ -1,14 +1,14 @@
-(defvar ra-pre-extensions
+(setq ra-pre-extensions
   '(
     ;; pre extension ras go here
     )
-  "List of all extensions to load before the packages.")
+  )
 
-(defvar ra-post-extensions
+(setq ra-post-extensions
   '(
     ;; post extension ras go here
     )
-  "List of all extensions to load after the packages.")
+  )
 
 ;; For each extension, define a function ra/init-<extension-ra>
 ;;
