@@ -1,14 +1,13 @@
-(defvar purescript-packages
+(setq ra-purescript-packages
   '(
     purescript-mode
     psci
     )
-  "List of all purescript packages to install and/or initialize.")
+  )
 
-(defvar purescript-excluded-packages '()
-  "List of packages to exclude.")
+(setq ra-purescript-excluded-packages '())
 
-(defun purescript/init-purescript-mode ()
+(defun ra-purescript/init-purescript-mode ()
   "Setup purescript-mode"
   (require 'purescript-mode-autoloads)
   (evil-leader/set-key-for-mode 'purescript-mode
@@ -38,12 +37,15 @@
     )
   )
 
-(defun purescript/init-psci ()
+(defun ra-purescript/init-psci ()
   "Setup psci mode"
   (use-package psci
     :init
     (progn
-      (add-hook 'purescript-mode-hook 'inferior-psci-mode)
+      ;; inferior-psci-mode doesn't offer much beyond a binding
+      ;; for 'psci, which I can do myself, and it behaves weirdly
+      ;; sometimes when inserting newlines in purescript-mode.
+      ;; (add-hook 'purescript-mode-hook 'inferior-psci-mode)
       (evil-leader/set-key-for-mode 'purescript-mode
         "mr" 'psci)
       )
