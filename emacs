@@ -80,6 +80,10 @@
       workgroups2
       ra-purescript
       )
+   dotspacemacs-additional-packages
+    '(
+      swift-mode
+      )
    dotspacemacs-excluded-packages
     '(
       org-bullets
@@ -148,7 +152,12 @@
   (workgroups-mode 1)
   (golden-ratio-mode 1)
 
+  ; turn off ido-mode, so plugins (workgroups) don't think it's
+  ; preferred to helm
   (ido-mode -1)
+
+  ; turn on guide-key
+  (guide-key-mode 1)
 
   (when (equal system-type 'darwin)
     ;; Make some OSX idioms work
@@ -161,6 +170,10 @@
     (global-set-key (kbd "s-S-<down>") 'evil-window-down)
     (global-set-key (kbd "s-S-<left>") 'evil-window-left)
     (global-set-key (kbd "s-S-<right>") 'evil-window-right)
+    )
+
+  (unless server-running-p
+    (server-start)
     )
   )
 
