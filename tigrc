@@ -1,0 +1,4 @@
+set split-view-height = 62%
+set split-view-width = 62%
+set line-graphics = utf-8
+set mouse = yes
