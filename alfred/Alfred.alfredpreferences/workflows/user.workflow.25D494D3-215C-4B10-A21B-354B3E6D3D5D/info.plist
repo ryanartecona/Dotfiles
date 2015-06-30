@@ -21,7 +21,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>361D3CFE-DCE1-46FB-BB7E-386B5CA4AFD0</string>
+				<string>266B6FD9-E898-4B47-AD68-3850A9369D3B</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -487,11 +487,11 @@
 				<key>argument</key>
 				<integer>0</integer>
 				<key>hotkey</key>
-				<integer>3</integer>
+				<integer>0</integer>
 				<key>hotmod</key>
 				<integer>1966080</integer>
 				<key>hotstring</key>
-				<string>F</string>
+				<string>A</string>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -502,26 +502,9 @@
 			<key>type</key>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>288A0B32-E9DE-4A81-9359-F7F22085A891</string>
+			<string>157871BA-9B06-463F-BA06-6317CF44CE4F</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/System/Library/CoreServices/Finder.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>DE7A65D3-6347-42F4-B64C-81C56795F91A</string>
-			<key>version</key>
-			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -878,33 +861,16 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/HipChat.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>361D3CFE-DCE1-46FB-BB7E-386B5CA4AFD0</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
 				<key>hotkey</key>
-				<integer>0</integer>
+				<integer>3</integer>
 				<key>hotmod</key>
 				<integer>1966080</integer>
 				<key>hotstring</key>
-				<string>A</string>
+				<string>F</string>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -915,9 +881,26 @@
 			<key>type</key>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>157871BA-9B06-463F-BA06-6317CF44CE4F</string>
+			<string>288A0B32-E9DE-4A81-9359-F7F22085A891</string>
 			<key>version</key>
 			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/System/Library/CoreServices/Finder.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>DE7A65D3-6347-42F4-B64C-81C56795F91A</string>
+			<key>version</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1020,7 +1003,7 @@
 		<key>157871BA-9B06-463F-BA06-6317CF44CE4F</key>
 		<dict>
 			<key>ypos</key>
-			<real>1810</real>
+			<real>730</real>
 		</dict>
 		<key>220CE0F7-7F59-468E-9D1C-A4070FFCFBB1</key>
 		<dict>
@@ -1043,11 +1026,6 @@
 			<real>1090</real>
 		</dict>
 		<key>288A0B32-E9DE-4A81-9359-F7F22085A891</key>
-		<dict>
-			<key>ypos</key>
-			<real>730</real>
-		</dict>
-		<key>361D3CFE-DCE1-46FB-BB7E-386B5CA4AFD0</key>
 		<dict>
 			<key>ypos</key>
 			<real>1810</real>
@@ -1175,7 +1153,7 @@
 		<key>DE7A65D3-6347-42F4-B64C-81C56795F91A</key>
 		<dict>
 			<key>ypos</key>
-			<real>730</real>
+			<real>1810</real>
 		</dict>
 		<key>E24CDF92-61A0-4DB7-94E3-AB041940266D</key>
 		<dict>
