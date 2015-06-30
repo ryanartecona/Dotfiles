@@ -1,9 +1,17 @@
 if which hub  >/dev/null
   alias g=hub
 end
+if which http  >/dev/null
+  alias httpv="http --print=HBhb"
+end
 
 if status --is-interactive
-  set -xg EDITOR                          (which vim)
+  set -xg ALTERNATE_EDITOR                          (which vim)
+  if test "$INSIDE_EMACS"
+    set -xg EDITOR "emacsclient"
+  else
+    set -xg EDITOR "emacsclient --create-frame"
+  end
 
   set -g fish_prompt_git_prefix           ' ± '
 
@@ -44,6 +52,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /Applications/ghc-7.8.3.app/Contents/bin
   echo $HOME/.opam/4.02.1/bin
   echo $HOME/.opam/system/bin
+  echo /usr/local/texlive/2015/bin/x86_64-darwin
   echo /usr/local/bin
   echo /usr/local/sbin
   echo /usr/bin
@@ -70,4 +79,4 @@ rvm >/dev/null ^/dev/null
 set -x DOCKER_HOST "tcp://localhost:2375"
 
 # OPAM configuration
-. /Users/ryanartecona/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
+source /Users/ryanartecona/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
