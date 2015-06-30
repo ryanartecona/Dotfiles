@@ -71,6 +71,8 @@
             (quote rainbow-mode))
            (rainbow-mode 1)))))
  '(scroll-step 1)
+ '(sh-indent-after-else 0)
+ '(sh-indentation 2)
  '(shm-display-quarantine nil)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
  '(smooth-scroll-strict-margins nil)

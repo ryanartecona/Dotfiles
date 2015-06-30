@@ -387,6 +387,7 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'raichoo/purescript-vim'
+Plugin 'lervag/vimtex'
 
 " Haskell
 "Plugin 'eagletmt/ghcmod-vim'
