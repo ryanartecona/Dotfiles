@@ -39,6 +39,9 @@ if status --is-interactive
   set -g fish_color_status                red
   set -g fish_color_user                  black --bold
   set -g fish_color_valid_path            cyan
+  set -g fish_color_vi_normal             green --bold
+  set -g fish_color_vi_insert             yellow
+  set -g fish_color_vi_visual             magenta --bold
 end
 
 
@@ -71,6 +74,12 @@ end
 
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
+
+# Turn on vi key bindings
+fish_vi_mode
+# The vi mode prompt gets added automatically,
+# so I need to remove it since my prompt includes its own
+functions -e fish_mode_prompt
 
 # RVM needs to be run once to add stuff to $PATH
 rvm >/dev/null ^/dev/null

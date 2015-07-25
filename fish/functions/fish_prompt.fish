@@ -37,6 +37,8 @@ function fish_prompt --description 'Write out the prompt'
 
   echo
 
+  fish_vi_mode_prompt
+
   set_color $fish_color_prompt_symbol
 
   echo -n '> '
