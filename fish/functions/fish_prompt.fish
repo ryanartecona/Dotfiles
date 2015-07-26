@@ -31,6 +31,11 @@ function fish_prompt --description 'Write out the prompt'
   set_color normal
   set_color $fish_color_prompt_delimiter
 
+  # tell z we're moving our pwd
+  if test (type -t z) = "function"
+    z --add "$PWD"
+  end
+
   set_color normal
   fish_git_prompt
   set_color normal

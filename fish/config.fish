@@ -81,6 +81,11 @@ fish_vi_mode
 # so I need to remove it since my prompt includes its own
 functions -e fish_mode_prompt
 
+# z-fish needs to be sourced
+if test -f ~/.z-fish/z.fish  >/dev/null
+  source ~/.z-fish/z.fish
+end
+
 # RVM needs to be run once to add stuff to $PATH
 rvm >/dev/null ^/dev/null
 
