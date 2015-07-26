@@ -53,6 +53,7 @@
                         company-idle-delay 0.0)
       syntax-checking
       shell
+      shell-scripts
       ;; (perspectives :variables
       ;;               perspective-enable-persp-projectile t)
 
