@@ -75,11 +75,10 @@ end
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
 
-# Turn on vi key bindings
-fish_vi_mode
-# The vi mode prompt gets added automatically,
-# so I need to remove it since my prompt includes its own
-functions -e fish_mode_prompt
+# Turn on vi key bindings, unless we're in an Emacs shell
+if not test $INSIDE_EMACS
+  fish_vi_mode
+end
 
 # z-fish needs to be sourced
 if test -f ~/.z-fish/z.fish  >/dev/null
