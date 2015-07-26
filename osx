@@ -21,3 +21,7 @@ defaults write com.apple.finder QLEnableTextSelection -bool true
 
 # Change Screenshots location
 defaults write com.apple.screencapture location ~/Screenshots
+
+
+# Finally, reload the changed defaults
+killall SystemUIServer
