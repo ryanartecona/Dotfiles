@@ -105,6 +105,13 @@ augroup Rails
   autocmd BufRead,BufNewFile *.hamlc setlocal filetype=haml
 augroup END
 
+augroup JSON
+  autocmd!
+  autocmd BufRead,BufNewFile *.json setlocal filetype=json
+  autocmd FileType json set autoindent
+  autocmd FileType json set foldmethod=syntax
+augroup END
+
 
 "=============
 "=== Keys! ===
@@ -386,6 +393,7 @@ Plugin 'altercation/vim-colors-solarized'
 " Syntaxes
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'elzr/vim-json'
 Plugin 'raichoo/purescript-vim'
 Plugin 'lervag/vimtex'
 
