@@ -71,6 +71,7 @@
       markdown
       ocaml
       emacs-lisp
+      lua
 
       ; Themes
       ;; themes-megapack
