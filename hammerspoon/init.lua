@@ -52,7 +52,7 @@ winMode:bind({'cmd','shift'}, 'space', function() winMode:exit() end)
 
 -- Show a center-screen message while in winMode
 function winMode:entered()
-  hs.alert.show('Hammerspoon mode on', 9999)
+  hs.alert.show('Hammerspoon mode on', 999999)
 end
 function winMode.exited()
   hs.alert.closeAll()
@@ -64,42 +64,41 @@ winMode:bind({'cmd'}, 'r', function()
   reloadConfig()
 end)
 
-winMode:bind({}, 'm', function()
-  focusedWindowToGrid {0, 0, 1, 1}
-end)
+winMode:bind({'cmd'}, 'c', hs.toggleConsole)
+
+hs.grid.setGrid {w=16, h=12}
 
 local nextWinMoveLeft = hs.fnutils.cycle({
  {0, 0, .6, 1},
  {0, 0, .5, 1},
  {0, 0, .4, 1}
 })
-winMode:bind({}, 'h', function()
-  focusedWindowToGrid(nextWinMoveLeft())
-end)
-
 local nextWinMoveRight = hs.fnutils.cycle({
  {.4, 0, .6, 1},
  {.5, 0, .5, 1},
  {.6, 0, .4, 1}
 })
-winMode:bind({}, 'l', function()
-  focusedWindowToGrid(nextWinMoveRight())
-end)
-
 local nextWinMoveUp = hs.fnutils.cycle({
  {0, 0, 1, .7},
  {0, 0, 1, .5},
  {0, 0, 1, .3}
 })
-winMode:bind({}, 'k', function()
-  focusedWindowToGrid(nextWinMoveUp())
-end)
-
 local nextWinMoveDown = hs.fnutils.cycle({
  {.3, 0, 1, .7},
  {.5, 0, 1, .5},
  {.7, 0, 1, .3}
 })
-winMode:bind({}, 'j', function()
-  focusedWindowToGrid(nextWinMoveDown())
-end)
+
+winMode:bind({},              'm',     function() focusedWindowToGrid {0, 0, 1, 1} end)
+winMode:bind({'cmd','shift'}, 'left',  function() focusedWindowToGrid(nextWinMoveLeft()) end)
+winMode:bind({'cmd','shift'}, 'right', function() focusedWindowToGrid(nextWinMoveRight()) end)
+winMode:bind({'cmd','shift'}, 'up',    function() focusedWindowToGrid(nextWinMoveUp()) end)
+winMode:bind({'cmd','shift'}, 'down',  function() focusedWindowToGrid(nextWinMoveDown()) end)
+winMode:bind({'cmd'},         'left',  hs.grid.pushWindowLeft)
+winMode:bind({'cmd'},         'right', hs.grid.pushWindowRight)
+winMode:bind({'cmd'},         'up',    hs.grid.pushWindowUp)
+winMode:bind({'cmd'},         'down',  hs.grid.pushWindowDown)
+winMode:bind({'shift'},       'left',  hs.grid.resizeWindowThinner)
+winMode:bind({'shift'},       'right', hs.grid.resizeWindowWider)
+winMode:bind({'shift'},       'up',    hs.grid.resizeWindowShorter)
+winMode:bind({'shift'},       'down',  hs.grid.resizeWindowTaller)
