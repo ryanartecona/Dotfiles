@@ -154,3 +154,8 @@ winMode:bind({'cmd','shift'}, 'left',  hs.grid.partialWindowHorizontal(2, 1))
 winMode:bind({'cmd','shift'}, 'right', hs.grid.partialWindowHorizontal(2, 2))
 winMode:bind({'cmd','shift'}, 'up',    hs.grid.partialWindowVertical(2, 1))
 winMode:bind({'cmd','shift'}, 'down',  hs.grid.partialWindowVertical(2, 2))
+
+winMode:bind({'ctrl'},        'left',  hs.grid.pushWindowPrevScreen)
+winMode:bind({'ctrl'},        'right', hs.grid.pushWindowNextScreen)
+winMode:bind({'ctrl'},        'up',    hs.grid.pushWindowPrevScreen)
+winMode:bind({'ctrl'},        'down',  hs.grid.pushWindowNextScreen)
