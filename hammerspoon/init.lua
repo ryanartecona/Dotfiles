@@ -18,33 +18,9 @@ configFileWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", re
 configFileWatcher:start()
 
 
--- This method can be used to place a window to a position and size on the screen by using
--- four floats instead of pixel sizes. Returns the window instance. Examples:
---     windowToGrid( someWindow, {0, 0, 0.25, 0.5} );     -- top-left, width: 25%, height: 50%
---     windowToGrid( someWindow, {0.3, 0.2, 0.5, 0.35} ); -- top: 30%, left: 20%, width: 50%, height: 35%
--- Taken from https://github.com/gwww/dotfiles/blob/master/_hammerspoon/init.lua
-function windowToGrid( window, rect )
-  -- TODO: change rect to use named indices rather than integer
-  if not window then
-    return window
-  end
-
-  local screen = hs.screen.mainScreen():fullFrame()
-  window:setFrame( {
-    x = math.floor( rect[1] * screen.w + .5 ) + screen.x,
-    y = math.floor( rect[2] * screen.h + .5 ) + screen.y,
-    w = math.floor( rect[3] * screen.w + .5 ),
-    h = math.floor( rect[4] * screen.h + .5 )
-  } )
-  return window
-end
-
-function focusedWindowToGrid(rect)
-  windowToGrid( hs.window.focusedWindow(), rect );
-end
-
-
--- Window management modal bindings
+----------------------------------------
+--- Window management modal bindings ---
+----------------------------------------
 
 local winMode = hs.hotkey.modal.new({'cmd','shift'}, 'space')
 winMode:bind({}, 'escape',             function() winMode:exit() end)
@@ -58,7 +34,8 @@ function winMode.exited()
   hs.alert.closeAll()
 end
 
--- The winMode bindings
+-- Misc. winMode bindings
+
 winMode:bind({'cmd'}, 'r', function()
   winMode:exit()
   reloadConfig()
@@ -66,39 +43,66 @@ end)
 
 winMode:bind({'cmd'}, 'c', hs.toggleConsole)
 
+
+-----------------------------
+--- Grid window movements ---
+-----------------------------
+
+-- Grid config
 hs.grid.setGrid {w=16, h=12}
+hs.grid.setMargins {w=0, h=0}
 
-local nextWinMoveLeft = hs.fnutils.cycle({
- {0, 0, .6, 1},
- {0, 0, .5, 1},
- {0, 0, .4, 1}
-})
-local nextWinMoveRight = hs.fnutils.cycle({
- {.4, 0, .6, 1},
- {.5, 0, .5, 1},
- {.6, 0, .4, 1}
-})
-local nextWinMoveUp = hs.fnutils.cycle({
- {0, 0, 1, .7},
- {0, 0, 1, .5},
- {0, 0, 1, .3}
-})
-local nextWinMoveDown = hs.fnutils.cycle({
- {.3, 0, 1, .7},
- {.5, 0, 1, .5},
- {.7, 0, 1, .3}
-})
 
-winMode:bind({},              'm',     function() focusedWindowToGrid {0, 0, 1, 1} end)
-winMode:bind({'cmd','shift'}, 'left',  function() focusedWindowToGrid(nextWinMoveLeft()) end)
-winMode:bind({'cmd','shift'}, 'right', function() focusedWindowToGrid(nextWinMoveRight()) end)
-winMode:bind({'cmd','shift'}, 'up',    function() focusedWindowToGrid(nextWinMoveUp()) end)
-winMode:bind({'cmd','shift'}, 'down',  function() focusedWindowToGrid(nextWinMoveDown()) end)
+--- Shove a window all the way to an edge ---
+
+function hs.grid.shoveWindowLeft(window)
+  window = hs.window.focusedWindow()
+  function shoveLeft(gridCell)
+    gridCell.x = 0
+  end
+  hs.grid.adjustWindow(shoveLeft, window)
+end
+
+function hs.grid.shoveWindowUp(window)
+  window = hs.window.focusedWindow()
+  function shoveUp(gridCell)
+    gridCell.y = 0
+  end
+  hs.grid.adjustWindow(shoveUp, window)
+end
+
+function hs.grid.shoveWindowRight(window)
+  window = hs.window.focusedWindow()
+  local w, h = hs.grid.getGrid(window:screen())
+  function shoveRight(gridCell)
+    gridCell.x = w - gridCell.w
+  end
+  hs.grid.adjustWindow(shoveRight, window)
+end
+
+function hs.grid.shoveWindowDown(window)
+  window = window or hs.window.focusedWindow()
+  local w, h = hs.grid.getGrid(window:screen())
+  function shoveDown(gridCell)
+    gridCell.y = h - gridCell.h
+  end
+  hs.grid.adjustWindow(shoveDown, window)
+end
+
+
+winMode:bind({'cmd'},         'm',     hs.grid.maximizeWindow)
+
 winMode:bind({'cmd'},         'left',  hs.grid.pushWindowLeft)
 winMode:bind({'cmd'},         'right', hs.grid.pushWindowRight)
 winMode:bind({'cmd'},         'up',    hs.grid.pushWindowUp)
 winMode:bind({'cmd'},         'down',  hs.grid.pushWindowDown)
+
 winMode:bind({'shift'},       'left',  hs.grid.resizeWindowThinner)
 winMode:bind({'shift'},       'right', hs.grid.resizeWindowWider)
 winMode:bind({'shift'},       'up',    hs.grid.resizeWindowShorter)
 winMode:bind({'shift'},       'down',  hs.grid.resizeWindowTaller)
+
+winMode:bind({'cmd','shift'}, 'left',  hs.grid.shoveWindowLeft)
+winMode:bind({'cmd','shift'}, 'right', hs.grid.shoveWindowRight)
+winMode:bind({'cmd','shift'}, 'up',    hs.grid.shoveWindowUp)
+winMode:bind({'cmd','shift'}, 'down',  hs.grid.shoveWindowDown)
