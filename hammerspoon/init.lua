@@ -18,70 +18,11 @@ configFileWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", re
 configFileWatcher:start()
 
 
--- Keyboard modifiers, Capslock bound to cmd+alt+ctrl+shift via Seil and Karabiner
-
--- local modNone  = {}
--- local modAlt   = {"⌥"}
--- local modCmd   = {"⌘"}
--- local modShift = {"⇧"}
-local modHyper = {"cmd", "alt", "ctrl", "shift"}
-
-
--- Modal activation / deactivation
--- Taken from https://github.com/gwww/dotfiles/blob/master/_hammerspoon/init.lua
-
-local modalKeys = {}
-local modalActive = false
-
-function modalBind( mods, key, callback )
-  table.insert( modalKeys, hs.hotkey.new( mods, key, callback ) )
-end
-
-function disableModal()
-  modalActive = false
-  for keyCount = 1, #modalKeys do
-    modalKeys[ keyCount ]:disable()
-  end
-  hs.alert.closeAll()
-end
-
-function enableModal()
-  modalActive = true
-  for keyCount = 1, #modalKeys do
-    modalKeys[ keyCount ]:enable()
-  end
-  hs.alert.show( "Window manager active", 999999 )
-end
-
-hs.hotkey.bind( modHyper, 'a', function()
-  if( modalActive ) then
-    disableModal()
-  else
-    enableModal()
-  end
-end )
-
--- modalBind( modNone, 'escape', function() disableModal() end )
--- modalBind( modNone, 'return', function() disableModal() end )
-
-
--- Cycle args for the function when called repeatedly: cycleCalls( fn, { {args1...}, ... } )
-
-function cycleCalls( fn, args )
-  local argIndex = 0
-  return function()
-    argIndex = argIndex + 1
-    if (argIndex > #args) then
-      argIndex = 1;
-    end
-    fn( args[ argIndex ] );
-  end
-end
-
 -- This method can be used to place a window to a position and size on the screen by using
 -- four floats instead of pixel sizes. Returns the window instance. Examples:
---     windowToGrid( someWindow, 0, 0, 0.25, 0.5 );     -- top-left, width: 25%, height: 50%
---     windowToGrid( someWindow, 0.3, 0.2, 0.5, 0.35 ); -- top: 30%, left: 20%, width: 50%, height: 35%
+--     windowToGrid( someWindow, {0, 0, 0.25, 0.5} );     -- top-left, width: 25%, height: 50%
+--     windowToGrid( someWindow, {0.3, 0.2, 0.5, 0.35} ); -- top: 30%, left: 20%, width: 50%, height: 35%
+-- Taken from https://github.com/gwww/dotfiles/blob/master/_hammerspoon/init.lua
 function windowToGrid( window, rect )
   -- TODO: change rect to use named indices rather than integer
   if not window then
