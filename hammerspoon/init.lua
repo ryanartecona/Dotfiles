@@ -29,6 +29,7 @@ winMode:bind({'cmd','shift'}, 'space', function() winMode:exit() end)
 -- Show a center-screen message while in winMode
 function winMode:entered()
   hs.alert.show('Hammerspoon mode on', 999999)
+  hs.alert.show('(ESC or ⇧⌘SPC to quit)', 999999)
 end
 function winMode.exited()
   hs.alert.closeAll()
@@ -90,19 +91,66 @@ function hs.grid.shoveWindowDown(window)
 end
 
 
+--- Partition window into _n_ slices ---
+
+-- `partialWindowHorizontal` slices a window's screen into `nSlices`
+-- full-height slices, and sets the window to fill the `sliceIdx`
+-- of those slices, 1-indexed.
+-- E.g. `hs.grid.partialWindowHorizontal(2,1)(someWindow)`
+-- would make `someWindow` fill the whole left half of its screen.
+function hs.grid.partialWindowHorizontal(nSlices, sliceIdx)
+  return function(window)
+    window = window or hs.window.focusedWindow()
+    local w, h = hs.grid.getGrid(window:screen())
+    function slice(gridCell)
+      gridCell.x = math.floor((w / nSlices) * (sliceIdx - 1))
+      gridCell.y = 0
+      gridCell.w = math.floor((w / nSlices) * (sliceIdx))
+      gridCell.h = h
+    end
+    hs.grid.adjustWindow(slice, window)
+  end
+end
+
+-- `partialWindowVertical` works exactly analogously to
+-- `partialWindowHorizontal`.
+function hs.grid.partialWindowVertical(nSlices, sliceIdx)
+  return function(window)
+    window = window or hs.window.focusedWindow()
+    local w, h = hs.grid.getGrid(window:screen())
+    function slice(gridCell)
+      gridCell.x = 0
+      gridCell.y = math.floor((h / nSlices) * (sliceIdx - 1))
+      gridCell.w = w
+      gridCell.h = math.floor((h / nSlices) * (sliceIdx))
+    end
+    hs.grid.adjustWindow(slice, window)
+  end
+end
+
+
+----------------------------------
+--- Movement/resizing bindings ---
+----------------------------------
+
 winMode:bind({'cmd'},         'm',     hs.grid.maximizeWindow)
 
-winMode:bind({'cmd'},         'left',  hs.grid.pushWindowLeft)
-winMode:bind({'cmd'},         'right', hs.grid.pushWindowRight)
-winMode:bind({'cmd'},         'up',    hs.grid.pushWindowUp)
-winMode:bind({'cmd'},         'down',  hs.grid.pushWindowDown)
+winMode:bind({},              'left',  hs.grid.pushWindowLeft)
+winMode:bind({},              'right', hs.grid.pushWindowRight)
+winMode:bind({},              'up',    hs.grid.pushWindowUp)
+winMode:bind({},              'down',  hs.grid.pushWindowDown)
 
 winMode:bind({'shift'},       'left',  hs.grid.resizeWindowThinner)
 winMode:bind({'shift'},       'right', hs.grid.resizeWindowWider)
 winMode:bind({'shift'},       'up',    hs.grid.resizeWindowShorter)
 winMode:bind({'shift'},       'down',  hs.grid.resizeWindowTaller)
 
-winMode:bind({'cmd','shift'}, 'left',  hs.grid.shoveWindowLeft)
-winMode:bind({'cmd','shift'}, 'right', hs.grid.shoveWindowRight)
-winMode:bind({'cmd','shift'}, 'up',    hs.grid.shoveWindowUp)
-winMode:bind({'cmd','shift'}, 'down',  hs.grid.shoveWindowDown)
+winMode:bind({'cmd'},         'left',  hs.grid.shoveWindowLeft)
+winMode:bind({'cmd'},         'right', hs.grid.shoveWindowRight)
+winMode:bind({'cmd'},         'up',    hs.grid.shoveWindowUp)
+winMode:bind({'cmd'},         'down',  hs.grid.shoveWindowDown)
+
+winMode:bind({'cmd','shift'}, 'left',  hs.grid.partialWindowHorizontal(2, 1))
+winMode:bind({'cmd','shift'}, 'right', hs.grid.partialWindowHorizontal(2, 2))
+winMode:bind({'cmd','shift'}, 'up',    hs.grid.partialWindowVertical(2, 1))
+winMode:bind({'cmd','shift'}, 'down',  hs.grid.partialWindowVertical(2, 2))
