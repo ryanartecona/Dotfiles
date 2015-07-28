@@ -80,7 +80,7 @@
       ra
       ra-org
       workgroups2
-      ra-purescript
+      ;; ra-purescript
       )
    dotspacemacs-additional-packages
     '(
