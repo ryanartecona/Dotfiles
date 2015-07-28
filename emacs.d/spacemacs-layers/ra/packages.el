@@ -7,6 +7,7 @@
     magit
     macrostep
     pandoc-mode
+    writeroom-mode
     )
   )
 
@@ -77,3 +78,6 @@
     (progn
       (spacemacs|diminish pandoc-mode " ⇔" " pd"))
     ))
+
+(defun ra/init-writeroom-mode ()
+  (use-package writeroom-mode))
