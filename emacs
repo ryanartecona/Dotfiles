@@ -125,6 +125,7 @@
    dotspacemacs-loading-progress-bar t
    dotspacemacs-mode-line-unicode-symbols t
    dotspacemacs-smooth-scrolling t
+   dotspacemacs-persistent-server t
    )
 
   (setq
@@ -158,14 +159,15 @@
   ; preferred to helm
   (ido-mode -1)
 
-  ; turn on guide-key
-  (guide-key-mode 1)
+  ; turn on which-key
+  (which-key-mode 1)
 
   (when (equal system-type 'darwin)
     ;; Make some OSX idioms work
     (global-set-key (kbd "s-n") 'make-frame-command)
     (global-set-key (kbd "s-a") 'mark-whole-buffer)
     (global-set-key (kbd "s-w") 'delete-window)
+    (global-set-key (kbd "s-S-w") 'delete-frame)
     (global-set-key (kbd "s-<right>") 'evil-end-of-line)
     (global-set-key (kbd "s-<left>") 'evil-first-non-blank)
     (global-set-key (kbd "s-S-<up>") 'evil-window-up)
@@ -174,7 +176,7 @@
     (global-set-key (kbd "s-S-<right>") 'evil-window-right)
     )
 
-  (unless server-running-p
+  (unless (server-running-p)
     (server-start)
     )
   )
