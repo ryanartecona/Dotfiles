@@ -42,9 +42,10 @@
    dotspacemacs-configuration-layers
     '(
       ; Contrib layers (included in spacemacs)
+      version-control
       (git :variables
-            git-enable-github-support t
             git-gutter-use-fringe t)
+      github
       osx
       dash
       org

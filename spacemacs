@@ -19,12 +19,13 @@
  '(custom-safe-themes
    (quote
     ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
+ '(diff-hl-side (quote left))
  '(enh-ruby-deep-indent-paren nil)
  '(evil-shift-width 2)
  '(expand-region-contract-fast-key "V")
  '(expand-region-reset-fast-key "r")
  '(fci-rule-color "#eee8d5" t)
- '(git-gutter-fr:side (quote left-fringe))
+ '(git-gutter-fr:side (quote left-fringe) t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
