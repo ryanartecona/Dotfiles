@@ -56,6 +56,8 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/.opam/4.02.1/bin
   echo $HOME/.opam/system/bin
   echo /usr/local/texlive/2015/bin/x86_64-darwin
+  echo $HOME/.nix-profile/bin
+  echo $HOME/.nix-profile/sbin
   echo /usr/local/bin
   echo /usr/local/sbin
   echo /usr/bin
