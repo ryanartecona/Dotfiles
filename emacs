@@ -149,7 +149,7 @@
 
   ; enable left fringe, disable right fringe
   (fringe-mode '(nil . 0))
-  (setq git-gutter-fr:side 'left-fringe)
+  (setq diff-hl-side 'left)
 
   ; enable and load workgroups session
   (setq wg-session-file "~/.emacs.d/.emacs_workgroups")

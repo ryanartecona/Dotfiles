@@ -19,6 +19,7 @@
  '(custom-safe-themes
    (quote
     ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
+ '(diff-hl-draw-borders nil)
  '(diff-hl-side (quote left))
  '(enh-ruby-deep-indent-paren nil)
  '(evil-shift-width 2)
