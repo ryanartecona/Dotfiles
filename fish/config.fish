@@ -78,9 +78,9 @@ end
 set fish_user_paths (valid_allowed_paths)
 
 # Turn on vi key bindings, unless we're in an Emacs shell
-if not test $INSIDE_EMACS
-  fish_vi_mode
-end
+# if not test $INSIDE_EMACS
+#   fish_vi_mode
+# end
 
 # z-fish needs to be sourced
 if test -f ~/.z-fish/z.fish  >/dev/null
