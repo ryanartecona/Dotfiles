@@ -1,0 +1,9 @@
+# Config for lambda-term using programs, i.e. utop
+
+[read-line]
+C-left: complete-bar-prev
+C-right: complete-bar-next
+C-up: complete-bar
+M-b: prev-word
+M-f: next-word
+M-backspace: kill-prev-word
