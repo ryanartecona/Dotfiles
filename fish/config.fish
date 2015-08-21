@@ -58,6 +58,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /usr/local/texlive/2015/bin/x86_64-darwin
   echo $HOME/.nix-profile/bin
   echo $HOME/.nix-profile/sbin
+  echo $HOME/.go/bin
   echo /usr/local/bin
   echo /usr/local/sbin
   echo /usr/bin
@@ -87,8 +88,14 @@ if test -f ~/.z-fish/z.fish  >/dev/null
   source ~/.z-fish/z.fish
 end
 
-# RVM needs to be run once to add stuff to $PATH
+# RVM for Ruby needs to be run once to add stuff to $PATH
 rvm >/dev/null ^/dev/null
+
+# Golang
+if not test -d ~/.go
+  mkdir -p ~/.go
+end
+set -gx GOPATH "$HOME/.go"
 
 # Tell Docker where it should connect
 set -x DOCKER_HOST "tcp://localhost:2375"
