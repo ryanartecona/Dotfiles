@@ -53,8 +53,10 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/Library/Haskell/bin
   echo /export/apps/xtools/bin
   echo /Applications/ghc-7.8.3.app/Contents/bin
-  echo $HOME/.opam/4.02.1/bin
-  echo $HOME/.opam/system/bin
+  if which -s opam
+    echo (opam config var bin)
+    echo (opam config var sbin)
+  end
   echo /usr/local/texlive/2015/bin/x86_64-darwin
   echo $HOME/.nix-profile/bin
   echo $HOME/.nix-profile/sbin
@@ -101,4 +103,7 @@ set -gx GOPATH "$HOME/.go"
 set -x DOCKER_HOST "tcp://localhost:2375"
 
 # OPAM configuration
-source /Users/ryanartecona/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
+if which -s opam
+  source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
+  source (opam config env)
+end
