@@ -4,6 +4,9 @@
 ;; Emacs config
 ;; ============
 
+; raise GC threshold to 200MB
+(setq gc-cons-threshold 200000000)
+
 ; save emacs sessions by default
 ;; (desktop-save-mode 1)
 
