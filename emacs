@@ -74,6 +74,8 @@
       ocaml
       emacs-lisp
       lua
+      nixos
+      elixir
 
       ; Themes
       ;; themes-megapack
