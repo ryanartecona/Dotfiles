@@ -1,13 +1,20 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: techreview
+# name: Tech review format (Good/Meh/Bad/Overall)
 # key: techreview
 # binding: direct-keybinding
 # --
-
 ## Good ##
 
-## Meh ##
+- $1
+
+## Neutral ##
+
+- $2
 
 ## Bad ##
 
+- $3
+
 # Overall #
+
+$0
