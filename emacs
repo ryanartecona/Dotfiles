@@ -46,8 +46,7 @@
     '(
       ; Contrib layers (included in spacemacs)
       version-control
-      (git :variables
-            git-gutter-use-fringe t)
+      git
       github
       osx
       dash
