@@ -56,7 +56,9 @@
                        company-idle-delay 0.0
                        auto-completion-private-snippets-directory "~/.emacs.d/snippets")
       syntax-checking
-      shell
+      (shell :variables
+             shell-default-shell 'multi-term
+             shell-default-term-shell "/usr/local/bin/fish")
       shell-scripts
       ;; (perspectives :variables
       ;;               perspective-enable-persp-projectile t)
@@ -168,6 +170,9 @@
   ; turn on which-key
   (which-key-mode 1)
 
+  ; turn off clean-adindent-mode
+  (clean-aindent-mode -1)
+
   (when (equal system-type 'darwin)
     ;; Make some OSX idioms work
     (global-set-key (kbd "s-n") 'make-frame-command)
@@ -180,6 +185,7 @@
     (global-set-key (kbd "s-S-<down>") 'evil-window-down)
     (global-set-key (kbd "s-S-<left>") 'evil-window-left)
     (global-set-key (kbd "s-S-<right>") 'evil-window-right)
+    (global-set-key (kbd "M-DEL") 'evil-delete-backward-word)
     )
 
   ;; make Y yank a full line, not point-to-eol

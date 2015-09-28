@@ -4,6 +4,7 @@
     flycheck
     magit
     pandoc-mode
+    multi-term
     writeroom-mode
     )
   )
@@ -56,6 +57,12 @@
     (progn
       (spacemacs|diminish pandoc-mode " ⇔" " pd"))
     ))
+
+(defun ra/post-init-multi-term ()
+  (evil-define-key 'insert term-raw-map (kbd "M-DEL") 'term-send-backward-kill-word)
+  (evil-define-key 'insert term-raw-map (kbd "M-<left>") 'term-send-backward-word)
+  (evil-define-key 'insert term-raw-map (kbd "M-<right>") 'term-send-forward-word)
+  )
 
 (defun ra/init-writeroom-mode ()
   (use-package writeroom-mode))
