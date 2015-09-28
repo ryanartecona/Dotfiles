@@ -182,6 +182,11 @@
     (global-set-key (kbd "s-S-<right>") 'evil-window-right)
     )
 
+  ;; make Y yank a full line, not point-to-eol
+  ;; (this is a patch over a spacemacs default, which will hopefully be changed)
+  (define-key evil-normal-state-map (kbd "Y") 'evil-yank-line)
+  (define-key evil-motion-state-map (kbd "Y") 'evil-yank-line)
+
   (unless (server-running-p)
     (server-start)
     )
