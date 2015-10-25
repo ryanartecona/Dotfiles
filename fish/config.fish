@@ -80,6 +80,9 @@ end
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
 
+# Set Nix path to default nixpkgs location
+set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
+
 # Turn on vi key bindings, unless we're in an Emacs shell
 # if not test $INSIDE_EMACS
 #   fish_vi_mode
@@ -105,5 +108,6 @@ set -x DOCKER_HOST "tcp://localhost:2375"
 # OPAM configuration
 if which -s opam
   source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
-  source (opam config env)
+  # Let opam set the env vars it wants, but don't let it break my MANPATH
+  eval (opam config env | grep -vi 'MANPATH')
 end
