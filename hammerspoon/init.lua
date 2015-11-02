@@ -134,6 +134,7 @@ end
 ----------------------------------
 
 winMode:bind({'cmd'},         'm',     hs.grid.maximizeWindow)
+winMode:bind({'cmd','shift'}, 'm',     hs.grid.maximizeWindow)
 
 winMode:bind({},              'left',  hs.grid.pushWindowLeft)
 winMode:bind({},              'right', hs.grid.pushWindowRight)
