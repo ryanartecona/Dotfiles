@@ -74,7 +74,8 @@ end
 
 function hs.grid.shoveWindowRight(window)
   window = hs.window.focusedWindow()
-  local w, h = hs.grid.getGrid(window:screen())
+  local g = hs.grid.getGrid(window:screen())
+  local w, h = g.w, g.h
   function shoveRight(gridCell)
     gridCell.x = w - gridCell.w
   end
@@ -83,7 +84,8 @@ end
 
 function hs.grid.shoveWindowDown(window)
   window = window or hs.window.focusedWindow()
-  local w, h = hs.grid.getGrid(window:screen())
+  local g = hs.grid.getGrid(window:screen())
+  local w, h = g.w, g.h
   function shoveDown(gridCell)
     gridCell.y = h - gridCell.h
   end
@@ -101,7 +103,8 @@ end
 function hs.grid.partialWindowHorizontal(nSlices, sliceIdx)
   return function(window)
     window = window or hs.window.focusedWindow()
-    local w, h = hs.grid.getGrid(window:screen())
+    local g = hs.grid.getGrid(window:screen())
+    local w, h = g.w, g.h
     function slice(gridCell)
       gridCell.x = math.floor((w / nSlices) * (sliceIdx - 1))
       gridCell.y = 0
@@ -117,7 +120,8 @@ end
 function hs.grid.partialWindowVertical(nSlices, sliceIdx)
   return function(window)
     window = window or hs.window.focusedWindow()
-    local w, h = hs.grid.getGrid(window:screen())
+    local g = hs.grid.getGrid(window:screen())
+    local w, h = g.w, g.h
     function slice(gridCell)
       gridCell.x = 0
       gridCell.y = math.floor((h / nSlices) * (sliceIdx - 1))
