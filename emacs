@@ -149,7 +149,7 @@
    org-log-done 'time)
   )
 
-(defun dotspacemacs/config ()
+(defun dotspacemacs/user-config ()
   "Called at the end of spacemacs configuration sequence"
 
   (setq powerline-default-separator 'slant)
@@ -187,6 +187,20 @@
     (global-set-key (kbd "s-S-<right>") 'evil-window-right)
     (global-set-key (kbd "M-DEL") 'evil-delete-backward-word)
     )
+
+  ;; This stuff is to ansi-colorize the compilation buffer after a rails test so the terminal colors come through.
+  (define-derived-mode ansi-compilation-mode compilation-mode "ansi compilation"
+    "Compilation mode that understands ansi colors."
+    (require 'ansi-color)
+    (let ((inhibit-read-only 1))
+      (ansi-color-apply-on-region (point-min) (point-max))))
+
+  (defun colorize-compilation (one two)
+    "ansi colorize the compilation buffer."
+    (ansi-compilation-mode)
+    )
+
+  (setq compilation-finish-function 'colorize-compilation)
 
   ;; make Y yank a full line, not point-to-eol
   ;; (this is a patch over a spacemacs default, which will hopefully be changed)
