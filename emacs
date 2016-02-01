@@ -62,6 +62,10 @@
       shell-scripts
       ;; (perspectives :variables
       ;;               perspective-enable-persp-projectile t)
+      (spacemacs-layouts :variables
+                         spacemacs-layouts-directory "~/.emacs.d/persps-layouts/"
+                         layouts-enable-autosave t
+                         layouts-autosave-delay 1800)
 
       ; Langs
       (ruby :variables
@@ -88,7 +92,7 @@
       ; My own layers
       ra
       ra-org
-      workgroups2
+      ;; workgroups2
       ;; ra-purescript
       )
    dotspacemacs-additional-packages
@@ -119,6 +123,8 @@
       :width normal
       :powerline-scale 1.4
       )
+   dotspacemacs-directory "~/.emacs.d/spacemacs"
+   dotspacemacs-filepath "~/.emacs"
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner 'official
    dotspacemacs-always-show-changelog t
@@ -135,6 +141,8 @@
    dotspacemacs-mode-line-unicode-symbols t
    dotspacemacs-smooth-scrolling t
    dotspacemacs-persistent-server t
+   ;; dotspacemacs-auto-resume-layouts t
+   dotspacemacs-maximized-at-startup t
    )
 
   (setq
@@ -160,8 +168,8 @@
   (setq diff-hl-side 'left)
 
   ; enable and load workgroups session
-  (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
-  (workgroups-mode 1)
+  ;; (setq wg-session-file "~/.emacs.d/.emacs_workgroups")
+  ;; (workgroups-mode 1)
   (golden-ratio-mode 1)
 
   ; turn off ido-mode, so plugins (workgroups) don't think it's
@@ -205,8 +213,8 @@
 
   ;; make Y yank a full line, not point-to-eol
   ;; (this is a patch over a spacemacs default, which will hopefully be changed)
-  (define-key evil-normal-state-map (kbd "Y") 'evil-yank-line)
-  (define-key evil-motion-state-map (kbd "Y") 'evil-yank-line)
+  ;; (define-key evil-normal-state-map (kbd "Y") 'evil-yank-line)
+  ;; (define-key evil-motion-state-map (kbd "Y") 'evil-yank-line)
 
   (unless (server-running-p)
     (server-start)
@@ -216,15 +224,11 @@
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
 ;;
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs
-;; by setting it as 'user-emacs-directory temporarily
-;;
-;; NOTE: this currently mostly works, but breaks the update checker
+;; by setting it as 'user-emacs-directory
 
 (add-to-list 'load-path "~/.emacs.d/spacemacs/")
 (setq backup-user-emacs-directory user-emacs-directory
       user-emacs-directory "~/.emacs.d/spacemacs/")
 
+;; (setq init-file-debug t)
 (load "~/.emacs.d/spacemacs/init")
-
-(setq user-emacs-directory backup-user-emacs-directory)
-

@@ -6,6 +6,7 @@ emacs.d/.emacs.desktop.lock
 emacs.d/abbrev_defs
 emacs.d/.emacs_workgroups
 emacs.d/.emacs_workgroups.bak
+emacs.d/persps-layouts
 
 # Other junk
 emacs.d/rake.cache
