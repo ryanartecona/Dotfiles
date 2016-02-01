@@ -27,6 +27,8 @@
  '(expand-region-reset-fast-key "r")
  '(fci-rule-color "#eee8d5")
  '(git-gutter-fr:side (quote left-fringe) t)
+ '(global-flycheck-mode t)
+ '(haskell-indent-offset 2)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -51,9 +53,11 @@
    (quote
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
  '(if (version< emacs-version "24.4"))
+ '(js-indent-level 2)
  '(lua-indent-level 1)
  '(mac-system-move-file-to-trash-use-finder t)
  '(magit-diff-use-overlays nil)
+ '(magit-push-arguments nil)
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
  '(neo-show-updir-line t t)
