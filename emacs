@@ -53,7 +53,7 @@
       org
       vim-empty-lines
       (auto-completion :variables
-                       company-idle-delay 0.0
+                       company-idle-delay 0.1
                        auto-completion-private-snippets-directory "~/.emacs.d/snippets")
       syntax-checking
       (shell :variables
