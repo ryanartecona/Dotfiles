@@ -80,6 +80,7 @@
       lua
       nixos
       elixir
+      yaml
 
       ; Themes
       ;; themes-megapack
