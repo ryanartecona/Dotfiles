@@ -38,14 +38,15 @@
 
 (defun dotspacemacs/layers ()
   "Configuration Layers config"
-  (setq-default
+  (setq
    ; My own private layers are in "~/.emacs.d/spacemacs-layers/"
    dotspacemacs-configuration-layer-path
     '("~/.emacs.d/spacemacs-layers/")
    dotspacemacs-configuration-layers
     '(
       ; Contrib layers (included in spacemacs)
-      version-control
+      (version-control :variables
+                       version-control-diff-tool 'diff-hl)
       git
       github
       osx
@@ -109,7 +110,7 @@
 
 (defun dotspacemacs/init ()
   "Called at the beginning of spacemacs configuration sequence"
-  (setq-default
+  (setq
    dotspacemacs-themes
     '(
       solarized-light
