@@ -435,6 +435,10 @@ end
 "===================
 if has("gui_running")
 
+  set guifont=PragmataPro:h12
+  " https://github.com/i-tu/Hasklig/issues/32
+  set macligatures
+
   " set guioptions=gtrLmec
   set guioptions=gtmc
   set guitablabel=%M\ %t

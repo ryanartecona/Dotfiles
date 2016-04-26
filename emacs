@@ -118,7 +118,8 @@
       )
    dotspacemacs-default-font
     '(
-      "Menlo"
+      ;; "Menlo"
+      "PragmataPro"
       :size 12
       :weight normal
       :width normal
