@@ -97,11 +97,6 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 #   fish_vi_mode
 # end
 
-# z-fish needs to be sourced
-if test -f ~/.z-fish/z.fish  >/dev/null
-  source ~/.z-fish/z.fish
-end
-
 # RVM for Ruby needs to be run once to add stuff to $PATH
 rvm >/dev/null ^/dev/null
 
@@ -120,4 +115,6 @@ end
 
 
 # Custom <TAB>-expandions
+
+# gb<TAB> to choose among git branches
 expand-word -p 'gb' -e 'git branch | cut -c 3-'
