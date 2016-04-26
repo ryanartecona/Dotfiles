@@ -457,43 +457,43 @@ if has("gui_running")
 endif
 
 " ## added by OPAM user-setup for vim / base ## 8a3125e39f347f6b9a1b167d8e564281 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+" let s:opam_share_dir = system("opam config var share")
+" let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
 
-let s:opam_configuration = {}
+" let s:opam_configuration = {}
 
-function! OpamConfOcpIndent()
-  let l:file = s:opam_share_dir . "/vim/syntax/ocp-indent.vim"
-  execute "source " . l:file
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+" function! OpamConfOcpIndent()
+"   let l:file = s:opam_share_dir . "/vim/syntax/ocp-indent.vim"
+"   execute "source " . l:file
+" endfunction
+" let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
 
-function! OpamConfOcpIndex()
-  let l:file = s:opam_share_dir . "/vim/syntax/ocpindex.vim"
-  execute "source " . l:file
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+" function! OpamConfOcpIndex()
+"   let l:file = s:opam_share_dir . "/vim/syntax/ocpindex.vim"
+"   execute "source " . l:file
+" endfunction
+" let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
 
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+" function! OpamConfMerlin()
+"   let l:dir = s:opam_share_dir . "/merlin/vim"
+"   execute "set rtp+=" . l:dir
+" endfunction
+" let s:opam_configuration['merlin'] = function('OpamConfMerlin')
 
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline, ' ')))
-for tool in s:opam_available_tools
-  call s:opam_configuration[tool]()
-endfor
-" ## end of OPAM user-setup addition for vim / base ## keep this line
-" ## added by OPAM user-setup for vim / ocp-indent ## f6621413a261159e8e391a1865d30a4a ## you can edit, but keep this line
-if count(s:opam_available_tools,"ocp-indent") == 0
-  source "/Users/ryanartecona/.opam/raybeam-ocaml/share/vim/syntax/ocp-indent.vim"
-endif
-" ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
-" ## added by OPAM user-setup for vim / ocp-index ## 99e2914cfb2eae6564b450e0d54f18c6 ## you can edit, but keep this line
-if count(s:opam_available_tools,"ocp-index") == 0
-  source "/Users/ryanartecona/.opam/raybeam-ocaml/share/vim/syntax/ocpindex.vim"
-endif
+" let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+" let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+" let s:opam_available_tools = split(system(join(s:opam_check_cmdline, ' ')))
+" for tool in s:opam_available_tools
+"   call s:opam_configuration[tool]()
+" endfor
+" " ## end of OPAM user-setup addition for vim / base ## keep this line
+" " ## added by OPAM user-setup for vim / ocp-indent ## f6621413a261159e8e391a1865d30a4a ## you can edit, but keep this line
+" if count(s:opam_available_tools,"ocp-indent") == 0
+"   source "/Users/ryanartecona/.opam/raybeam-ocaml/share/vim/syntax/ocp-indent.vim"
+" endif
+" " ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
+" " ## added by OPAM user-setup for vim / ocp-index ## 99e2914cfb2eae6564b450e0d54f18c6 ## you can edit, but keep this line
+" if count(s:opam_available_tools,"ocp-index") == 0
+"   source "/Users/ryanartecona/.opam/raybeam-ocaml/share/vim/syntax/ocpindex.vim"
+" endif
 " ## end of OPAM user-setup addition for vim / ocp-index ## keep this line
