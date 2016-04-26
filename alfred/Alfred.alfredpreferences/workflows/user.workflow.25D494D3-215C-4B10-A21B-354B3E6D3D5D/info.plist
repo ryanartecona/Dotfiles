@@ -73,21 +73,12 @@
 			</dict>
 		</array>
 		<key>624AD1CD-3937-4F17-ACF2-04C553E8A2B7</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>94B47790-9DCE-4DD9-9C51-4D8E4FC211DB</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-			</dict>
-		</array>
+		<array/>
 		<key>71CA40EA-9E8E-46C4-9F8F-E0214B4AC94E</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>655B39D2-C7A9-4CBD-8BE4-92AA8D778B6F</string>
+				<string>09A99C95-6744-47C8-8BF0-DFBC3B6C4422</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -109,7 +100,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</string>
+				<string>CBAF1DB7-47C6-4914-BC83-AB47D62C67B4</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -295,23 +286,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Mail.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
@@ -335,6 +309,23 @@
 			<string>8B6E90B1-2C92-4AEC-B261-83F905597E63</string>
 			<key>version</key>
 			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>paths</key>
+				<array>
+					<string>/Applications/Tweetbot.app</string>
+				</array>
+				<key>toggle</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.launchfiles</string>
+			<key>uid</key>
+			<string>CBAF1DB7-47C6-4914-BC83-AB47D62C67B4</string>
+			<key>version</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -691,23 +682,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Rdio.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>94B47790-9DCE-4DD9-9C51-4D8E4FC211DB</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
@@ -781,7 +755,7 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Twitter.app</string>
+					<string>/Applications/Tweetbot.app</string>
 				</array>
 				<key>toggle</key>
 				<false/>
@@ -789,7 +763,7 @@
 			<key>type</key>
 			<string>alfred.workflow.action.launchfiles</string>
 			<key>uid</key>
-			<string>655B39D2-C7A9-4CBD-8BE4-92AA8D778B6F</string>
+			<string>09A99C95-6744-47C8-8BF0-DFBC3B6C4422</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -957,6 +931,11 @@
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>09A99C95-6744-47C8-8BF0-DFBC3B6C4422</key>
+		<dict>
+			<key>ypos</key>
+			<real>1690</real>
+		</dict>
 		<key>157871BA-9B06-463F-BA06-6317CF44CE4F</key>
 		<dict>
 			<key>ypos</key>
@@ -1012,11 +991,6 @@
 			<key>ypos</key>
 			<real>1450</real>
 		</dict>
-		<key>655B39D2-C7A9-4CBD-8BE4-92AA8D778B6F</key>
-		<dict>
-			<key>ypos</key>
-			<real>1690</real>
-		</dict>
 		<key>71CA40EA-9E8E-46C4-9F8F-E0214B4AC94E</key>
 		<dict>
 			<key>ypos</key>
@@ -1067,11 +1041,6 @@
 			<key>ypos</key>
 			<real>1570</real>
 		</dict>
-		<key>94B47790-9DCE-4DD9-9C51-4D8E4FC211DB</key>
-		<dict>
-			<key>ypos</key>
-			<real>1450</real>
-		</dict>
 		<key>988BB796-153C-4B29-ACA3-5A823F165B2E</key>
 		<dict>
 			<key>ypos</key>
@@ -1087,15 +1056,15 @@
 			<key>ypos</key>
 			<real>1930</real>
 		</dict>
-		<key>A2BAD5BA-0628-46B7-BDFB-7726093AEC8D</key>
-		<dict>
-			<key>ypos</key>
-			<real>250</real>
-		</dict>
 		<key>BB158701-6D9A-4D95-BAB9-CBFFA1A7E774</key>
 		<dict>
 			<key>ypos</key>
 			<real>1210</real>
+		</dict>
+		<key>CBAF1DB7-47C6-4914-BC83-AB47D62C67B4</key>
+		<dict>
+			<key>ypos</key>
+			<real>250</real>
 		</dict>
 		<key>CDAEE338-4779-4FEE-9B36-64507B0C0F3C</key>
 		<dict>
