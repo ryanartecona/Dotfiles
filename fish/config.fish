@@ -1,12 +1,14 @@
 if which hub  >/dev/null
   alias g=hub
 end
+
 if which http  >/dev/null
   alias httpv="http --print=HBhb"
 end
 
+
 if status --is-interactive
-  set -xg ALTERNATE_EDITOR                          (which vim)
+  set -xg ALTERNATE_EDITOR (which vim)
   if test "$INSIDE_EMACS"
     set -xg EDITOR "emacsclient"
   else
@@ -77,6 +79,13 @@ function valid_allowed_paths --description "User-allowed \$path dirs (that curre
   end
 end
 
+
+# Fisherman wants fish at >2.3.0 for 'snippet' support, but this suffices
+# until fish v2.3 is released (check here: https://github.com/fish-shell/fish-shell/releases)
+for file in ~/.config/fish/conf.d/*.fish
+  source $file
+end
+
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
 
@@ -102,12 +111,13 @@ if not test -d ~/.go
 end
 set -gx GOPATH "$HOME/.go"
 
-# Tell Docker where it should connect
-set -x DOCKER_HOST "tcp://localhost:2375"
-
 # OPAM configuration
 if which -s opam
   source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
   # Let opam set the env vars it wants, but don't let it break my MANPATH
   eval (opam config env | grep -vi 'MANPATH')
 end
+
+
+# Custom <TAB>-expandions
+expand-word -p 'gb' -e 'git branch | cut -c 3-'
