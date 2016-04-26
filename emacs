@@ -80,12 +80,14 @@
             web-mode-code-indent-offset 2
             scss-compile-at-save nil)
       markdown
+      asciidoc
       ocaml
       emacs-lisp
       lua
       nixos
       elixir
       yaml
+      pandoc
 
       ; Themes
       ;; themes-megapack
@@ -145,6 +147,7 @@
    dotspacemacs-persistent-server t
    ;; dotspacemacs-auto-resume-layouts t
    dotspacemacs-maximized-at-startup t
+   dotspacemacs-enable-lazy-installation t
    )
 
   (setq
