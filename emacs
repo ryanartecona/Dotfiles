@@ -1,3 +1,5 @@
+; -*- mode: emacs-lisp -*-
+
 ;; Spacemacs wants to be cloned directly into ~/.emacs.d
 ;;
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs

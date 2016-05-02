@@ -9,6 +9,8 @@ function fish_prompt --description 'Write out the prompt'
 
   echo
 
+  type -q iterm2_pre_fish_prompt; and iterm2_pre_fish_prompt
+
   # # User
   # set_color $fish_color_user
   # echo -n (whoami)
@@ -43,4 +45,6 @@ function fish_prompt --description 'Write out the prompt'
 
   echo -n '> '
   set_color normal
+
+  type -q iterm2_prompt_end; and iterm2_prompt_end
 end

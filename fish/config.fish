@@ -113,6 +113,11 @@ if which -s opam
   eval (opam config env | grep -vi 'MANPATH')
 end
 
+# iterm2 prompt integration helpers
+if test -f ~/.iterm2_shell_integration.fish
+  source ~/.iterm2_shell_integration.fish
+end
+
 
 # Custom <TAB>-expandions
 
