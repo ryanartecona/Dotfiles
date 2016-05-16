@@ -114,7 +114,7 @@ if which -s opam
 end
 
 # iterm2 prompt integration helpers
-if test -f ~/.iterm2_shell_integration.fish
+if test -n "$ITERM_SESSION_ID" -a -f ~/.iterm2_shell_integration.fish
   source ~/.iterm2_shell_integration.fish
 end
 
