@@ -88,6 +88,8 @@
       elixir
       yaml
       pandoc
+      nginx
+      javascript
 
       ; Themes
       ;; themes-megapack
