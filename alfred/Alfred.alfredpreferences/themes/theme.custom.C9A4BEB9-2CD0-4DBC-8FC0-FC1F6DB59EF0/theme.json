@@ -1,0 +1,61 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 7,
+      "subtext" : {
+        "size" : 10,
+        "colorSelected" : "#FFFFFFA7",
+        "font" : "System",
+        "color" : "#FFFFFF4F"
+      },
+      "shortcut" : {
+        "size" : 12,
+        "colorSelected" : "#FFFFFF9E",
+        "font" : "System",
+        "color" : "#FFFFFF7E"
+      },
+      "backgroundSelected" : "#0000001F",
+      "text" : {
+        "size" : 16,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "System",
+        "color" : "#FFFFFFAD"
+      },
+      "iconPaddingHorizontal" : 6,
+      "paddingVertical" : 2,
+      "iconSize" : 44
+    },
+    "search" : {
+      "paddingVertical" : 0,
+      "background" : "#FFFFFF00",
+      "spacing" : 5,
+      "text" : {
+        "size" : 30,
+        "colorSelected" : "#000000FF",
+        "font" : "System Light",
+        "color" : "#FFFFFFFF"
+      },
+      "backgroundSelected" : "#B2D7FFFF"
+    },
+    "window" : {
+      "color" : "#4244509F",
+      "paddingHorizontal" : 0,
+      "width" : 573,
+      "borderPadding" : 0,
+      "borderColor" : "#000000FF",
+      "blur" : 40,
+      "roundness" : 3,
+      "paddingVertical" : 2
+    },
+    "credit" : "ryanartecona",
+    "separator" : {
+      "color" : "#CD00FFFF",
+      "thickness" : 0
+    },
+    "scrollbar" : {
+      "color" : "#00000033",
+      "thickness" : 3
+    },
+    "name" : "RA Frosty"
+  }
+}
