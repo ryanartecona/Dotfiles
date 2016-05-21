@@ -1,0 +1,61 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 4,
+      "subtext" : {
+        "size" : 11,
+        "colorSelected" : "#F3E8FFBA",
+        "font" : "Helvetica",
+        "color" : "#7F7B73FF"
+      },
+      "shortcut" : {
+        "size" : 13,
+        "colorSelected" : "#9889AAFF",
+        "font" : "Helvetica",
+        "color" : "#6A6558FF"
+      },
+      "backgroundSelected" : "#645674D8",
+      "text" : {
+        "size" : 16,
+        "colorSelected" : "#F5EDFFF4",
+        "font" : "Helvetica",
+        "color" : "#B6B1A4FF"
+      },
+      "iconPaddingHorizontal" : 5,
+      "paddingVertical" : 2,
+      "iconSize" : 40
+    },
+    "search" : {
+      "paddingVertical" : 2,
+      "background" : "#26211E00",
+      "spacing" : 10,
+      "text" : {
+        "size" : 36,
+        "colorSelected" : "#E9EECFFF",
+        "font" : "Helvetica",
+        "color" : "#D1CBBCFF"
+      },
+      "backgroundSelected" : "#798460D8"
+    },
+    "window" : {
+      "color" : "#2B2522ED",
+      "paddingHorizontal" : 10,
+      "width" : 620,
+      "borderPadding" : 10,
+      "borderColor" : "#BEBEBE3F",
+      "blur" : 0,
+      "roundness" : 12,
+      "paddingVertical" : 10
+    },
+    "credit" : "Ryan Artecona",
+    "separator" : {
+      "color" : "#6B686126",
+      "thickness" : 1
+    },
+    "scrollbar" : {
+      "color" : "#BFB7A866",
+      "thickness" : 2
+    },
+    "name" : "Chocolate (v2)"
+  }
+}

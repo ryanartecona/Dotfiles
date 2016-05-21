@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>currentthemeuid</key>
+	<string>alfred.theme.custom.6EA40AEE-EE6C-4314-9374-D8B622E733B4</string>
 	<key>theme</key>
 	<string>alfred.theme.custom.6EA40AEE-EE6C-4314-9374-D8B622E733B4</string>
 </dict>

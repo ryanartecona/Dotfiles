@@ -1,0 +1,61 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 4,
+      "subtext" : {
+        "size" : 11,
+        "colorSelected" : "#C3C3C3FF",
+        "font" : "PragmataPro",
+        "color" : "#8E8E8EFF"
+      },
+      "shortcut" : {
+        "size" : 16,
+        "colorSelected" : "#CBCBCBFF",
+        "font" : "Avenir Next Condensed",
+        "color" : "#686868FF"
+      },
+      "backgroundSelected" : "#1F6EE4FF",
+      "text" : {
+        "size" : 16,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "PragmataPro",
+        "color" : "#FFFFFFFF"
+      },
+      "iconPaddingHorizontal" : 5,
+      "paddingVertical" : 4,
+      "iconSize" : 40
+    },
+    "search" : {
+      "paddingVertical" : 2,
+      "background" : "#00000000",
+      "spacing" : 10,
+      "text" : {
+        "size" : 32,
+        "colorSelected" : "#000000FF",
+        "font" : "PragmataPro",
+        "color" : "#FFFFFFFF"
+      },
+      "backgroundSelected" : "#B2D7FFFF"
+    },
+    "window" : {
+      "color" : "#343434C4",
+      "paddingHorizontal" : 10,
+      "width" : 680,
+      "borderPadding" : 10,
+      "borderColor" : "#00000000",
+      "blur" : 0,
+      "roundness" : 3,
+      "paddingVertical" : 10
+    },
+    "credit" : "Ryan Artecona",
+    "separator" : {
+      "color" : "#00000000",
+      "thickness" : 1
+    },
+    "scrollbar" : {
+      "color" : "#C2C2C2CC",
+      "thickness" : 2
+    },
+    "name" : "RA Yosemite Dark (v2)"
+  }
+}
