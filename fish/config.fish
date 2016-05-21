@@ -98,7 +98,9 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 # end
 
 # RVM for Ruby needs to be run once to add stuff to $PATH
-rvm >/dev/null ^/dev/null
+if type -q rvm
+  rvm >/dev/null ^/dev/null
+end
 
 # Golang
 if not test -d ~/.go
