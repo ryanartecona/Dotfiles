@@ -43,7 +43,7 @@
    dotspacemacs-configuration-layer-path
     '("~/.emacs.d/spacemacs-layers/")
    dotspacemacs-configuration-layers
-    '(
+   '(
       ; Contrib layers (included in spacemacs)
       (version-control :variables
                        version-control-diff-tool 'diff-hl)
@@ -90,6 +90,8 @@
       pandoc
       nginx
       javascript
+      purescript
+      agda
 
       ; Themes
       ;; themes-megapack

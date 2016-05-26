@@ -337,11 +337,11 @@
       },
       "Default Bookmark": "No",
       "Cursor Color": {
-        "Red Component": 0.1592386960983276,
-        "Color Space": "Calibrated",
-        "Blue Component": 0.2623981535434723,
-        "Alpha Component": 0.1132904052734375,
-        "Green Component": 0.09480414539575577
+        "Red Component" : 0.2854405641555786,
+        "Color Space" : "Calibrated",
+        "Blue Component" : 0.3535559773445129,
+        "Alpha Component" : 1,
+        "Green Component" : 0.2659770250320435
       },
       "Disable Smcup Rmcup": false,
       "Blinking Cursor": true,
