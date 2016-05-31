@@ -1,6 +1,7 @@
 function fish_prompt --description 'Write out the prompt'
   set -l last_status $status
 
+  type -q iterm2_status; and iterm2_status $last_status
   if test $last_status -ne 0
     set_color $fish_color_error
     echo "✖ $last_status"
@@ -9,7 +10,7 @@ function fish_prompt --description 'Write out the prompt'
 
   echo
 
-  type -q iterm2_pre_fish_prompt; and iterm2_pre_fish_prompt
+  type -q iterm2_prompt_start; and iterm2_prompt_start
 
   # # User
   # set_color $fish_color_user
