@@ -92,6 +92,7 @@
       javascript
       purescript
       agda
+      python
 
       ; Themes
       ;; themes-megapack
