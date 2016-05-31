@@ -1,5 +1,3 @@
-# Modified from https://iterm2.com/misc/fish_startup.in
-
 if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ "$TERM" != screen ]; end
   function iterm2_status
     printf "\033]133;D;%s\007" $argv
@@ -42,11 +40,47 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
 
   end
 
-  function iterm2_pre_fish_prompt --description 'Write out the mode prompt; do not replace this. Instead, change fish_mode_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_mode_prompt instead.'
+  functions -c fish_prompt iterm2_fish_prompt
+
+  if functions -q -- fish_mode_prompt
+    # This path for fish 2.2. Works nicer with fish_vi_mode.
+    functions -c fish_mode_prompt iterm2_fish_mode_prompt
+    function fish_mode_prompt --description 'Write out the mode prompt; do not replace this. Instead, change fish_mode_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_mode_prompt instead.'
+       set -l last_status $status
+       iterm2_status $last_status
+       iterm2_prompt_start
+       sh -c "exit $last_status"
+
+       iterm2_fish_mode_prompt
+    end
+
+    function fish_prompt --description 'Write out the prompt; do not replace this. Instead, change fish_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_prompt instead.'
+       # Remove the trailing newline from the original prompt. Storing a
+       # command's output to a variable loses all the newlines, causing the
+       # prompt's lines to get joined together. You also can't pass it to a
+       # shell command command. So we can only use it in something like a for
+       # loop.
+       for line in (iterm2_fish_prompt)
+         set -q last_line; and echo $last_line
+         set last_line $line
+       end
+       set -q last_line; and echo -n $last_line
+
+       iterm2_prompt_end
+    end
+  else
+    # Pre-2.2 path
+    function fish_prompt --description 'Write out the prompt; do not replace this. Instead, change fish_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_prompt instead.'
+      # Save our status
       set -l last_status $status
+
       iterm2_status $last_status
       iterm2_prompt_start
+      # Restore the status
       sh -c "exit $last_status"
+      iterm2_fish_prompt
+      iterm2_prompt_end
+    end
   end
 
   function -v _ underscore_change
@@ -63,5 +97,5 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   iterm2_precmd
-  printf "\033]1337;ShellIntegrationVersion=1\007"
+  printf "\033]1337;ShellIntegrationVersion=2;shell=fish\007"
 end
