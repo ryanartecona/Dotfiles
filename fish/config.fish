@@ -124,4 +124,5 @@ end
 # Custom <TAB>-expandions
 
 # gb<TAB> to choose among git branches
-expand-word -p 'gb' -e 'git branch | cut -c 3-'
+expand-word -p '^gb$' -e 'git branch | cut -c 3-'
+expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
