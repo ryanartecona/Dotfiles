@@ -221,10 +221,11 @@
 
   (setq compilation-finish-function 'colorize-compilation)
 
-  ;; make Y yank a full line, not point-to-eol
-  ;; (this is a patch over a spacemacs default, which will hopefully be changed)
-  ;; (define-key evil-normal-state-map (kbd "Y") 'evil-yank-line)
-  ;; (define-key evil-motion-state-map (kbd "Y") 'evil-yank-line)
+
+  ; This is available in iTerm but not ansi-term, and its absence
+  ; breaks e.g. ruby scripts run from ansi-term
+  (setenv "LANG" "en_US.UTF-8")
+
 
   (unless (server-running-p)
     (server-start)
