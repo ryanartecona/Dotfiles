@@ -630,8 +630,10 @@
 	<true/>
 	<key>MaxVertically</key>
 	<false/>
+	<key>NSFontPanelAttributes</key>
+	<string>1, 4</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/Dotfiles/iterm2</string>
+	<string>~/Documents</string>
 	<key>NSNavPanelExpandedSizeForSaveMode</key>
 	<string>{712, 532}</string>
 	<key>NSNavPanelExpandedStateForSaveMode</key>
@@ -669,17 +671,23 @@
 	<key>NSWindow Frame NSFontPanel</key>
 	<string>962 328 445 77 0 0 1920 1057 </string>
 	<key>NSWindow Frame Preferences</key>
-	<string>502 396 606 456 0 0 1440 877 </string>
+	<string>1592 949 606 456 0 0 2560 1417 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>650 499 620 392 0 0 1920 1057 </string>
+	<string>373 265 620 392 0 0 1366 745 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 678 1920 379 0 0 1920 1057 </string>
+	<string>683 4 625 741 0 0 1366 745 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>1 182 1440 873 0 0 1920 1057 </string>
+	<string>683 13 679 732 0 0 1366 745 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>362 34 610 777 0 0 1440 877 </string>
+	<string>0 40 2557 1377 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
-	<string>360 341 591 536 0 0 1440 877 </string>
+	<string>360 86 610 777 0 0 1440 877 </string>
+	<key>NSWindow Frame iTerm Window 4</key>
+	<string>239 100 610 777 0 0 1440 877 </string>
+	<key>NSWindow Frame iTerm Window 5</key>
+	<string>260 100 610 777 0 0 1440 877 </string>
+	<key>NSWindow Frame iTerm Window 6</key>
+	<string>281 100 610 777 0 0 1440 877 </string>
 	<key>NeverWarnAboutShortLivedSessions_FB3CF00A-AC64-4A19-8D2A-E625D3CC95A0</key>
 	<true/>
 	<key>New Bookmarks</key>
@@ -3712,12 +3720,14 @@
 	</array>
 	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
 	<true/>
+	<key>NoSyncConfirmBeta</key>
+	<true/>
 	<key>NoSyncHaveShownPromoWithId_4</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>087786B5-F3C7-47E5-81A9-1626A82FC1CB</string>
 	<key>NoSyncLastTipTime</key>
-	<real>486393354.126001</real>
+	<real>490085352.75154603</real>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -3735,7 +3745,9 @@
 	<key>NoSyncTimeOfLastPromo</key>
 	<real>477516588.246961</real>
 	<key>NoSyncTimeOfLastPromoDownload</key>
-	<real>484080567.30656803</real>
+	<real>492464671.71206802</real>
+	<key>NoSyncTipsDisabled</key>
+	<true/>
 	<key>NoSyncTipsToNotShow</key>
 	<array>
 		<string>000</string>
@@ -3768,6 +3780,29 @@
 		<string>0026</string>
 		<string>0027</string>
 		<string>0028</string>
+		<string>0029</string>
+		<string>0030</string>
+		<string>0031</string>
+		<string>0032</string>
+		<string>0033</string>
+		<string>0034</string>
+		<string>0035</string>
+		<string>0036</string>
+		<string>0037</string>
+		<string>0038</string>
+		<string>0039</string>
+		<string>0040</string>
+		<string>0041</string>
+		<string>0042</string>
+		<string>0043</string>
+		<string>0044</string>
+		<string>0045</string>
+		<string>0046</string>
+		<string>0047</string>
+		<string>0048</string>
+		<string>0049</string>
+		<string>0050</string>
+		<string>0051</string>
 	</array>
 	<key>OnlyWhenMoreTabs</key>
 	<true/>
@@ -3835,11 +3870,13 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/testing3.xml?shard=7</string>
+	<string>http://iterm2.com/appcasts/testing.xml</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-05-31T19:51:17Z</date>
+	<date>2016-08-09T19:44:04Z</date>
+	<key>SUSkippedVersion</key>
+	<string>3.0.5</string>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -3883,7 +3920,7 @@
 	<key>WebKitDefaultFontSize</key>
 	<integer>11</integer>
 	<key>WebKitStandardFont</key>
-	<string>.Helvetica Neue DeskInterface</string>
+	<string>.AppleSystemUIFont</string>
 	<key>Window Arrangements</key>
 	<dict>
 		<key>No windows</key>
@@ -3900,7 +3937,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.9.20160510</string>
+	<string>2.1.1</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
