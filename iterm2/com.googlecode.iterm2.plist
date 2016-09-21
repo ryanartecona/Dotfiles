@@ -6,6 +6,8 @@
 	<true/>
 	<key>AllowClipboardAccess</key>
 	<false/>
+	<key>AlternateMouseScroll</key>
+	<true/>
 	<key>AnimateDimming</key>
 	<true/>
 	<key>AppleAntiAliasingThreshold</key>
@@ -674,10 +676,12 @@
 	<string>1592 949 606 456 0 0 2560 1417 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>373 265 620 392 0 0 1366 745 </string>
+	<key>NSWindow Frame SharedPreferences</key>
+	<string>304 188 1018 447 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>683 4 625 741 0 0 1366 745 </string>
+	<string>720 10 757 867 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>683 13 679 732 0 0 1366 745 </string>
+	<string>756 280 625 777 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>0 40 2557 1377 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -3870,13 +3874,11 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>http://iterm2.com/appcasts/testing.xml</string>
+	<string>https://iterm2.com/appcasts/testing.xml?shard=26</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-08-09T19:44:04Z</date>
-	<key>SUSkippedVersion</key>
-	<string>3.0.5</string>
+	<date>2016-09-07T22:25:18Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -3937,7 +3939,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>2.1.1</string>
+	<string>3.0.8</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
