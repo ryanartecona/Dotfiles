@@ -97,6 +97,13 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 #   fish_vi_mode
 # end
 
+# OPAM configuration
+if which -s opam
+  source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
+  # Let opam set the env vars it wants, but don't let it break my MANPATH
+  eval (opam config env | grep -vi 'MANPATH')
+end
+
 # RVM for Ruby needs to be run once to add stuff to $PATH
 if type -q rvm
   rvm >/dev/null ^/dev/null
@@ -107,13 +114,6 @@ if not test -d ~/.go
   mkdir -p ~/.go
 end
 set -gx GOPATH "$HOME/.go"
-
-# OPAM configuration
-if which -s opam
-  source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
-  # Let opam set the env vars it wants, but don't let it break my MANPATH
-  eval (opam config env | grep -vi 'MANPATH')
-end
 
 # iterm2 prompt integration helpers
 if test -n "$ITERM_SESSION_ID" -a -f ~/.iterm2_shell_integration.fish
