@@ -38,6 +38,16 @@ function fish_prompt --description 'Write out the prompt'
   fish_git_prompt
   set_color normal
 
+  if test -n "$VIRTUAL_ENV"
+    set_color $fish_color_prompt_delimiter
+    echo -n ' (venv:'
+    set_color $fish_color_host
+    echo -n (basename (dirname $VIRTUAL_ENV))
+    set_color $fish_color_prompt_delimiter
+    echo -n ')'
+    set_color normal
+  end
+
   echo
 
   fish_vi_mode_prompt
