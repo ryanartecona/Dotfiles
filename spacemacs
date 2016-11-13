@@ -113,6 +113,8 @@
       magit-gh-pulls
       )
    dotspacemacs-delete-orphan-packages t
+   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-ask-for-lazy-installation t
    ))
 
 (defun dotspacemacs/init ()
@@ -152,7 +154,19 @@
    dotspacemacs-persistent-server t
    ;; dotspacemacs-auto-resume-layouts t
    dotspacemacs-maximized-at-startup t
-   dotspacemacs-enable-lazy-installation t
+   dotspacemacs-elpa-https t
+   dotspacemacs-check-for-update nil
+   dotspacemacs-startup-buffer-responsive t
+   dotspacemacs-emacs-command-key "SPC"
+   dotspacemacs-remap-Y-to-y$ nil
+   dotspacemacs-retain-visual-state-on-shift t
+   dotspacemacs-visual-line-move-text t
+   dotspacemacs-auto-save-file-location 'cache
+   dotspacemacs-helm-position 'bottom
+   dotspacemacs-helm-use-fuzzy 'always
+   dotspacemacs-enable-paste-transient-state nil
+   dotspacemacs-switch-to-buffer-prefers-purpose nil
+   dotspacemacs-folding-method 'origami
    )
 
   (setq
