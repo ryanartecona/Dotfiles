@@ -94,18 +94,12 @@
       agda
       python
 
-      ; Themes
-      ;; themes-megapack
-
-      ; My own layers
+      ; My own layer
       ra
-      ra-org
-      ;; workgroups2
-      ;; ra-purescript
       )
    dotspacemacs-additional-packages
     '(
-      swift-mode
+      ox-reveal
       )
    dotspacemacs-excluded-packages
     '(

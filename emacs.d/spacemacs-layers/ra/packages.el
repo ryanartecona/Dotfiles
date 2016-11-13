@@ -1,7 +1,5 @@
 (setq ra-packages
   '(
-    coffee-mode
-    flycheck
     magit
     pandoc-mode
     multi-term
@@ -12,16 +10,6 @@
 (setq ra-excluded-packages '()
   )
 
-
-(defun ra/init-coffee-mode ()
-  "Setup coffee-mode"
-  (use-package coffee-mode
-    :defer t
-    :mode ("\\.coffee\\'" . coffee-mode)))
-
-(defun ra/post-init-flycheck ()
-  "Add flycheck-mode hooks"
-  (add-hook 'coffee-mode-hook 'flycheck-mode))
 
 (defun ra/post-init-magit ()
   (spacemacs|use-package-add-hook magit
