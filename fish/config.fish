@@ -1,8 +1,8 @@
-if which hub  >/dev/null
+if type -Pq hub
   alias g=hub
 end
 
-if which http  >/dev/null
+if type -Pq http
   alias httpv="http --print=HBhb"
 end
 
@@ -55,7 +55,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/Library/Haskell/bin
   echo /export/apps/xtools/bin
   echo /Applications/ghc-7.8.3.app/Contents/bin
-  if which -s opam
+  if type -Pq opam
     echo (opam config var bin)
     echo (opam config var sbin)
   end
@@ -98,7 +98,7 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 # end
 
 # OPAM configuration
-if which -s opam
+if type -Pq opam
   source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
   # Let opam set the env vars it wants, but don't let it break my MANPATH
   eval (opam config env | grep -vi 'MANPATH')
