@@ -43,6 +43,18 @@ function fish_prompt --description 'Write out the prompt'
     echo -n ' (venv:'
     set_color $fish_color_host
     echo -n (basename (dirname $VIRTUAL_ENV))
+    set_color normal
+    set_color $fish_color_prompt_delimiter
+    echo -n ')'
+    set_color normal
+  end
+
+  if test -n "$IN_NIX_SHELL"
+    set_color $fish_color_prompt_delimiter
+    echo -n ' ('
+    set_color $fish_color_host
+    echo -n 'nix-shell'
+    set_color normal
     set_color $fish_color_prompt_delimiter
     echo -n ')'
     set_color normal
