@@ -144,7 +144,7 @@
    dotspacemacs-guide-key-delay 0.4
    dotspacemacs-loading-progress-bar t
    dotspacemacs-mode-line-unicode-symbols t
-   ;; dotspacemacs-smooth-scrolling t
+   dotspacemacs-smooth-scrolling nil
    dotspacemacs-persistent-server t
    ;; dotspacemacs-auto-resume-layouts t
    dotspacemacs-maximized-at-startup t
