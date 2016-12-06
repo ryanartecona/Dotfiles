@@ -69,6 +69,8 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /bin
   echo /usr/sbin
   echo /sbin
+  echo /run/current-system/sw/bin
+  echo /run/current-system/sw/sbin
 end
 
 function valid_allowed_paths --description "User-allowed \$path dirs (that currently exist)"
@@ -99,7 +101,6 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 
 # OPAM configuration
 if type -Pq opam
-  source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true
   # Let opam set the env vars it wants, but don't let it break my MANPATH
   eval (opam config env | grep -vi 'MANPATH')
 end
