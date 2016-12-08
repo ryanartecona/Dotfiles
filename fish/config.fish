@@ -50,6 +50,9 @@ end
 function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/bin
   echo /usr/local/share/npm/bin
+  if type -Pq npm
+    echo (npm config get prefix)/bin
+  end
   echo $HOME/.rvm/bin
   echo $HOME/.cabal/bin
   echo $HOME/Library/Haskell/bin
@@ -69,6 +72,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /bin
   echo /usr/sbin
   echo /sbin
+  echo /var/setuid-wrappers
   echo /run/current-system/sw/bin
   echo /run/current-system/sw/sbin
 end
