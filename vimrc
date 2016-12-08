@@ -1,6 +1,4 @@
-if &shell =~# 'fish$'
-  set shell=/bin/bash
-endif
+set shell=bash
 
 set history=700
 
@@ -273,11 +271,7 @@ highlight! link EasyMotionIncSearch EasyMotionTarget2FirstDefault
 "=== Airline ===
 "===============
 
-if has("gui_running")
-  let g:airline_theme='solarized'
-else
-  let g:airline_theme='bubblegum'
-endif
+let g:airline_theme='solarized'
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
 
@@ -369,7 +363,8 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdtree'
 Plugin 'dag/vim-fish'
