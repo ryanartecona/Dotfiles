@@ -32,6 +32,7 @@
  '(ansi-color-names-vector
    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
  '(compilation-message-face (quote default))
+ '(css-indent-offset 2)
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
@@ -43,6 +44,7 @@
  '(diff-hl-side (quote left))
  '(enh-ruby-deep-indent-paren nil)
  '(evil-shift-width 2)
+ '(evil-want-Y-yank-to-eol nil)
  '(expand-region-contract-fast-key "V")
  '(expand-region-reset-fast-key "r")
  '(fci-rule-color "#eee8d5")
@@ -74,13 +76,13 @@
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
  '(if (version< emacs-version "24.4"))
  '(js-indent-level 2)
- '(lua-indent-level 1)
+ '(lua-indent-level 1 t)
  '(mac-system-move-file-to-trash-use-finder t)
  '(magit-diff-use-overlays nil)
  '(magit-push-arguments nil)
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
- '(neo-show-updir-line t t)
+ '(neo-show-updir-line t)
  '(neo-theme (quote nerd))
  '(org-refile-targets
    (quote
@@ -91,6 +93,8 @@
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-default-separator (quote slant))
+ '(psc-ide-add-import-on-completion t t)
+ '(psc-ide-rebuild-on-save nil t)
  '(ring-bell-function (quote ignore) t)
  '(safe-local-variable-values
    (quote
@@ -98,14 +102,17 @@
            (fboundp
             (quote rainbow-mode))
            (rainbow-mode 1)))))
+ '(sass-indent-offset 1)
  '(scroll-step 1)
  '(sh-basic-offset 2)
  '(sh-indent-after-else 0)
  '(sh-indentation 2)
  '(shm-display-quarantine nil)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#657b83" 0.2))
+ '(smie-indent-basic 2)
  '(smooth-scroll-strict-margins nil)
  '(solarized-distinct-fringe-background t)
+ '(standard-indent 2)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
