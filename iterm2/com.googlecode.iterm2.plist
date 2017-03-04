@@ -659,7 +659,7 @@
 		BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU1N0cmluZwGEhAhOU09iamVjdACF
 		hAErATGG
 		</data>
-		<string>322</string>
+		<string>307</string>
 	</array>
 	<key>NSTableView Hidden Columns KeyBingingTable</key>
 	<array/>
@@ -675,13 +675,13 @@
 	<key>NSWindow Frame Preferences</key>
 	<string>1592 949 606 456 0 0 2560 1417 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>373 265 620 392 0 0 1366 745 </string>
+	<string>650 499 620 392 0 0 1920 1057 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>304 188 1018 447 0 0 1440 877 </string>
+	<string>531 243 918 512 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>720 10 757 867 0 0 1440 877 </string>
+	<string>0 678 1920 379 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>756 280 625 777 0 0 1920 1057 </string>
+	<string>0 25 1438 852 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>0 40 2557 1377 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -1413,7 +1413,7 @@
 					<key>parameter</key>
 					<string>say \1</string>
 					<key>regex</key>
-					<string>^alert (.*)</string>
+					<string></string>
 				</dict>
 			</array>
 			<key>Unlimited Scrollback</key>
@@ -1628,11 +1628,11 @@
 			<key>Bold Color</key>
 			<dict>
 				<key>Blue Component</key>
-				<real>0.36716309189796448</real>
+				<real>0.41999999999999998</real>
 				<key>Green Component</key>
-				<real>0.52653944492340088</real>
+				<real>0.59999999999999998</real>
 				<key>Red Component</key>
-				<real>0.62042516469955444</real>
+				<real>0.71999999999999997</real>
 			</dict>
 			<key>Character Encoding</key>
 			<integer>4</integer>
@@ -1647,13 +1647,13 @@
 			<key>Cursor Color</key>
 			<dict>
 				<key>Alpha Component</key>
-				<real>1</real>
+				<integer>1</integer>
 				<key>Blue Component</key>
-				<real>0.35355597734451294</real>
+				<real>0.35355597734451288</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.26597702503204346</real>
+				<real>0.26597702503204351</real>
 				<key>Red Component</key>
 				<real>0.28544056415557861</real>
 			</dict>
@@ -1662,13 +1662,13 @@
 				<key>Alpha Component</key>
 				<real>0.272613525390625</real>
 				<key>Blue Component</key>
-				<real>0.39165949821472168</real>
+				<real>0.33662652969360352</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.18670670688152313</real>
+				<real>0.18046736717224121</real>
 				<key>Red Component</key>
-				<real>0.26579388976097107</real>
+				<real>0.24088592827320099</real>
 			</dict>
 			<key>Cursor Text Color</key>
 			<dict>
@@ -2405,11 +2405,11 @@
 			<key>Bold Color</key>
 			<dict>
 				<key>Blue Component</key>
-				<real>0.36716309189796448</real>
+				<real>0.41999999999999998</real>
 				<key>Green Component</key>
-				<real>0.52653944492340088</real>
+				<real>0.59999999999999998</real>
 				<key>Red Component</key>
-				<real>0.62042516469955444</real>
+				<real>0.71999999999999997</real>
 			</dict>
 			<key>Character Encoding</key>
 			<integer>4</integer>
@@ -2426,13 +2426,13 @@
 				<key>Alpha Component</key>
 				<integer>1</integer>
 				<key>Blue Component</key>
-				<real>0.26239815354347229</real>
+				<real>0.35355597734451288</real>
 				<key>Color Space</key>
 				<string>Calibrated</string>
 				<key>Green Component</key>
-				<real>0.094804145395755768</real>
+				<real>0.26597702503204351</real>
 				<key>Red Component</key>
-				<real>0.15923869609832761</real>
+				<real>0.28544056415557861</real>
 			</dict>
 			<key>Cursor Guide Color</key>
 			<dict>
@@ -3878,7 +3878,9 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-09-07T22:25:18Z</date>
+	<date>2016-11-22T16:56:43Z</date>
+	<key>SUSkippedVersion</key>
+	<string>3.0.12</string>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -3939,7 +3941,7 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.0.8</string>
+	<string>3.0.10</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
