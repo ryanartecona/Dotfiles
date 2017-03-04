@@ -93,6 +93,7 @@
       purescript
       agda
       python
+      sql
 
       ; My own layer
       ra
