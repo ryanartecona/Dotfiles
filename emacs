@@ -7,7 +7,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/spacemacs/")
 (setq backup-user-emacs-directory user-emacs-directory
-      user-emacs-directory "~/.emacs.d/spacemacs/")
+      user-emacs-directory "~/.emacs.d/spacemacs/"
+      custom-file "~/.emacs")
 
 ;; (setq init-file-debug t)
 (load "~/.emacs.d/spacemacs/init")
