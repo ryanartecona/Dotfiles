@@ -28,6 +28,13 @@ function fish_prompt --description 'Write out the prompt'
 
   # echo -n ' : '
 
+  # shell nesting level
+  if test "$THIS_SHELL_NESTING_LEVEL" -gt 0
+    set_color $fish_color_host
+    echo -n "‹$THIS_SHELL_NESTING_LEVEL› "
+    set_color normal
+  end
+
   # PWD
   set_color $fish_color_cwd
   echo -n (prompt_pwd)

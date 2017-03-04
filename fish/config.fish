@@ -125,6 +125,15 @@ if test -n "$ITERM_SESSION_ID" -a -f ~/.iterm2_shell_integration.fish
   source ~/.iterm2_shell_integration.fish
 end
 
+# support detection of shell nesting level for prompt
+if test -z "$SHELL_NESTING_LEVEL"
+  set -gx SHELL_NESTING_LEVEL '-1'
+end
+if not set -q THIS_SHELL_NESTING_LEVEL
+  set -g THIS_SHELL_NESTING_LEVEL (expr "$SHELL_NESTING_LEVEL" + 1)
+end
+set -gx SHELL_NESTING_LEVEL "$THIS_SHELL_NESTING_LEVEL"
+
 
 # Custom <TAB>-expandions
 
