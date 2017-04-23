@@ -82,7 +82,7 @@
  '(magit-push-arguments nil)
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
- '(neo-show-updir-line t)
+ '(neo-show-updir-line t t)
  '(neo-theme (quote nerd))
  '(org-refile-targets
    (quote

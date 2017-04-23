@@ -141,7 +141,6 @@
    dotspacemacs-major-mode-leader-key ","
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
    dotspacemacs-command-key ":"
-   dotspacemacs-enable-paste-micro-state t
    dotspacemacs-guide-key-delay 0.4
    dotspacemacs-loading-progress-bar t
    dotspacemacs-mode-line-unicode-symbols t
@@ -159,7 +158,7 @@
    dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-helm-position 'bottom
    dotspacemacs-helm-use-fuzzy 'always
-   dotspacemacs-enable-paste-transient-state nil
+   dotspacemacs-enable-paste-transient-state t
    dotspacemacs-switch-to-buffer-prefers-purpose nil
    dotspacemacs-folding-method 'origami
    )
