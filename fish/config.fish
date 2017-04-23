@@ -49,22 +49,19 @@ end
 
 function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/bin
-  echo /usr/local/share/npm/bin
-  if type -Pq npm
-    echo (npm config get prefix)/bin
-  end
   echo $HOME/.rvm/bin
   echo $HOME/.cabal/bin
   echo $HOME/Library/Haskell/bin
-  echo /export/apps/xtools/bin
-  echo /Applications/ghc-7.8.3.app/Contents/bin
+  echo /usr/local/texlive/2015/bin/x86_64-darwin
+  echo $HOME/.nix-profile/bin
+  echo $HOME/.nix-profile/sbin
   if type -Pq opam
     echo (opam config var bin)
     echo (opam config var sbin)
   end
-  echo /usr/local/texlive/2015/bin/x86_64-darwin
-  echo $HOME/.nix-profile/bin
-  echo $HOME/.nix-profile/sbin
+  if type -Pq npm
+    echo (npm config get prefix)/bin
+  end
   echo $HOME/.go/bin
   echo /usr/local/bin
   echo /usr/local/sbin
