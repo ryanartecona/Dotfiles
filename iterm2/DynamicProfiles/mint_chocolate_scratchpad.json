@@ -8,7 +8,17 @@
       "Blur": true,
       "Blur Radius": 30,
       "Window Type": 2,
-      "Rows": 25
+      "Rows": 25,
+      "HotKey Characters": "G",
+      "HotKey Key Code": 5,
+      "HotKey Modifier Flags": 1974612,
+      "HotKey Window AutoHides": 1,
+      "HotKey Window Reopens On Activation": 0,
+      "HotKey Window Animates": 1,
+      "HotKey Window Floats": 0,
+      "HotKey Window Dock Click Action": 0,
+      "HotKey Characters Ignoring Modifiers": "G",
+      "Has Hotkey": 1
     }
   ]
 }

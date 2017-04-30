@@ -10,7 +10,7 @@ function fish_prompt --description 'Write out the prompt'
 
   echo
 
-  type -q iterm2_prompt_start; and iterm2_prompt_start
+  type -q iterm2_prompt_mark; and iterm2_prompt_mark
 
   # # User
   # set_color $fish_color_user

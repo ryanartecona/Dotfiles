@@ -6,7 +6,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   # Mark start of prompt
-  function iterm2_prompt_start
+  function iterm2_prompt_mark
     printf "\033]133;A\007"
   end
 
@@ -27,7 +27,7 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   # Gives a variable accessible in a badge by \(user.currentDirectory)
   # Calls to this go in iterm2_print_user_vars.
   function iterm2_set_user_var
-    printf "\033]1337;SetUserVar=%s=%s\007" "$argv[1]" (printf "%s" "$argv[2]" | base64)
+    printf "\033]1337;SetUserVar=%s=%s\007" "$argv[1]" (printf "%s" "$argv[2]" | base64 | tr -d "\n")
   end
 
   # iTerm2 inform terminal that command starts here
@@ -42,7 +42,33 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
 
   end
 
-  function -v _ underscore_change
+  # NOTE: I commented out the below since I roll my own in my fish_prompt
+
+  # functions -c fish_prompt iterm2_fish_prompt
+
+  # functions -c fish_mode_prompt iterm2_fish_mode_prompt
+  # function fish_mode_prompt --description 'Write out the mode prompt; do not replace this. Instead, change fish_mode_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_mode_prompt instead.'
+  #    set -l last_status $status
+
+  #    iterm2_status $last_status
+  #    if not functions iterm2_fish_prompt | grep iterm2_prompt_mark > /dev/null
+  #      iterm2_prompt_mark
+  #    end
+  #    sh -c "exit $last_status"
+
+  #    iterm2_fish_mode_prompt
+  # end
+
+  # function fish_prompt --description 'Write out the prompt; do not replace this. Instead, change fish_prompt before sourcing .iterm2_shell_integration.fish, or modify iterm2_fish_prompt instead.'
+  #    # Remove the trailing newline from the original prompt. This is done
+  #    # using the string builtin from fish, but to make sure any escape codes
+  #    # are correctly interpreted, use %b for printf.
+  #    printf "%b" (string join "\n" (iterm2_fish_prompt))
+
+  #    iterm2_prompt_end
+  # end
+
+  function underscore_change -v _
     if [ x$_ = xfish ]
       iterm2_precmd
     else
@@ -56,5 +82,5 @@ if begin; status --is-interactive; and not functions -q -- iterm2_status; and [ 
   end
 
   iterm2_precmd
-  printf "\033]1337;ShellIntegrationVersion=2;shell=fish\007"
+  printf "\033]1337;ShellIntegrationVersion=5;shell=fish\007"
 end
