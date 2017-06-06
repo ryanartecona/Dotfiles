@@ -1,37 +1,5 @@
 ;; -*- mode: dotspacemacs -*-
 
-;; ============
-;; Emacs config
-;; ============
-
-; raise GC threshold to 200MB
-(setq gc-cons-threshold 200000000)
-
-; save emacs sessions by default
-;; (desktop-save-mode 1)
-
-; open new stuff in new graphical windows (instead of buffers)
-;; (setq pop-up-frames 'graphic-only) ; opens too many frames, need to figure it out
-(setq display-buffer-reuse-frames t
-      display-buffer-reuse-window t)
-
-; fix window scroll jumping when point moves near beginning/end of buffer
-(setq auto-window-vscroll nil)
-
-(setq system-uses-terminfo nil)
-
-; some solarized options
-(setq solarized-distinct-fringe-background t)
-(setq solarized-scale-org-headlines nil)
-(setq solarized-use-variable-pitch nil)
-(setq solarized-high-contrast-mode-line t)
-; may be unnecessary...
-;; (setq solarized-height-minus-1 1)
-;; (setq solarized-height-plus-1 1)
-;; (setq solarized-height-plus-2 1)
-;; (setq solarized-height-plus-3 1)
-;; (setq solarized-height-plus-4 1)
-
 ;; ================
 ;; Spacemacs config
 ;; ================
@@ -53,6 +21,7 @@
       dash
       org
       vim-empty-lines
+      ivy
       (auto-completion :variables
                        company-idle-delay 0.1
                        auto-completion-private-snippets-directory "~/.emacs.d/snippets")
@@ -107,6 +76,7 @@
     '(
       org-bullets
       magit-gh-pulls
+      magithub
       )
    dotspacemacs-delete-orphan-packages t
    dotspacemacs-enable-lazy-installation 'unused
@@ -142,12 +112,11 @@
    dotspacemacs-major-mode-leader-key ","
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
    dotspacemacs-command-key ":"
-   dotspacemacs-guide-key-delay 0.4
+   dotspacemacs-which-key-delay 0.4
    dotspacemacs-loading-progress-bar t
    dotspacemacs-mode-line-unicode-symbols t
    dotspacemacs-smooth-scrolling nil
    dotspacemacs-persistent-server t
-   ;; dotspacemacs-auto-resume-layouts t
    dotspacemacs-maximized-at-startup t
    dotspacemacs-elpa-https t
    dotspacemacs-check-for-update nil
@@ -177,6 +146,39 @@
    org-log-done 'time)
   )
 
+(defun dotspacemacs/user-init ()
+  ;; This runs before spacemacs packages are loaded & configured
+
+  ;; raise GC threshold to 200MB
+  (setq gc-cons-threshold 200000000)
+
+  ;; save emacs sessions by default
+  ;; (desktop-save-mode 1)
+
+
+  ;; open new stuff in new graphical windows (instead of buffers)
+  ;; (setq pop-up-frames 'graphic-only) ; opens too many frames, need to figure it out
+  (setq display-buffer-reuse-frames t
+        display-buffer-reuse-window t)
+
+  ;; fix window scroll jumping when point moves near beginning/end of buffer
+  (setq auto-window-vscroll nil)
+
+  (setq system-uses-terminfo nil)
+
+  ;; some solarized options
+  (setq solarized-distinct-fringe-background t)
+  (setq solarized-scale-org-headlines nil)
+  (setq solarized-use-variable-pitch nil)
+  (setq solarized-high-contrast-mode-line t)
+  ;; may be unnecessary...
+  ;; (setq solarized-height-minus-1 1)
+  ;; (setq solarized-height-plus-1 1)
+  ;; (setq solarized-height-plus-2 1)
+  ;; (setq solarized-height-plus-3 1)
+  ;; (setq solarized-height-plus-4 1)
+  )
+
 (defun dotspacemacs/user-config ()
   "Called at the end of spacemacs configuration sequence"
 
@@ -192,13 +194,13 @@
   (golden-ratio-mode 1)
 
   ; turn off ido-mode, so plugins (workgroups) don't think it's
-  ; preferred to helm
+  ; preferred to helm or ivy
   (ido-mode -1)
 
   ; turn on which-key
   (which-key-mode 1)
 
-  ; turn off clean-adindent-mode
+  ; turn off clean-aindent-mode
   (clean-aindent-mode -1)
 
   (when (equal system-type 'darwin)
@@ -206,13 +208,12 @@
     (global-set-key (kbd "s-n") 'make-frame-command)
     (global-set-key (kbd "s-a") 'mark-whole-buffer)
     (global-set-key (kbd "s-w") 'delete-window)
-    (global-set-key (kbd "s-S-w") 'delete-frame)
     (global-set-key (kbd "s-<right>") 'evil-end-of-line)
     (global-set-key (kbd "s-<left>") 'evil-first-non-blank)
-    (global-set-key (kbd "s-S-<up>") 'evil-window-up)
-    (global-set-key (kbd "s-S-<down>") 'evil-window-down)
-    (global-set-key (kbd "s-S-<left>") 'evil-window-left)
-    (global-set-key (kbd "s-S-<right>") 'evil-window-right)
+    (global-set-key (kbd "H-<up>") 'evil-window-up)
+    (global-set-key (kbd "H-<down>") 'evil-window-down)
+    (global-set-key (kbd "H-<left>") 'evil-window-left)
+    (global-set-key (kbd "H-<right>") 'evil-window-right)
     (global-set-key (kbd "M-DEL") 'evil-delete-backward-word)
     )
 
