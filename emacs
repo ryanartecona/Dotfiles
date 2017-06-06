@@ -51,6 +51,7 @@
  '(git-gutter-fr:side (quote left-fringe) t)
  '(global-flycheck-mode t)
  '(haskell-indent-offset 2)
+ '(haskell-process-type (quote stack-ghci))
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -82,7 +83,7 @@
  '(magit-push-arguments nil)
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
- '(neo-show-updir-line t t)
+ '(neo-show-updir-line t)
  '(neo-theme (quote nerd))
  '(org-refile-targets
    (quote

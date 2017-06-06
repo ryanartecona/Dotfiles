@@ -20,6 +20,10 @@
 	<false/>
 	<key>BadgeFont</key>
 	<string>PragmataPro</string>
+	<key>BadgeFontIsBold</key>
+	<false/>
+	<key>BadgeTopMargin</key>
+	<integer>0</integer>
 	<key>CheckTestRelease</key>
 	<true/>
 	<key>ClosingHotkeySwitchesSpaces</key>
@@ -611,13 +615,15 @@
 	<key>HotKeyTogglesWindow</key>
 	<true/>
 	<key>Hotkey</key>
-	<true/>
+	<false/>
 	<key>HotkeyAutoHides</key>
 	<true/>
 	<key>HotkeyChar</key>
-	<integer>71</integer>
+	<integer>0</integer>
 	<key>HotkeyCode</key>
-	<integer>5</integer>
+	<integer>0</integer>
+	<key>HotkeyMigratedFromSingleToMulti</key>
+	<true/>
 	<key>HotkeyModifiers</key>
 	<integer>1974612</integer>
 	<key>IRMemory</key>
@@ -677,15 +683,15 @@
 	<key>NSWindow Frame SUStatusFrame</key>
 	<string>520 562 400 129 0 0 1440 877 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>410 364 620 392 0 0 1440 877 </string>
+	<string>650 499 620 392 0 0 1920 1057 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>304 140 918 512 0 0 1440 877 </string>
+	<string>304 111 937 512 0 0 1440 877 </string>
 	<key>NSWindow Frame com.apple.typography_panel_PragmataProMono</key>
 	<string>423 108 260 695 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>720 9 754 868 0 0 1440 877 </string>
+	<string>960 7 922 1050 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>720 190 733 867 0 0 1920 1057 </string>
+	<string>960 17 940 1040 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>0 40 2557 1377 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -1619,6 +1625,8 @@
 			<false/>
 			<key>Background Image Location</key>
 			<string></string>
+			<key>Badge Text</key>
+			<string></string>
 			<key>Blend</key>
 			<real>0.30000001192092901</real>
 			<key>Blink Allowed</key>
@@ -1697,6 +1705,8 @@
 			<false/>
 			<key>Disable Window Resizing</key>
 			<true/>
+			<key>Dynamic Profile Filename</key>
+			<string>/Users/ryanartecona/Library/Application Support/iTerm2/DynamicProfiles/mint_chocolate.json</string>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -2014,7 +2024,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>PragmataProMono 12</string>
+			<string>PragmataPro 12</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -2396,6 +2406,8 @@
 			<false/>
 			<key>Background Image Location</key>
 			<string></string>
+			<key>Badge Text</key>
+			<string></string>
 			<key>Blend</key>
 			<real>0.30000001192092901</real>
 			<key>Blink Allowed</key>
@@ -2474,6 +2486,8 @@
 			<false/>
 			<key>Disable Window Resizing</key>
 			<true/>
+			<key>Dynamic Profile Filename</key>
+			<string>/Users/ryanartecona/Library/Application Support/iTerm2/DynamicProfiles/mint_chocolate_scratchpad.json</string>
 			<key>Dynamic Profile Parent Name</key>
 			<string>Mint Chocolate</string>
 			<key>Flashing Bell</key>
@@ -2489,10 +2503,30 @@
 			</dict>
 			<key>Guid</key>
 			<string>3D6C33F1-5320-4013-AAC9-B2F975AA380A</string>
+			<key>Has Hotkey</key>
+			<integer>1</integer>
 			<key>Hide After Opening</key>
 			<false/>
 			<key>Horizontal Spacing</key>
 			<integer>1</integer>
+			<key>HotKey Characters</key>
+			<string>G</string>
+			<key>HotKey Characters Ignoring Modifiers</key>
+			<string>G</string>
+			<key>HotKey Key Code</key>
+			<integer>5</integer>
+			<key>HotKey Modifier Flags</key>
+			<integer>1974612</integer>
+			<key>HotKey Window Animates</key>
+			<integer>1</integer>
+			<key>HotKey Window AutoHides</key>
+			<integer>1</integer>
+			<key>HotKey Window Dock Click Action</key>
+			<integer>0</integer>
+			<key>HotKey Window Floats</key>
+			<integer>0</integer>
+			<key>HotKey Window Reopens On Activation</key>
+			<integer>0</integer>
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Initial Text</key>
@@ -3880,11 +3914,11 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/testing.xml?shard=26</string>
+	<string>https://iterm2.com/appcasts/nightly.xml?shard=26</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-04-30T21:56:58Z</date>
+	<date>2017-05-11T16:45:45Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>Secure Input</key>
@@ -3942,10 +3976,12 @@
 	<string>/-+\~_.</string>
 	<key>findIgnoreCase_iTerm</key>
 	<true/>
+	<key>findMode_iTerm</key>
+	<integer>0</integer>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.0.13</string>
+	<string>3.1.20170430-nightly</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>

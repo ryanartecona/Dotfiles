@@ -94,6 +94,7 @@
       agda
       python
       sql
+      csv
 
       ; My own layer
       ra
