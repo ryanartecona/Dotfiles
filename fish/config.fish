@@ -103,7 +103,7 @@ set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 # OPAM configuration
 if type -Pq opam
   # Let opam set the env vars it wants, but don't let it break my MANPATH
-  eval (opam config env | grep -vi 'MANPATH')
+  opam config env | grep -vi 'MANPATH' | source
 end
 
 # RVM for Ruby needs to be run once to add stuff to $PATH
