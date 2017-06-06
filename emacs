@@ -5,7 +5,14 @@
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs
 ;; by setting it as 'user-emacs-directory
 
-(add-to-list 'load-path "~/.emacs.d/spacemacs/")
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+;(package-initialize)
+
+;(add-to-list 'load-path "~/.emacs.d/spacemacs/")
 (setq backup-user-emacs-directory user-emacs-directory
       user-emacs-directory "~/.emacs.d/spacemacs/"
       custom-file "~/.emacs")
@@ -83,20 +90,23 @@
  '(magit-push-arguments nil)
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
- '(neo-show-updir-line t)
+ '(neo-show-updir-line t t)
  '(neo-theme (quote nerd))
  '(org-refile-targets
    (quote
     ((org-agenda-files :maxlevel . 2)
      (nil :maxlevel . 2))))
  '(org-tags-column -117)
+ '(package-selected-packages
+   (quote
+    (wgrep smex ivy-purpose ivy-hydra counsel-projectile counsel-dash counsel swiper ivy web-mode ob-elixir magithub ghub+ apiwrap ghub info+ dante company-ghc yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify volatile-highlights uuidgen utop use-package tuareg toc-org tagedit symon string-inflection sql-indent spaceline solarized-theme smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode psci psc-ide popwin pip-requirements persp-mode pbcopy password-generator paradox pandoc-mode ox-pandoc osx-trash osx-dictionary origami orgit org-projectile org-present org-pomodoro org-download open-junk-file ocp-indent nix-mode nginx-mode neotree multi-term move-text mmm-mode minitest merlin markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero insert-shebang indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ghc gh-md fuzzy flycheck-pos-tip flycheck-mix flycheck-haskell flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump diff-hl dash-at-point cython-mode csv-mode company-web company-tern company-statistics company-shell company-nixos-options company-lua company-ghci company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode chruby bundler browse-at-remote bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adoc-mode adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-default-separator (quote slant))
  '(psc-ide-add-import-on-completion t t)
  '(psc-ide-rebuild-on-save nil t)
- '(ring-bell-function (quote ignore) t)
+ '(ring-bell-function (quote ignore))
  '(safe-local-variable-values
    (quote
     ((eval when
