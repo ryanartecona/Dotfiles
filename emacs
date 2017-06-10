@@ -54,7 +54,7 @@
  '(evil-want-Y-yank-to-eol nil)
  '(expand-region-contract-fast-key "V")
  '(expand-region-reset-fast-key "r")
- '(fci-rule-color "#eee8d5")
+ '(fci-rule-color "#eee8d5" t)
  '(git-gutter-fr:side (quote left-fringe) t)
  '(global-flycheck-mode t)
  '(haskell-indent-offset 2)
@@ -83,6 +83,7 @@
    (quote
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
  '(if (version< emacs-version "24.4"))
+ '(ivy-height 25)
  '(js-indent-level 2)
  '(lua-indent-level 1 t)
  '(mac-system-move-file-to-trash-use-finder t)

@@ -117,6 +117,11 @@ if not test -d ~/.go
 end
 set -gx GOPATH "$HOME/.go"
 
+# Elixir via kiex
+if test -f ~/.kiex/scripts/kiex.fish
+  source ~/.kiex/scripts/kiex.fish
+end
+
 # iterm2 prompt integration helpers
 if test -n "$ITERM_SESSION_ID" -a -f ~/.iterm2_shell_integration.fish
   source ~/.iterm2_shell_integration.fish
