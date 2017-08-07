@@ -24,7 +24,8 @@
       ivy
       (auto-completion :variables
                        company-idle-delay 0.1
-                       auto-completion-private-snippets-directory "~/.emacs.d/snippets")
+                       auto-completion-private-snippets-directory "~/.emacs.d/snippets"
+                       auto-completion-enable-help-tooltip t)
       syntax-checking
       (shell :variables
              shell-default-shell 'multi-term
@@ -64,6 +65,8 @@
       python
       sql
       csv
+      (reason :variables
+              reason-auto-refmt t)
 
       ; My own layer
       ra
@@ -71,12 +74,19 @@
    dotspacemacs-additional-packages
     '(
       ox-reveal
+      prettier-js
       )
    dotspacemacs-excluded-packages
     '(
       org-bullets
       magit-gh-pulls
       magithub
+      magit-gitflow
+      orgit
+      robe
+      ; can't ever get this to not complain at me...
+      anaconda-mode
+      editorconfig
       )
    dotspacemacs-delete-orphan-packages t
    dotspacemacs-enable-lazy-installation 'unused
@@ -95,7 +105,7 @@
     '(
       ;; "Menlo"
       "PragmataPro"
-      :size 12
+      :size 14
       :weight normal
       :width normal
       :powerline-scale 1.4
@@ -202,6 +212,8 @@
 
   ; turn off clean-aindent-mode
   (clean-aindent-mode -1)
+
+  (global-company-mode 1)
 
   (when (equal system-type 'darwin)
     ;; Make some OSX idioms work
