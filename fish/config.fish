@@ -142,3 +142,8 @@ set -gx SHELL_NESTING_LEVEL "$THIS_SHELL_NESTING_LEVEL"
 # gb<TAB> to choose among git branches
 expand-word -p '^gb$' -e 'git branch | cut -c 3-'
 expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+
+# setup initial autoenvstack, if starting from a dir with an .env.fish
+if status is-interactive; and type -q _autoenvstack
+  _autoenvstack
+end
