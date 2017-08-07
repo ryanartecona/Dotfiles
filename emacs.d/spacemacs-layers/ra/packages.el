@@ -4,6 +4,7 @@
     pandoc-mode
     multi-term
     writeroom-mode
+    prettier-js
     )
   )
 
@@ -54,3 +55,9 @@
 
 (defun ra/init-writeroom-mode ()
   (use-package writeroom-mode))
+
+(defun ra/init-prettier-js ()
+  (when (configuration-layer/package-usedp 'js2-mode)
+    (add-hook 'js2-mode-hook (lambda () (require 'prettier-js)))
+    )
+  )
