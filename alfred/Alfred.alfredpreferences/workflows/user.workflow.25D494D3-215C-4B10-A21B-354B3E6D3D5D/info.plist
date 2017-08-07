@@ -125,6 +125,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>84925B69-E478-491D-83AA-BD04A477C887</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>924F8FAD-54F0-4509-9680-68C863E1765C</key>
 		<array>
 			<dict>
@@ -251,6 +264,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>8</integer>
 				<key>hotmod</key>
@@ -295,6 +312,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>1</integer>
 				<key>hotmod</key>
@@ -322,6 +343,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>17</integer>
 				<key>hotmod</key>
@@ -383,6 +408,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>15</integer>
 				<key>hotmod</key>
@@ -410,6 +439,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>0</integer>
 				<key>hotmod</key>
@@ -471,6 +504,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>45</integer>
 				<key>hotmod</key>
@@ -498,6 +535,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>34</integer>
 				<key>hotmod</key>
@@ -559,6 +600,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>7</integer>
 				<key>hotmod</key>
@@ -603,6 +648,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>46</integer>
 				<key>hotmod</key>
@@ -647,6 +696,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>9</integer>
 				<key>hotmod</key>
@@ -674,6 +727,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>3</integer>
 				<key>hotmod</key>
@@ -735,6 +792,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>31</integer>
 				<key>hotmod</key>
@@ -779,6 +840,10 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>35</integer>
 				<key>hotmod</key>
@@ -808,6 +873,10 @@
 				<integer>3</integer>
 				<key>argumenttext</key>
 				<string>zoom.us</string>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>6</integer>
 				<key>hotmod</key>
@@ -861,7 +930,11 @@ open "/Applications/$query.app"</string>
 				<key>argument</key>
 				<integer>3</integer>
 				<key>argumenttext</key>
-				<string>Quip</string>
+				<string>Discord</string>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>2</integer>
 				<key>hotmod</key>
@@ -891,6 +964,10 @@ open "/Applications/$query.app"</string>
 				<integer>3</integer>
 				<key>argumenttext</key>
 				<string>Tweetbot</string>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
 				<integer>14</integer>
 				<key>hotmod</key>
@@ -911,6 +988,39 @@ open "/Applications/$query.app"</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Quip</string>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>32</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>U</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>84925B69-E478-491D-83AA-BD04A477C887</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -921,7 +1031,7 @@ open "/Applications/$query.app"</string>
 			<key>xpos</key>
 			<integer>100</integer>
 			<key>ypos</key>
-			<integer>2410</integer>
+			<integer>2400</integer>
 		</dict>
 		<key>157871BA-9B06-463F-BA06-6317CF44CE4F</key>
 		<dict>
@@ -1043,6 +1153,13 @@ open "/Applications/$query.app"</string>
 			<integer>500</integer>
 			<key>ypos</key>
 			<real>490</real>
+		</dict>
+		<key>84925B69-E478-491D-83AA-BD04A477C887</key>
+		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>2510</integer>
 		</dict>
 		<key>924F8FAD-54F0-4509-9680-68C863E1765C</key>
 		<dict>

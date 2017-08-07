@@ -4,7 +4,5 @@
 <dict>
 	<key>enabled</key>
 	<true/>
-	<key>keychainpath</key>
-	<string>/Users/ryanartecona/Dropbox (Personal)/Documents/Vault/1Password.agilekeychain</string>
 </dict>
 </plist>
