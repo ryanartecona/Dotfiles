@@ -1,3 +1,6 @@
 [submodule "emacs.d/spacemacs"]
 	path = emacs.d/spacemacs
 	url = https://github.com/syl20bnr/spacemacs.git
+[submodule "emacs.d/spacemacs-layers/reason"]
+	path = emacs.d/spacemacs-layers/reason
+	url = git@github.com:fredyr/reason.git
