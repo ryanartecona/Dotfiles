@@ -5,6 +5,10 @@
 ;; The following loads spacemacs from ~/.emacs.d/spacemacs
 ;; by setting it as 'user-emacs-directory
 
+;; Fix inadequate list of SSL trust roots cert file locations
+;; for macOS Sierra+
+(setq gnutls-trustfiles '("/etc/ssl/cert.pem"))
+
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
