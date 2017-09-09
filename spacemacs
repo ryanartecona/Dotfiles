@@ -192,7 +192,7 @@
 (defun dotspacemacs/user-config ()
   "Called at the end of spacemacs configuration sequence"
 
-  (setq powerline-default-separator 'slant)
+  (setq powerline-default-separator nil)
 
   ; enable left fringe, disable right fringe
   (fringe-mode '(nil . 0))
