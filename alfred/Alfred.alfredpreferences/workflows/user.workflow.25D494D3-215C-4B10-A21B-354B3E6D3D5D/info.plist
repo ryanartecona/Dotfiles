@@ -176,6 +176,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>B1E80A31-2D2F-4BC8-9E9F-D0BBA18DD8E0</key>
 		<array>
@@ -791,7 +801,9 @@
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
-				<integer>0</integer>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Textual</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
