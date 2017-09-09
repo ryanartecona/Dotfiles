@@ -92,6 +92,12 @@ end
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
 
+# Setup nix build daemon & multi-user stuff
+if type -q bass; and test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  bass source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh 2> /dev/null
+else
+  echo "WARN: Could not source nix-daemon.sh profile"
+end
 # Set Nix path to default nixpkgs location
 set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 
@@ -138,10 +144,12 @@ set -gx SHELL_NESTING_LEVEL "$THIS_SHELL_NESTING_LEVEL"
 
 
 # Custom <TAB>-expandions
-
-# gb<TAB> to choose among git branches
-expand-word -p '^gb$' -e 'git branch | cut -c 3-'
-expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+if type -q expand-word
+  # gb<TAB> to choose among local git branches
+  expand-word -p '^gb$' -e 'git branch | cut -c 3-'
+  # gba<TAB> to choose among local & remote git branches
+  expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+end
 
 # setup initial autoenvstack, if starting from a dir with an .env.fish
 if status is-interactive; and type -q _autoenvstack

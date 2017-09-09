@@ -30,5 +30,5 @@
         (when (string= (car var) "PATH")
           (setq exec-path (split-string (cadr var) path-separator)))))))
 
-(opam-update-env)
-
+(when (executable-find "opam")
+  (opam-update-env))
