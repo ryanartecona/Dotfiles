@@ -9,7 +9,7 @@
 	excludesfile = /Users/ryanartecona/.gitignore
 [alias]
 	ls = ls-tree -r HEAD --name-only
-    st = status --short --branch
+	st = status --short --branch
 [credential]
 	helper = osxkeychain
 [github]
