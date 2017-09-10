@@ -1,10 +1,5 @@
-if type -Pq hub
-  alias g=hub
-end
-
-if type -Pq http
-  alias httpv="http --print=HBhb"
-end
+alias g=hub
+alias httpv="http --print=HBhb"
 
 
 if status --is-interactive
