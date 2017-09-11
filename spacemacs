@@ -29,7 +29,11 @@
       syntax-checking
       (shell :variables
              shell-default-shell 'multi-term
-             shell-default-term-shell "/usr/local/bin/fish")
+             ;; only used for term and ansi-term, but oh well...
+             shell-default-term-shell (or
+                                       (executable-find "/Users/ryanartecona/.nix-profile/bin/fish")
+                                       (executable-find "/usr/local/bin/fish")
+                                       (executable-find "fish")))
       shell-scripts
       ;; (perspectives :variables
       ;;               perspective-enable-persp-projectile t)

@@ -100,6 +100,7 @@
  '(magit-use-overlays nil)
  '(markdown-command "pandoc")
  '(merlin-command "ocamlmerlin" t)
+ '(multi-term-program "fish")
  '(neo-show-updir-line t t)
  '(neo-theme (quote nerd))
  '(org-default-notes-file "~/notes/notes.org")
