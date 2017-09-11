@@ -42,6 +42,17 @@ if status --is-interactive
 end
 
 
+# Setup nix build daemon & multi-user stuff early, since other tools later may
+# be installed by nix
+if type -q bass; and test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  bass source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh 2> /dev/null
+else
+  echo "WARN: Could not source nix-daemon.sh profile (with bass)"
+end
+# Set Nix path to default nixpkgs location
+set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
+
+
 function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/bin
   echo $HOME/.rvm/bin
@@ -86,15 +97,6 @@ end
 
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
-
-# Setup nix build daemon & multi-user stuff
-if type -q bass; and test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  bass source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh 2> /dev/null
-else
-  echo "WARN: Could not source nix-daemon.sh profile"
-end
-# Set Nix path to default nixpkgs location
-set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
 
 # Turn on vi key bindings, unless we're in an Emacs shell
 # if not test $INSIDE_EMACS
