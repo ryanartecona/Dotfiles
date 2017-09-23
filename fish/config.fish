@@ -65,9 +65,7 @@ function allowed_paths --description "User-allowed \$path dirs"
     echo (opam config var bin)
     echo (opam config var sbin)
   end
-  if type -Pq npm
-    echo (npm config get prefix)/bin
-  end
+  echo $HOME/.npm/bin
   echo $HOME/.go/bin
   echo /usr/local/bin
   echo /usr/local/sbin
@@ -106,7 +104,7 @@ set fish_user_paths (valid_allowed_paths)
 # OPAM configuration
 if type -Pq opam
   # Let opam set the env vars it wants, but don't let it break my MANPATH
-  opam config env | grep -vi 'MANPATH' | source
+  env SHELL=fish opam config env | grep -vi 'MANPATH' | source
 end
 
 # RVM for Ruby needs to be run once to add stuff to $PATH
