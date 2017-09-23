@@ -1,6 +1,5 @@
 ; OPAM OCaml stuff
 (setq
- merlin-command 'opam
  merlin-use-auto-complete-mode 'easy)
 
 ;; Base configuration for OPAM

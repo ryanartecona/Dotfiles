@@ -79,6 +79,11 @@
     '(
       ox-reveal
       prettier-js
+      (merlin :location (recipe
+                         :fetcher github
+                         :repo "ocaml/merlin"
+                         :commit "v2.5.4"
+                         :files ("emacs/*.el")))
       )
    dotspacemacs-excluded-packages
     '(
@@ -88,8 +93,7 @@
       magit-gitflow
       orgit
       robe
-      ; can't ever get this to not complain at me...
-      anaconda-mode
+      anaconda-mode ; can't ever get this to not complain at me...
       editorconfig
       )
    dotspacemacs-delete-orphan-packages t
@@ -218,6 +222,9 @@
   (clean-aindent-mode -1)
 
   (global-company-mode 1)
+
+  ; don't spam the system clipboard with visual selections
+  (fset 'evil-visual-update-x-selection 'ignore)
 
   (when (equal system-type 'darwin)
     ;; Make some OSX idioms work
