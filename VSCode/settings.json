@@ -42,4 +42,8 @@
       "CANCELLED",
       "BLOCKED"
     ],
+    "gitlens.codeLens.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.statusBar.enabled": false,
   }
