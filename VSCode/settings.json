@@ -15,6 +15,9 @@
     "workbench.editor.showTabs": true,
     "workbench.sideBar.location": "left",
     "workbench.panel.defaultLocation": "right",
+    "terminal.integrated.fontFamily": "PragmataPro",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.scrollback": 10000,
     "reason.codelens.enabled": false,
     "reason.diagnostics.tools": [
         "merlin",
