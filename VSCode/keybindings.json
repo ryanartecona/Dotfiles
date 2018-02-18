@@ -1,0 +1,55 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+  {
+    "key": "shift+cmd+right",
+    "command": "workbench.action.nextEditor"
+  },
+  {
+    "key": "alt+cmd+right",
+    "command": "-workbench.action.nextEditor"
+  },
+  {
+    "key": "shift+cmd+left",
+    "command": "workbench.action.previousEditor"
+  },
+  {
+    "key": "alt+cmd+left",
+    "command": "-workbench.action.previousEditor"
+  },
+  {
+    "key": "ctrl+left",
+    "command": "workbench.action.navigateLeft"
+  },
+  {
+    "key": "ctrl+right",
+    "command": "workbench.action.navigateRight"
+  },
+  {
+    "key": "ctrl+down",
+    "command": "workbench.action.navigateDown"
+  },
+  {
+    "key": "ctrl+up",
+    "command": "workbench.action.navigateUp"
+  },
+  {
+    "key": "shift+cmd+up",
+    "command": "workbench.action.navigateUp"
+  },
+  {
+    "key": "shift+cmd+down",
+    "command": "workbench.action.navigateDown"
+  },
+  {
+    "key": "ctrl+g",
+    "command": "-workbench.action.gotoLine"
+  },
+  {
+    "key": "shift+cmd+t",
+    "command": "workbench.action.quickOpenTerm"
+  },
+  {
+    "key": "ctrl+t",
+    "command": "workbench.action.terminal.toggleTerminal"
+  }
+]
