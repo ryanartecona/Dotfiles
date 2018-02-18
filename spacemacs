@@ -20,7 +20,7 @@
       osx
       dash
       org
-      vim-empty-lines
+      ;; vim-empty-lines
       ivy
       (auto-completion :variables
                        company-idle-delay 0.1
@@ -41,6 +41,7 @@
                          spacemacs-layouts-directory "~/.emacs.d/persps-layouts/"
                          layouts-enable-autosave t
                          layouts-autosave-delay 1800)
+      gnus
 
       ; Langs
       (ruby :variables
@@ -71,6 +72,8 @@
       csv
       (reason :variables
               reason-auto-refmt t)
+      (go :variables
+          go-tab-width 2)
 
       ; My own layer
       ra
