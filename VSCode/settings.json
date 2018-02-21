@@ -49,4 +49,12 @@
     "gitlens.currentLine.enabled": false,
     "gitlens.hovers.currentLine.over": "line",
     "gitlens.statusBar.enabled": false,
+    "vim.leader": "<Space>",
+    "vim.otherModesKeyBindingsNonRecursive": [
+        {
+            // Split line and move the trailing part down
+            "before": ["K"],
+            "after": ["i", "<CR>", "<Esc>", "k", "$"]
+        }
+    ]
   }

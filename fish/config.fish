@@ -7,7 +7,8 @@ if status --is-interactive
   if test "$INSIDE_EMACS"
     set -xg EDITOR "emacsclient"
   else
-    set -xg EDITOR "emacsclient --create-frame"
+    set -xg EDITOR "vim"
+    set -xg VISUAL "code --wait"
   end
 
   set -g fish_prompt_git_prefix           ' ± '
