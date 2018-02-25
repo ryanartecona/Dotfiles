@@ -74,5 +74,6 @@
                 }
             ]
         }
-    ]
-  }
+    ],
+    "git.confirmSync": false
+}
