@@ -45,11 +45,15 @@
     "command": "-workbench.action.gotoLine"
   },
   {
-    "key": "shift+cmd+t",
+    "key": "ctrl+cmd+t",
     "command": "workbench.action.quickOpenTerm"
   },
   {
     "key": "ctrl+t",
     "command": "workbench.action.terminal.toggleTerminal"
+  },
+  {
+    "key": "shift+cmd+t",
+    "command": "workbench.action.tasks.test"
   }
 ]

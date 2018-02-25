@@ -7,4 +7,9 @@ self: super:
        outputsToInstall = [ "out" "man" ];
      };
   });
+  nixUnstableWithManual = super.nixUnstable.overrideAttrs (oldAttrs: {
+    meta = oldAttrs.meta // {
+      outputsToInstall = [ "out" "man" ];
+    };
+  });
 }

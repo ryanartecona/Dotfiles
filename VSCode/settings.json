@@ -55,6 +55,24 @@
             // Split line and move the trailing part down
             "before": ["K"],
             "after": ["i", "<CR>", "<Esc>", "k", "$"]
+        },
+        {
+            "before": ["<leader>", "v"],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.smartSelect.grow"
+                }
+            ]
+        },
+        {
+            "before": ["<leader>", "V"],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.smartSelect.shrink"
+                }
+            ]
         }
     ]
   }
