@@ -6,6 +6,8 @@ self: super:
     # e.g. moreutils' `parallel` and GNU `parallel` would collide.
     ignoreCollisions = true;
 
+    extraOutputsToInstall = [ "man" ];
+
     paths = with super; [
       awscli
       bind
