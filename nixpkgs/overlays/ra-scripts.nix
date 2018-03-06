@@ -10,4 +10,12 @@ self: super:
 
     exec $EDITOR "$@"
   '';
+
+  ra-echo-argv = super.writeScriptBin "echo-argv" ''
+    #!${super.ruby}/bin/ruby
+
+    require 'pp'
+
+    pp ARGV
+  '';
 }

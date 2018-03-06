@@ -44,8 +44,9 @@ self: super:
       wget
       yarn
 
-      # From my overlays
+      # From my ra-scripts overlay
       ra-e
+      ra-echo-argv
     ];
   };
 }
