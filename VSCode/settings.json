@@ -1,6 +1,6 @@
 {
     "editor.fontFamily": "PragmataPro",
-    "editor.fontSize": 14,
+    "editor.fontSize": 12,
     "editor.tabSize": 2,
     "editor.fontLigatures": true,
     "editor.lineNumbers": "relative",
@@ -16,7 +16,7 @@
     "workbench.sideBar.location": "left",
     "workbench.panel.defaultLocation": "right",
     "terminal.integrated.fontFamily": "PragmataPro",
-    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 12,
     "terminal.integrated.scrollback": 10000,
     "reason.codelens.enabled": false,
     "reason.diagnostics.tools": [
@@ -73,7 +73,17 @@
                     "command": "editor.action.smartSelect.shrink"
                 }
             ]
+        },
+        {
+            "before": ["j"],
+            "after": ["g", "j"]
+        },
+        {
+            "before": ["k"],
+            "after": ["g", "k"]
         }
     ],
-    "git.confirmSync": false
+    "git.confirmSync": false,
+    "vim.disableExtension": false,
+    "window.zoomLevel": 0
 }

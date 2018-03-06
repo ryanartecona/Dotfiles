@@ -12,6 +12,7 @@
 [alias]
 	ls = ls-tree -r HEAD --name-only
 	st = status --short --branch
+	pushf = push --force-with-lease
 [http]
 	sslVerify = true
 [credential]
