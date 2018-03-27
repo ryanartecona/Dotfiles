@@ -19,3 +19,5 @@
 	helper = osxkeychain
 [github]
 	user = ryanartecona
+[commit]
+	verbose = true
