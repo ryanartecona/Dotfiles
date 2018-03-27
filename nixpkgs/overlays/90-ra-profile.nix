@@ -37,6 +37,8 @@ self: super:
       pandoc
       parallel
       pinentry_mac
+      python3
+      python3Packages.pylint
       ranger
       ripgrep
       sloccount
