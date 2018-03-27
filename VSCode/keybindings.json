@@ -55,5 +55,9 @@
   {
     "key": "shift+cmd+t",
     "command": "workbench.action.tasks.test"
+  },
+  {
+    "key": "shift+cmd+g",
+    "command": "workbench.view.scm"
   }
 ]
