@@ -10,6 +10,9 @@
     "editor.renderLineHighlight": "all",
     "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
+    "editor.rulers": [
+        80
+    ],
     "docker.showExplorer": false,
     "workbench.colorTheme": "Nord",
     "workbench.editor.showTabs": true,
@@ -18,6 +21,7 @@
     "terminal.integrated.fontFamily": "PragmataPro",
     "terminal.integrated.fontSize": 12,
     "terminal.integrated.scrollback": 10000,
+    "python.pythonPath": "python3",
     "reason.codelens.enabled": false,
     "reason.diagnostics.tools": [
         "merlin",
@@ -37,13 +41,13 @@
         ]
     },
     "org.todoKeywords": [
-      "PLAN",
-      "TODO",
-      "NEXT",
-      "DONE",
-      "STALE",
-      "CANCELLED",
-      "BLOCKED"
+        "PLAN",
+        "TODO",
+        "NEXT",
+        "DONE",
+        "STALE",
+        "CANCELLED",
+        "BLOCKED"
     ],
     "gitlens.codeLens.enabled": false,
     "gitlens.currentLine.enabled": false,
@@ -53,11 +57,22 @@
     "vim.otherModesKeyBindingsNonRecursive": [
         {
             // Split line and move the trailing part down
-            "before": ["K"],
-            "after": ["i", "<CR>", "<Esc>", "k", "$"]
+            "before": [
+                "K"
+            ],
+            "after": [
+                "i",
+                "<CR>",
+                "<Esc>",
+                "k",
+                "$"
+            ]
         },
         {
-            "before": ["<leader>", "v"],
+            "before": [
+                "<leader>",
+                "v"
+            ],
             "after": [],
             "commands": [
                 {
@@ -66,7 +81,10 @@
             ]
         },
         {
-            "before": ["<leader>", "V"],
+            "before": [
+                "<leader>",
+                "V"
+            ],
             "after": [],
             "commands": [
                 {
@@ -75,15 +93,40 @@
             ]
         },
         {
-            "before": ["j"],
-            "after": ["g", "j"]
+            "before": [
+                "j"
+            ],
+            "after": [
+                "g",
+                "j"
+            ]
         },
         {
-            "before": ["k"],
-            "after": ["g", "k"]
+            "before": [
+                "k"
+            ],
+            "after": [
+                "g",
+                "k"
+            ]
         }
     ],
     "git.confirmSync": false,
     "vim.disableExtension": false,
-    "window.zoomLevel": 0
+    "window.zoomLevel": 0,
+    "gitlens.keymap": "alternate",
+    "[ruby]": {
+        "editor.rulers": [
+            80
+        ],
+    },
+    "[nix]": {
+        "editor.rulers": [
+            80
+        ],
+    },
+    "[plaintext]": {
+        "editor.detectIndentation": false
+    },
+    "workbench.startupEditor": "none"
 }
