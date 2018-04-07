@@ -15,6 +15,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>577E7995-64DC-454D-B3F1-4FB96CC5AA65</key>
@@ -26,6 +28,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>DDFAE429-BEEC-49EA-BEDB-7E71BD402695</key>
@@ -37,6 +41,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -45,7 +51,7 @@
 	<key>description</key>
 	<string>Open files or folders in Sublime Text (v3)</string>
 	<key>disabled</key>
-	<false/>
+	<true/>
 	<key>name</key>
 	<string>Open with Sublime Text v1.1</string>
 	<key>objects</key>
@@ -65,7 +71,7 @@
 			<key>uid</key>
 			<string>DDFAE429-BEEC-49EA-BEDB-7E71BD402695</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -147,7 +153,7 @@ end alfred_script
 			<key>uid</key>
 			<string>577E7995-64DC-454D-B3F1-4FB96CC5AA65</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -156,11 +162,7 @@ end alfred_script
 				<false/>
 				<key>onlyshowifquerypopulated</key>
 				<true/>
-				<key>output</key>
-				<integer>0</integer>
 				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
 				<false/>
 				<key>text</key>
 				<string>{query}</string>
@@ -172,13 +174,17 @@ end alfred_script
 			<key>uid</key>
 			<string>C8DBBD25-D349-4EBD-BA38-4CF5FDB57EAF</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
 				<key>anchorfields</key>
 				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
 				<key>daterange</key>
 				<integer>0</integer>
 				<key>fields</key>
@@ -224,6 +230,8 @@ end alfred_script
 				<false/>
 				<key>keyword</key>
 				<string>sublime</string>
+				<key>runningsubtext</key>
+				<string></string>
 				<key>scopes</key>
 				<array/>
 				<key>subtext</key>
@@ -240,7 +248,7 @@ end alfred_script
 			<key>uid</key>
 			<string>23DEA358-A623-4725-95B2-79C207AF4556</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -255,21 +263,29 @@ Optionally enter a (POSIX) path to a directory or file to open in Sublime Text v
 	<dict>
 		<key>23DEA358-A623-4725-95B2-79C207AF4556</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>180</real>
 		</dict>
 		<key>577E7995-64DC-454D-B3F1-4FB96CC5AA65</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>100</real>
 		</dict>
 		<key>C8DBBD25-D349-4EBD-BA38-4CF5FDB57EAF</key>
 		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
 			<key>ypos</key>
 			<real>100</real>
 		</dict>
 		<key>DDFAE429-BEEC-49EA-BEDB-7E71BD402695</key>
 		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
 			<key>ypos</key>
 			<real>20</real>
 		</dict>
