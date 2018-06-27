@@ -3,6 +3,7 @@
     "editor.fontSize": 12,
     "editor.tabSize": 2,
     "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
     "editor.lineNumbers": "relative",
     "editor.lineHeight": 18,
     "editor.renderWhitespace": "none",
@@ -13,8 +14,10 @@
     "editor.rulers": [
         80
     ],
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
     "docker.showExplorer": false,
-    "workbench.colorTheme": "Nord",
+    "workbench.colorTheme": "Ayu Light",
     "workbench.editor.showTabs": true,
     "workbench.sideBar.location": "left",
     "workbench.panel.defaultLocation": "right",
@@ -28,18 +31,18 @@
         "bsb"
     ],
     "reason.path.bsb": "node_modules/.bin/bsb",
-    "editor.tokenColorCustomizations": {
-        // https://github.com/arcticicestudio/nord-vim/issues/48#issuecomment-330740663
-        "textMateRules": [
-            {
-                "name": "Comment",
-                "scope": "comment",
-                "settings": {
-                    "foreground": "#616e88"
-                }
-            }
-        ]
-    },
+    // "editor.tokenColorCustomizations": {
+    //     // https://github.com/arcticicestudio/nord-vim/issues/48#issuecomment-330740663
+    //     "textMateRules": [
+    //         {
+    //             "name": "Comment",
+    //             "scope": "comment",
+    //             "settings": {
+    //                 "foreground": "#616e88"
+    //             }
+    //         }
+    //     ]
+    // },
     "org.todoKeywords": [
         "PLAN",
         "TODO",
@@ -125,8 +128,19 @@
             80
         ],
     },
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": false,
+        "editor.formatOnSave": false
+    },
     "[plaintext]": {
         "editor.detectIndentation": false
     },
-    "workbench.startupEditor": "none"
+    "workbench.startupEditor": "none",
+    "workbench.statusBar.feedback.visible": false,
+    "diffEditor.ignoreTrimWhitespace": true,
+    "workbench.iconTheme": null,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "es5",
+    "prettier.bracketSpacing": false
 }
