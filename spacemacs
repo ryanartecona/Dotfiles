@@ -39,7 +39,7 @@
       ;;               perspective-enable-persp-projectile t)
       (spacemacs-layouts :variables
                          spacemacs-layouts-directory "~/.emacs.d/persps-layouts/"
-                         layouts-enable-autosave t
+                         layouts-enable-autosave nil
                          layouts-autosave-delay 1800)
       gnus
 
