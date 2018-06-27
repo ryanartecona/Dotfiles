@@ -4,11 +4,12 @@ self: super:
     name = "ra-profile";
 
     # e.g. moreutils' `parallel` and GNU `parallel` would collide.
-    ignoreCollisions = true;
+    # ignoreCollisions = true;
 
     extraOutputsToInstall = [ "man" ];
 
     paths = with super; [
+      asciinema
       awscli
       bind
       cmake
@@ -28,7 +29,7 @@ self: super:
       httpie
       gitAndTools.hub
       jq
-      moreutils
+      # moreutils # conflicts with GNU parallel below
       nix-prefetch-scripts
       nodejs-slim-9_x
       nsq
@@ -42,6 +43,7 @@ self: super:
       ranger
       ripgrep
       sloccount
+      terraform-full
       tig
       wget
       yarn
