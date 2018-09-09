@@ -31,7 +31,7 @@ self: super:
       jq
       # moreutils # conflicts with GNU parallel below
       nix-prefetch-scripts
-      nodejs-slim-9_x
+      nodejs-slim-10_x
       nsq
       ocaml
       opam
