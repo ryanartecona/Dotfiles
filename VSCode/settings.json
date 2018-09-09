@@ -1,146 +1,124 @@
 {
-    "editor.fontFamily": "PragmataPro",
-    "editor.fontSize": 12,
-    "editor.tabSize": 2,
-    "editor.fontLigatures": true,
-    "editor.formatOnSave": true,
-    "editor.lineNumbers": "relative",
-    "editor.lineHeight": 18,
-    "editor.renderWhitespace": "none",
-    "editor.renderIndentGuides": false,
-    "editor.renderLineHighlight": "all",
-    "editor.minimap.enabled": false,
-    "editor.minimap.renderCharacters": false,
-    "editor.rulers": [
-        80
-    ],
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "docker.showExplorer": false,
-    "workbench.colorTheme": "Ayu Light",
-    "workbench.editor.showTabs": true,
-    "workbench.sideBar.location": "left",
-    "workbench.panel.defaultLocation": "right",
-    "terminal.integrated.fontFamily": "PragmataPro",
-    "terminal.integrated.fontSize": 12,
-    "terminal.integrated.scrollback": 10000,
-    "python.pythonPath": "python3",
-    "reason.codelens.enabled": false,
-    "reason.diagnostics.tools": [
-        "merlin",
-        "bsb"
-    ],
-    "reason.path.bsb": "node_modules/.bin/bsb",
-    // "editor.tokenColorCustomizations": {
-    //     // https://github.com/arcticicestudio/nord-vim/issues/48#issuecomment-330740663
-    //     "textMateRules": [
-    //         {
-    //             "name": "Comment",
-    //             "scope": "comment",
-    //             "settings": {
-    //                 "foreground": "#616e88"
-    //             }
-    //         }
-    //     ]
-    // },
-    "org.todoKeywords": [
-        "PLAN",
-        "TODO",
-        "NEXT",
-        "DONE",
-        "STALE",
-        "CANCELLED",
-        "BLOCKED"
-    ],
-    "gitlens.codeLens.enabled": false,
-    "gitlens.currentLine.enabled": false,
-    "gitlens.hovers.currentLine.over": "line",
-    "gitlens.statusBar.enabled": false,
-    "vim.leader": "<Space>",
-    "vim.otherModesKeyBindingsNonRecursive": [
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.fontFamily": "PragmataPro Liga",
+  "editor.fontSize": 12,
+  "editor.tabSize": 2,
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "editor.lineNumbers": "relative",
+  "editor.lineHeight": 18,
+  "editor.renderWhitespace": "none",
+  "editor.renderIndentGuides": false,
+  "editor.renderLineHighlight": "all",
+  "editor.minimap.enabled": false,
+  "editor.minimap.renderCharacters": false,
+  "editor.rulers": [80],
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "docker.showExplorer": false,
+  "workbench.colorTheme": "Ayu Light",
+  "workbench.editor.showTabs": true,
+  "workbench.sideBar.location": "left",
+  "workbench.panel.defaultLocation": "right",
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+  "terminal.integrated.fontFamily": "PragmataPro Liga",
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.scrollback": 10000,
+  "python.pythonPath": "python3",
+  "reason.codelens.enabled": false,
+  "reason.diagnostics.tools": ["merlin", "bsb"],
+  "reason.path.bsb": "node_modules/.bin/bsb",
+  // "editor.tokenColorCustomizations": {
+  //     // https://github.com/arcticicestudio/nord-vim/issues/48#issuecomment-330740663
+  //     "textMateRules": [
+  //         {
+  //             "name": "Comment",
+  //             "scope": "comment",
+  //             "settings": {
+  //                 "foreground": "#616e88"
+  //             }
+  //         }
+  //     ]
+  // },
+  "org.todoKeywords": [
+    "PLAN",
+    "TODO",
+    "NEXT",
+    "DONE",
+    "STALE",
+    "CANCELLED",
+    "BLOCKED"
+  ],
+  "gitlens.codeLens.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.statusBar.enabled": false,
+  "vim.leader": "<Space>",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      // Split line and move the trailing part down
+      "before": ["K"],
+      "after": ["i", "<CR>", "<Esc>", "k", "$"]
+    },
+    {
+      "before": ["<leader>", "v"],
+      "after": [],
+      "commands": [
         {
-            // Split line and move the trailing part down
-            "before": [
-                "K"
-            ],
-            "after": [
-                "i",
-                "<CR>",
-                "<Esc>",
-                "k",
-                "$"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "v"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.smartSelect.grow"
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "V"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.smartSelect.shrink"
-                }
-            ]
-        },
-        {
-            "before": [
-                "j"
-            ],
-            "after": [
-                "g",
-                "j"
-            ]
-        },
-        {
-            "before": [
-                "k"
-            ],
-            "after": [
-                "g",
-                "k"
-            ]
+          "command": "editor.action.smartSelect.grow"
         }
-    ],
-    "git.confirmSync": false,
-    "vim.disableExtension": false,
-    "window.zoomLevel": 0,
-    "gitlens.keymap": "alternate",
-    "[ruby]": {
-        "editor.rulers": [
-            80
-        ],
+      ]
     },
-    "[nix]": {
-        "editor.rulers": [
-            80
-        ],
+    {
+      "before": ["<leader>", "V"],
+      "after": [],
+      "commands": [
+        {
+          "command": "editor.action.smartSelect.shrink"
+        }
+      ]
     },
-    "[markdown]": {
-        "editor.wordWrap": "on",
-        "editor.quickSuggestions": false,
-        "editor.formatOnSave": false
+    {
+      "before": ["j"],
+      "after": ["g", "j"]
     },
-    "[plaintext]": {
-        "editor.detectIndentation": false
-    },
-    "workbench.startupEditor": "none",
-    "workbench.statusBar.feedback.visible": false,
-    "diffEditor.ignoreTrimWhitespace": true,
-    "workbench.iconTheme": null,
-    "prettier.singleQuote": true,
-    "prettier.trailingComma": "es5",
-    "prettier.bracketSpacing": false
+    {
+      "before": ["k"],
+      "after": ["g", "k"]
+    }
+  ],
+  "git.confirmSync": false,
+  "vim.disableExtension": false,
+  "window.zoomLevel": 0,
+  "gitlens.keymap": "chorded",
+  "[ruby]": {
+    "editor.rulers": [80],
+    "editor.formatOnSave": false
+  },
+  "[nix]": {
+    "editor.rulers": [80]
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": false,
+    "editor.formatOnSave": false
+  },
+  "[plaintext]": {
+    "editor.detectIndentation": false
+  },
+  "workbench.startupEditor": "none",
+  "workbench.statusBar.feedback.visible": false,
+  "diffEditor.ignoreTrimWhitespace": true,
+  "workbench.iconTheme": null,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  "prettier.bracketSpacing": false,
+  "gitlens.advanced.messages": {
+    "suppressShowKeyBindingsNotice": true
+  },
+  // "ruby.useLanguageServer": true,
+  "ruby.intellisense": "rubyLocate",
+  "elixirLS.fetchDeps": false,
+  "files.insertFinalNewline": true
 }
