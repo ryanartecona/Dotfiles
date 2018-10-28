@@ -14,11 +14,13 @@ self: super:
       bind
       cmake
       coreutils
+      dune
       elixir
       entr
       figlet
       findutils
       fish
+      fswatch
       fzf
       gitFull
       gnused
@@ -43,7 +45,7 @@ self: super:
       ranger
       ripgrep
       sloccount
-      terraform-full
+      terraform
       tig
       wget
       yarn
