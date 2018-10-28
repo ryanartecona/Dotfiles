@@ -2,7 +2,7 @@ function fish_prompt --description 'Write out the prompt'
   set -l last_status $status
 
   type -q iterm2_status; and iterm2_status $last_status
-  if test $last_status -ne 0
+  if test "$last_status" != 0
     set_color $fish_color_error
     echo "✖ $last_status"
     set_color normal
@@ -29,7 +29,7 @@ function fish_prompt --description 'Write out the prompt'
   # echo -n ' : '
 
   # shell nesting level
-  if test "$THIS_SHELL_NESTING_LEVEL" -gt 0
+  if test -n "$THIS_SHELL_NESTING_LEVEL" -a "$THIS_SHELL_NESTING_LEVEL" != 0
     set_color $fish_color_host
     echo -n "‹$THIS_SHELL_NESTING_LEVEL› "
     set_color normal
