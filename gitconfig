@@ -21,3 +21,5 @@
 	user = ryanartecona
 [commit]
 	verbose = true
+[diff "blackbox"]
+	textconv = gpg --use-agent -q --batch --decrypt
