@@ -89,5 +89,15 @@
     "key": "ctrl+up",
     "command": "workbench.action.terminal.focusPrevious",
     "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+r",
+    "command": "renameFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+  },
+  {
+    "key": "enter",
+    "command": "-renameFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
   }
 ]

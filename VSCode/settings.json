@@ -120,5 +120,10 @@
   // "ruby.useLanguageServer": true,
   "ruby.intellisense": "rubyLocate",
   "elixirLS.fetchDeps": false,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "reason_language_server.show_debug_errors": true,
+  "reason.path.ocamlmerlin": "ocamlmerlin-server",
+  "files.defaultLanguage": "markdown",
+  "revealjs.highlightTheme": "Solarized Light",
+  "terminal.integrated.cursorBlinking": true
 }
