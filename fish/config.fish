@@ -60,6 +60,9 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/.cabal/bin
   echo $HOME/Library/Haskell/bin
   echo /usr/local/texlive/2015/bin/x86_64-darwin
+  if type -Pq racket; and type -Pq raco
+    echo $HOME/Library/Racket/(raco pkg config name)/bin
+  end
   echo $HOME/.nix-profile/bin
   echo $HOME/.nix-profile/sbin
   if type -Pq opam
