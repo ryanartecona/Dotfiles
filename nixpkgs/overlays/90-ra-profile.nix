@@ -10,6 +10,7 @@ self: super:
 
     paths = with super; [
       asciinema
+      asciidoc
       awscli
       bind
       cmake
@@ -32,6 +33,7 @@ self: super:
       gitAndTools.hub
       jq
       # moreutils # conflicts with GNU parallel below
+      nasm
       nix-prefetch-scripts
       nodejs-slim-10_x
       nsq
@@ -41,6 +43,7 @@ self: super:
       parallel
       pinentry_mac
       python3
+      pythonPackages.pygments
       ranger
       ripgrep
       sloccount

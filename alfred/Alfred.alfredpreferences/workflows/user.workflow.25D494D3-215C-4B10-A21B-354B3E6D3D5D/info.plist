@@ -33,18 +33,7 @@
 			</dict>
 		</array>
 		<key>220CE0F7-7F59-468E-9D1C-A4070FFCFBB1</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
+		<array/>
 		<key>255E78AE-39B1-4A82-82FD-D69BCB01D112</key>
 		<array>
 			<dict>

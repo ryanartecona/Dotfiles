@@ -125,5 +125,6 @@
   "reason.path.ocamlmerlin": "ocamlmerlin-server",
   "files.defaultLanguage": "markdown",
   "revealjs.highlightTheme": "Solarized Light",
-  "terminal.integrated.cursorBlinking": true
+  "terminal.integrated.cursorBlinking": true,
+  "reason_language_server.autoRebuild": false
 }
