@@ -7,7 +7,7 @@
   "editor.formatOnSave": false,
   "editor.lineNumbers": "relative",
   "editor.lineHeight": 18,
-  "editor.renderWhitespace": "none",
+  "editor.renderWhitespace": "all",
   "editor.renderIndentGuides": false,
   "editor.renderLineHighlight": "all",
   "editor.minimap.enabled": false,
@@ -126,5 +126,9 @@
   "files.defaultLanguage": "markdown",
   "revealjs.highlightTheme": "Solarized Light",
   "terminal.integrated.cursorBlinking": true,
-  "reason_language_server.autoRebuild": false
+  "reason_language_server.autoRebuild": false,
+  "workbench.enableExperiments": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "rust-client.rustupPath": "/Users/ryanartecona/.cargo/bin/rustup",
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_"
 }

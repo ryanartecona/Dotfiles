@@ -15,6 +15,7 @@ self: super:
       bind
       cmake
       coreutils
+      ctags
       dune
       elixir
       entr

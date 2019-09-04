@@ -74,18 +74,7 @@
 			</dict>
 		</array>
 		<key>55808A08-AC87-422F-B3E1-3D6F4784225B</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>26B924EF-CD3F-4090-8B37-8F5D718F6FA1</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
+		<array/>
 		<key>624AD1CD-3937-4F17-ACF2-04C553E8A2B7</key>
 		<array>
 			<dict>
@@ -286,23 +275,6 @@
 			<string>E24CDF92-61A0-4DB7-94E3-AB041940266D</string>
 			<key>version</key>
 			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Emacs.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</string>
-			<key>version</key>
-			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1155,13 +1127,6 @@ open "/Applications/$query.app"</string>
 			<integer>100</integer>
 			<key>ypos</key>
 			<real>2050</real>
-		</dict>
-		<key>938E0F24-8347-4F79-A55E-C0FEFC1E30D8</key>
-		<dict>
-			<key>xpos</key>
-			<integer>500</integer>
-			<key>ypos</key>
-			<real>130</real>
 		</dict>
 		<key>988BB796-153C-4B29-ACA3-5A823F165B2E</key>
 		<dict>
