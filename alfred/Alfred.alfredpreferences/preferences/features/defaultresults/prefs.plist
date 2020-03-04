@@ -8,6 +8,7 @@
 		<string>features.websearch.amazon.fallback</string>
 		<string>features.websearch.wiki.fallback</string>
 		<string>7E5C7C20-7160-42B8-99B6-64CB68FC481A</string>
+		<string>features.websearch.custom.FE555030-3700-42AC-B81A-C6AE51E27699.fallback</string>
 	</array>
 	<key>showFolders</key>
 	<true/>

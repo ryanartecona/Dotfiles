@@ -1,5 +1,5 @@
 {
-  "editor.acceptSuggestionOnEnter": "off",
+  "editor.acceptSuggestionOnEnter": "smart",
   "editor.fontFamily": "PragmataPro Liga",
   "editor.fontSize": 12,
   "editor.tabSize": 2,
@@ -121,7 +121,6 @@
   "ruby.intellisense": "rubyLocate",
   "elixirLS.fetchDeps": false,
   "files.insertFinalNewline": true,
-  "reason_language_server.show_debug_errors": true,
   "reason.path.ocamlmerlin": "ocamlmerlin-server",
   "files.defaultLanguage": "markdown",
   "revealjs.highlightTheme": "Solarized Light",
@@ -130,5 +129,21 @@
   "workbench.enableExperiments": false,
   "typescript.disableAutomaticTypeAcquisition": true,
   "rust-client.rustupPath": "/Users/ryanartecona/.cargo/bin/rustup",
-  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_"
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_",
+  "gitlens.views.repositories.location": "scm",
+  "gitlens.views.fileHistory.location": "explorer",
+  "gitlens.views.lineHistory.location": "explorer",
+  "gitlens.views.compare.location": "gitlens",
+  "gitlens.views.search.location": "gitlens",
+  "reason_language_server.per_value_codelens": true,
+  "terminal.integrated.rendererType": "dom",
+  "elixir.autoSpawnElixirSenseServers": false,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "python.terminal.activateEnvironment": false,
+  "python.analysis.memory.keepLibraryLocalVariables": true,
+  "python.autoComplete.addBrackets": true,
+  "python.linting.mypyEnabled": true,
+  "python.workspaceSymbols.enabled": true,
 }

@@ -25,6 +25,7 @@ self: super:
       fswatch
       fzf
       gitFull
+      git-crypt
       gnused
       gnutar
       go
@@ -36,6 +37,7 @@ self: super:
       # moreutils # conflicts with GNU parallel below
       nasm
       nix-prefetch-scripts
+      nixfmt
       nodejs-slim-10_x
       nsq
       ocaml

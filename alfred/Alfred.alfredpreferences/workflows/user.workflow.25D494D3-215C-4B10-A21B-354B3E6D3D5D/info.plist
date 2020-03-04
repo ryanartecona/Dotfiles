@@ -74,7 +74,18 @@
 			</dict>
 		</array>
 		<key>55808A08-AC87-422F-B3E1-3D6F4784225B</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>624AD1CD-3937-4F17-ACF2-04C553E8A2B7</key>
 		<array>
 			<dict>
@@ -94,7 +105,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>77575FEC-9B0A-4A2C-A3A8-C39BE40B9FD0</string>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -133,7 +144,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>5140E495-9495-4A38-AD0F-E19DFD784DD7</string>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -456,71 +467,6 @@
 			<dict>
 				<key>paths</key>
 				<array>
-					<string>/Applications/Notes.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>988BB796-153C-4B29-ACA3-5A823F165B2E</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>focusedappvariable</key>
-				<false/>
-				<key>focusedappvariablename</key>
-				<string></string>
-				<key>hotkey</key>
-				<integer>34</integer>
-				<key>hotmod</key>
-				<integer>1966080</integer>
-				<key>hotstring</key>
-				<string>I</string>
-				<key>leftcursor</key>
-				<false/>
-				<key>modsmode</key>
-				<integer>0</integer>
-				<key>relatedAppsMode</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
-			<key>uid</key>
-			<string>994AA06E-F5F6-489C-AADE-B963008610C3</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/iTunes.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>5140E495-9495-4A38-AD0F-E19DFD784DD7</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>paths</key>
-				<array>
 					<string>/Applications/Xcode.app</string>
 				</array>
 				<key>toggle</key>
@@ -539,7 +485,9 @@
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
-				<integer>0</integer>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Xcode</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -567,19 +515,35 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Messages.app</string>
-				</array>
-				<key>toggle</key>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Music</string>
+				<key>focusedappvariable</key>
 				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>34</integer>
+				<key>hotmod</key>
+				<integer>1966080</integer>
+				<key>hotstring</key>
+				<string>I</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
+			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>77575FEC-9B0A-4A2C-A3A8-C39BE40B9FD0</string>
+			<string>994AA06E-F5F6-489C-AADE-B963008610C3</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -587,7 +551,9 @@
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
-				<integer>0</integer>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Messages</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -801,7 +767,11 @@
 				<key>script</key>
 				<string>query=$1
 
-open "/Applications/$query.app"</string>
+for d in "/Applications" "/System/Applications" "/System/Volumes/Data/Applications"; do
+  if [[ -e "$d/$query.app" ]]; then
+    open "$d/$query.app"
+  fi
+done</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1049,19 +1019,12 @@ open "/Applications/$query.app"</string>
 			<key>ypos</key>
 			<real>2050</real>
 		</dict>
-		<key>5140E495-9495-4A38-AD0F-E19DFD784DD7</key>
-		<dict>
-			<key>xpos</key>
-			<integer>500</integer>
-			<key>ypos</key>
-			<real>970</real>
-		</dict>
 		<key>55808A08-AC87-422F-B3E1-3D6F4784225B</key>
 		<dict>
 			<key>xpos</key>
 			<integer>100</integer>
 			<key>ypos</key>
-			<real>1090</real>
+			<integer>1480</integer>
 		</dict>
 		<key>624AD1CD-3937-4F17-ACF2-04C553E8A2B7</key>
 		<dict>
@@ -1079,13 +1042,6 @@ open "/Applications/$query.app"</string>
 			<key>ypos</key>
 			<integer>2180</integer>
 		</dict>
-		<key>77575FEC-9B0A-4A2C-A3A8-C39BE40B9FD0</key>
-		<dict>
-			<key>xpos</key>
-			<integer>500</integer>
-			<key>ypos</key>
-			<real>1330</real>
-		</dict>
 		<key>78AEBB5B-820B-4966-AB83-88CEC0022AE8</key>
 		<dict>
 			<key>xpos</key>
@@ -1098,7 +1054,7 @@ open "/Applications/$query.app"</string>
 			<key>xpos</key>
 			<integer>100</integer>
 			<key>ypos</key>
-			<real>1330</real>
+			<integer>1700</integer>
 		</dict>
 		<key>79A62EE0-DB80-4898-B30F-DB6A34C4A613</key>
 		<dict>
@@ -1128,19 +1084,12 @@ open "/Applications/$query.app"</string>
 			<key>ypos</key>
 			<real>2050</real>
 		</dict>
-		<key>988BB796-153C-4B29-ACA3-5A823F165B2E</key>
-		<dict>
-			<key>xpos</key>
-			<integer>500</integer>
-			<key>ypos</key>
-			<real>850</real>
-		</dict>
 		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
 		<dict>
 			<key>xpos</key>
 			<integer>100</integer>
 			<key>ypos</key>
-			<real>970</real>
+			<integer>1590</integer>
 		</dict>
 		<key>9A9616F9-B7DE-4872-938C-4753D333A2B2</key>
 		<dict>
