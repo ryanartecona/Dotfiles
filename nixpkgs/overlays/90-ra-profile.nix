@@ -16,6 +16,7 @@ self: super:
       cmake
       coreutils
       ctags
+      direnv
       dune
       elixir
       entr
