@@ -155,3 +155,10 @@ end
 if status is-interactive; and type -q _autoenvstack
   _autoenvstack
 end
+
+if type -q direnv
+  eval (direnv hook fish)
+  if status is-interactive; and type -q __direnv_export_eval
+    __direnv_export_eval
+  end
+end
