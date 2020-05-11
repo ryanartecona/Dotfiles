@@ -90,7 +90,7 @@
   ],
   "git.confirmSync": false,
   "vim.disableExtension": false,
-  "window.zoomLevel": 0,
+  "window.zoomLevel": 1,
   "gitlens.keymap": "chorded",
   "[ruby]": {
     "editor.rulers": [80],
@@ -146,4 +146,17 @@
   "python.autoComplete.addBrackets": true,
   "python.linting.mypyEnabled": true,
   "python.workspaceSymbols.enabled": true,
+  "terraform.indexing": {
+    "enabled": false,
+    "liveIndexing": false,
+    "delay": 500,
+    "exclude": [
+      ".terraform/**/*",
+      "**/.terraform/**/*"
+    ]
+  },
+  "terraform.languageServer": {
+    "enabled": true,
+    "args": []
+  },
 }

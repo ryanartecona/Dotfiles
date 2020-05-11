@@ -35,6 +35,7 @@ self: super:
       httpie
       gitAndTools.hub
       jq
+      lorri
       # moreutils # conflicts with GNU parallel below
       nasm
       nix-prefetch-scripts
