@@ -60,13 +60,13 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/.cabal/bin
   echo $HOME/Library/Haskell/bin
   echo /usr/local/texlive/2015/bin/x86_64-darwin
-  if type -Pq racket; and type -Pq raco
+  if type -fq racket; and type -fq raco
     echo $HOME/Library/Racket/(raco pkg config name)/bin
   end
   echo $HOME/.nix-profile/bin
   echo $HOME/.nix-profile/sbin
   echo $HOME/.cargo/bin
-  if type -Pq opam
+  if type -fq opam
     echo (opam config var bin)
     echo (opam config var sbin)
   end
@@ -107,7 +107,7 @@ set fish_user_paths (valid_allowed_paths)
 # end
 
 # OPAM configuration
-if type -Pq opam
+if type -fq opam
   # Let opam set the env vars it wants, but don't let it break my MANPATH
   env SHELL=fish opam config env | grep -vi 'MANPATH' | source
 end
