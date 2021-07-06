@@ -131,7 +131,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</string>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -679,27 +679,12 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>paths</key>
-				<array>
-					<string>/Applications/Preview.app</string>
-				</array>
-				<key>toggle</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.launchfiles</string>
-			<key>uid</key>
-			<string>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
-				<integer>0</integer>
+				<integer>3</integer>
+				<key>argumenttext</key>
+				<string>Spotify</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -1011,13 +996,6 @@ done</string>
 			<integer>100</integer>
 			<key>ypos</key>
 			<integer>2730</integer>
-		</dict>
-		<key>3EDC7DFD-F873-4C96-B17F-EEC924BA3E18</key>
-		<dict>
-			<key>xpos</key>
-			<integer>500</integer>
-			<key>ypos</key>
-			<real>2050</real>
 		</dict>
 		<key>55808A08-AC87-422F-B3E1-3D6F4784225B</key>
 		<dict>

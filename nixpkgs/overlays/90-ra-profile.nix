@@ -17,7 +17,7 @@ self: super:
       coreutils
       ctags
       direnv
-      dune
+      dune_2
       elixir
       entr
       figlet
@@ -54,6 +54,7 @@ self: super:
       sloccount
       terraform
       tig
+      tree
       wget
       yarn
 

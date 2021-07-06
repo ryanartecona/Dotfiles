@@ -13,6 +13,7 @@
 	ls = ls-tree -r HEAD --name-only
 	st = status --short --branch
 	pushf = push --force-with-lease
+	fixup = commit --amend --no-edit
 [http]
 	sslVerify = true
 [credential]
