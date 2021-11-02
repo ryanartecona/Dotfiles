@@ -176,5 +176,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.multiCursorModifier": "ctrlCmd",
+  "terminal.integrated.tabs.enabled": false,
   // "editor.quickSuggestions": null,
 }

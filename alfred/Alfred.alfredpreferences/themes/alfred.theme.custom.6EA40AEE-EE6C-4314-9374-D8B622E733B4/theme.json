@@ -22,12 +22,13 @@
         "color" : "#FFFFFFFF"
       },
       "iconPaddingHorizontal" : 5,
+      "roundness" : 0,
       "paddingVertical" : 4,
       "iconSize" : 40
     },
     "search" : {
-      "paddingVertical" : 2,
-      "background" : "#00000000",
+      "backgroundSelected" : "#B2D7FFFF",
+      "paddingHorizontal" : 8,
       "spacing" : 10,
       "text" : {
         "size" : 32,
@@ -35,7 +36,9 @@
         "font" : "PragmataPro",
         "color" : "#FFFFFFFF"
       },
-      "backgroundSelected" : "#B2D7FFFF"
+      "background" : "#00000000",
+      "roundness" : 0,
+      "paddingVertical" : 2
     },
     "window" : {
       "color" : "#343434C4",

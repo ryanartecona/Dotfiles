@@ -8,6 +8,8 @@
 	<true/>
 	<key>hidemenu</key>
 	<true/>
+	<key>nativedarkmode</key>
+	<true/>
 	<key>saveposition</key>
 	<true/>
 	<key>showOnScreen</key>
