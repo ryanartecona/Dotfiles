@@ -25,3 +25,11 @@ defaults write com.apple.screencapture location ~/Screenshots
 
 # Finally, reload the changed defaults
 killall SystemUIServer
+
+
+# ================
+# === Keyboard ===
+# ================
+
+# Disable long-press diacritics prompt in favor of key repeat
+defaults write -g ApplePressAndHoldEnabled -bool false

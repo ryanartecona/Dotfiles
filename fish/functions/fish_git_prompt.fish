@@ -5,7 +5,7 @@ function fish_git_prompt --description 'Write out the git prompt'
     __terlar_git_prompt >/dev/null
   end
 
-  set -l branch (git rev-parse --abbrev-ref HEAD ^/dev/null)
+  set -l branch (git rev-parse --abbrev-ref HEAD 2>/dev/null)
   if test -z $branch
     return
   end
@@ -14,7 +14,7 @@ function fish_git_prompt --description 'Write out the git prompt'
   echo -n $fish_prompt_git_prefix
   set_color normal
 
-  set -l index (git status --porcelain ^/dev/null|cut -c 1-2|sort -u)
+  set -l index (git status --porcelain 2>/dev/null|cut -c 1-2|sort -u)
   if test -z "$index"
     set_color $fish_color_git_clean
     echo -n $branch'✓'

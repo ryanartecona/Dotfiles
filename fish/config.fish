@@ -1,3 +1,5 @@
+set -g fish_greeting "><⸖"
+
 alias g=hub
 alias httpv="http --print=HBhb"
 
@@ -114,7 +116,7 @@ end
 
 # RVM for Ruby needs to be run once to add stuff to $PATH
 if type -q rvm
-  rvm >/dev/null ^/dev/null
+  rvm >/dev/null 2>/dev/null
 end
 
 # Golang
