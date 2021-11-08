@@ -15,13 +15,14 @@
                 },
                 "rules": [
                     {
-                        "description": "⌘⇧ ←/→ to previous/next tab in Firefox",
+                        "description": "⌘⇧ ←/→ to previous/next tab in Firefox/Safari",
                         "manipulators": [
                             {
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "firefox"
+                                            "firefox",
+                                            "^com\\.apple\\.Safari$"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -53,7 +54,8 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "firefox"
+                                            "firefox",
+                                            "^com\\.apple\\.Safari$"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -83,7 +85,8 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "firefox"
+                                            "firefox",
+                                            "^com\\.apple\\.Safari$"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -115,7 +118,8 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "firefox"
+                                            "firefox",
+                                            "^com\\.apple\\.Safari$"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
