@@ -69,8 +69,8 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/.nix-profile/sbin
   echo $HOME/.cargo/bin
   if type -fq opam
-    echo (opam config var bin)
-    echo (opam config var sbin)
+    echo (opam var bin)
+    echo (opam var sbin)
   end
   echo $HOME/.npm/bin
   echo $HOME/.go/bin
