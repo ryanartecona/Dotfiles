@@ -488,7 +488,7 @@
 				<key>script</key>
 				<string>query=$1
 
-for d in "/Applications" "/System/Applications" "/System/Volumes/Data/Applications"; do
+for d in "/Applications" "/System/Applications" "/System/Volumes/Data/Applications" "/System/Library/CoreServices"; do
   if [[ -e "$d/$query.app" ]]; then
     open "$d/$query.app"
   fi
