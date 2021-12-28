@@ -1,6 +1,6 @@
 {
   "editor.acceptSuggestionOnEnter": "smart",
-  "editor.fontFamily": "PragmataPro Liga",
+  "editor.fontFamily": "PragmataPro Mono Liga",
   "editor.fontSize": 12,
   "editor.tabSize": 2,
   "editor.fontLigatures": true,
@@ -177,5 +177,7 @@
   },
   "editor.multiCursorModifier": "ctrlCmd",
   "terminal.integrated.tabs.enabled": false,
+  "fish.path.fish": "/Users/rartecona/.nix-profile/bin/fish",
+  "fish.path.fish_indent": "/Users/rartecona/.nix-profile/bin/fish_indent",
   // "editor.quickSuggestions": null,
 }

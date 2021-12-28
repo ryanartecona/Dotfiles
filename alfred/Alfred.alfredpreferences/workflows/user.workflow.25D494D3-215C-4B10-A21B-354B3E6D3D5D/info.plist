@@ -6,6 +6,19 @@
 	<string></string>
 	<key>connections</key>
 	<dict>
+		<key>00BFD57D-8E12-4938-A261-4600CD63AFF6</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>05321A68-4612-4F5B-BC6B-B7272EDC01B5</key>
 		<array>
 			<dict>
@@ -453,7 +466,7 @@
 				<key>argument</key>
 				<integer>3</integer>
 				<key>argumenttext</key>
-				<string>zoom.us</string>
+				<string>Google Meet</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -488,7 +501,12 @@
 				<key>script</key>
 				<string>query=$1
 
-for d in "/Applications" "/System/Applications" "/System/Volumes/Data/Applications" "/System/Library/CoreServices"; do
+for d in \
+	"/Applications" \
+	"/System/Applications" \
+	"/System/Volumes/Data/Applications" \
+	"/System/Library/CoreServices" \
+	"$HOME/Applications/Chrome Apps.localized"; do
   if [[ -e "$d/$query.app" ]]; then
     open "$d/$query.app"
   fi
