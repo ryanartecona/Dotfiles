@@ -31,6 +31,13 @@ defaults write com.apple.screencapture location ~/Screenshots
 defaults write -g ApplePressAndHoldEnabled -bool false
 
 
+# ============
+# === Misc ===
+# ============
+
+# Stop printing "Last login ..." line in new shells
+touch ~/.hushlogin
+
 
 # ====================================
 # Finally, reload the changed defaults

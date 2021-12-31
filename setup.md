@@ -66,6 +66,15 @@ mkdir -p ~/.hammerspoon
 ln -sf ~/Dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
 ```
 
+## iTerm2
+
+```sh
+ln -s ~/Dotfiles/iTerm2/DynamicProfiles/mint_chocolate.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/mint_chocolate.json
+ln -s ~/Dotfiles/iTerm2/DynamicProfiles/mint_chocolate_scratchpad.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/mint_chocolate_scratchpad.json
+```
+
+Then go into iTerm2 Preferences > Profiles > Mint Chocolate > Other Actions and set as default.
+
 ## Karabiner
 
 ```
