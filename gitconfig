@@ -24,3 +24,5 @@
 	verbose = true
 [diff "blackbox"]
 	textconv = gpg --use-agent -q --batch --decrypt
+[hub]
+	protocol = https
