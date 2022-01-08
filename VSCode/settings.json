@@ -179,5 +179,7 @@
   "terminal.integrated.tabs.enabled": false,
   "fish.path.fish": "/Users/rartecona/.nix-profile/bin/fish",
   "fish.path.fish_indent": "/Users/rartecona/.nix-profile/bin/fish_indent",
+  // VS Code doesn't seem to respect OS user default shell >:|
+  "terminal.integrated.defaultProfile.osx": "fish",
   // "editor.quickSuggestions": null,
 }
