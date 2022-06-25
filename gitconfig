@@ -26,3 +26,5 @@
 	textconv = gpg --use-agent -q --batch --decrypt
 [hub]
 	protocol = https
+[init]
+	defaultBranch = main
