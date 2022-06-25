@@ -1,9 +1,29 @@
 function fish_git_prompt --description 'Write out the git prompt'
 
-  if test -z $fish_prompt_git_status_order[1]
-    # hack to get some variables populated
-    __terlar_git_prompt >/dev/null
-  end
+  # My fish_git_prompt was forked from the old __terlar_git_prompt, before that
+  # one was refactored in https://github.com/fish-shell/fish-shell/pull/9011.
+  # I copied the vars here as they used to be set in there.
+  set -g fish_color_git_clean green
+  set -g fish_color_git_staged yellow
+  set -g fish_color_git_dirty red
+  set -g fish_color_git_added green
+  set -g fish_color_git_modified blue
+  set -g fish_color_git_renamed magenta
+  set -g fish_color_git_copied magenta
+  set -g fish_color_git_deleted red
+  set -g fish_color_git_untracked yellow
+  set -g fish_color_git_unmerged red
+  
+  set -g fish_prompt_git_status_added '✚'
+  set -g fish_prompt_git_status_modified '*'
+  set -g fish_prompt_git_status_renamed '➜'
+  set -g fish_prompt_git_status_copied '⇒'
+  set -g fish_prompt_git_status_deleted '✖'
+  set -g fish_prompt_git_status_untracked '?'
+  set -g fish_prompt_git_status_unmerged !
+  
+  set -g fish_prompt_git_status_order added modified renamed copied deleted untracked unmerged
+
 
   set -l branch (git rev-parse --abbrev-ref HEAD 2>/dev/null)
   if test -z $branch

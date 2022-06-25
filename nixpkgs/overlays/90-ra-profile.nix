@@ -40,7 +40,7 @@ self: super:
       nasm
       nix-prefetch-scripts
       nixfmt
-      nodejs-slim-10_x
+      nodejs-slim-18_x
       nsq
       ocaml
       opam
