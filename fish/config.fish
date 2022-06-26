@@ -53,7 +53,7 @@ else
   echo "WARN: Could not source nix-daemon.sh profile (with bass)"
 end
 # Set Nix path to default nixpkgs location
-set -xg NIX_PATH nixpkgs="$HOME"/.nix-defexpr/channels/nixpkgs
+set -xg NIX_PATH darwin-config="$HOME"/.nixpkgs/darwin-configuration.nix:"$HOME"/.nix-defexpr/channels
 
 
 function allowed_paths --description "User-allowed \$path dirs"

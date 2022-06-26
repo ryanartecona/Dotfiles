@@ -82,3 +82,22 @@ Then go into iTerm2 Preferences > Profiles > Mint Chocolate > Other Actions and 
 rm -rf ~/.config/karabiner
 ln -sf ~/Dotfiles/karabiner ~/.config/karabiner
 ```
+
+## nix-darwin
+
+Install with the following (via https://github.com/LnL7/nix-darwin):
+```
+nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+./result/bin/darwin-installer
+```
+
+Link config file:
+```
+mkdir -p ~/.nixpkgs
+ln -sf ~/Dotfiles/nixpkgs/darwin-configuration.nix ~/.nixpkgs/darwin-configuration.nix
+```
+
+Then, after making a change to darwin-configuration.nix, apply it with this:
+```
+darwin-rebuild switch
+```
