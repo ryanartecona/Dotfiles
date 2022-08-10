@@ -8,7 +8,6 @@
   "editor.lineNumbers": "relative",
   "editor.lineHeight": 18,
   "editor.renderWhitespace": "all",
-  "editor.renderIndentGuides": false,
   "editor.renderLineHighlight": "all",
   "editor.minimap.enabled": false,
   "editor.minimap.renderCharacters": false,
@@ -90,7 +89,6 @@
   ],
   "git.confirmSync": false,
   "vim.disableExtension": false,
-  "window.zoomLevel": 1,
   "gitlens.keymap": "chorded",
   "[ruby]": {
     "editor.rulers": [80],
@@ -101,7 +99,11 @@
   },
   "[markdown]": {
     "editor.wordWrap": "bounded",
-    "editor.quickSuggestions": false,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    },
     "editor.formatOnSave": false
   },
   "[plaintext]": {
@@ -181,5 +183,10 @@
   "fish.path.fish_indent": "/Users/rartecona/.nix-profile/bin/fish_indent",
   // VS Code doesn't seem to respect OS user default shell >:|
   "terminal.integrated.defaultProfile.osx": "fish",
+  "editor.guides.indentation": false,
+  "workbench.editor.untitled.hint": "hidden",
+  "python.testing.pytestEnabled": true,
+  "python.venvPath": "~/.local/share/virtualenvs",
+  "window.zoomLevel": 1,
   // "editor.quickSuggestions": null,
 }

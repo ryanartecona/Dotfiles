@@ -65,8 +65,6 @@ function allowed_paths --description "User-allowed \$path dirs"
   if type -fq racket; and type -fq raco
     echo $HOME/Library/Racket/(raco pkg config name)/bin
   end
-  echo $HOME/.nix-profile/bin
-  echo $HOME/.nix-profile/sbin
   echo $HOME/.cargo/bin
   if type -fq opam
     echo (opam var bin)
@@ -76,6 +74,8 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/.go/bin
   echo /usr/local/bin
   echo /usr/local/sbin
+  echo $HOME/.nix-profile/bin
+  echo $HOME/.nix-profile/sbin
   echo /usr/bin
   echo /bin
   echo /usr/sbin

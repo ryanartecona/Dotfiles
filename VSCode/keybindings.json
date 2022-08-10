@@ -179,5 +179,13 @@
   {
     "key": "ctrl+u x",
     "command": "-magit.reset-hard"
+  },
+  {
+    "key": "ctrl+g",
+    "command": "magit.status"
+  },
+  {
+    "key": "alt+x g",
+    "command": "-magit.status"
   }
 ]
