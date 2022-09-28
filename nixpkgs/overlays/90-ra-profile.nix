@@ -12,13 +12,13 @@ self: super:
       asciinema
       asciidoc
       awscli
-      bind
+      # bind # depends on broken llvm package 2022-09-18
       cmake
       coreutils
       ctags
       direnv
       dune_2
-      elixir
+      # elixir
       entr
       figlet
       findutils
@@ -37,18 +37,18 @@ self: super:
       jq
       lorri
       # moreutils # conflicts with GNU parallel below
-      nasm
+      # nasm
       nix-prefetch-scripts
       nixfmt
       nodejs-slim-18_x
-      nsq
+      # nsq
       ocaml
       opam
       pandoc
       parallel
       pinentry_mac
       python3
-      pythonPackages.pygments
+      # pythonPackages.pygments
       ranger
       ripgrep
       sloccount

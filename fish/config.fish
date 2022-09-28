@@ -47,13 +47,20 @@ end
 
 # Setup nix build daemon & multi-user stuff early, since other tools later may
 # be installed by nix
-if type -q bass; and test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  bass source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh 2> /dev/null
+if test -f /nix/var/nix/profiles/default/etc/profile.d/nix.fish
+  source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
+# else if type -q bass; and test -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+#   bass source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh 2> /dev/null
 else
   echo "WARN: Could not source nix-daemon.sh profile (with bass)"
 end
 # Set Nix path to default nixpkgs location
 set -xg NIX_PATH darwin-config="$HOME"/.nixpkgs/darwin-configuration.nix:"$HOME"/.nix-defexpr/channels
+
+
+if test -x /opt/homebrew/bin/brew
+  eval (/opt/homebrew/bin/brew shellenv)
+end
 
 
 function allowed_paths --description "User-allowed \$path dirs"
@@ -72,6 +79,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   end
   echo $HOME/.npm/bin
   echo $HOME/.go/bin
+  echo /opt/homebrew/bin
   echo /usr/local/bin
   echo /usr/local/sbin
   echo $HOME/.nix-profile/bin

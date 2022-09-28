@@ -21,10 +21,10 @@ nix-env -iA nixpkgs.ra-profile
 
 ```sh
 # link the important config files
-rm -rf "~/Library/Application Support/Code/User/snippets"
-ln -sf ~/Dotfiles/VSCode/settings.json "~/Library/Application Support/Code/User/settings.json"
-ln -sf ~/Dotfiles/VSCode/keybindings.json "~/Library/Application Support/Code/User/keybindings.json"
-ln -sf ~/Dotfiles/VSCode/snippets "~/Library/Application Support/Code/User/snippets"
+rm -rf "$HOME/Library/Application Support/Code/User/snippets"
+ln -sf ~/Dotfiles/VSCode/settings.json "$HOME/Library/Application Support/Code/User/settings.json"
+ln -sf ~/Dotfiles/VSCode/keybindings.json "$HOME/Library/Application Support/Code/User/keybindings.json"
+ln -sf ~/Dotfiles/VSCode/snippets "$HOME/Library/Application Support/Code/User/snippets"
 ```
 
 Install extenions:
@@ -45,7 +45,7 @@ Fish executable installed via Nix profile.
 ```fish
 # symlink config files
 ln -sf ~/Dotfiles/fish/config.fish ~/.config/fish/config.fish
-for fn in (ls functions)
+for fn in (ls ~/Dotfiles/fish/functions)
   ln -sf ~/Dotfiles/fish/functions/$fn ~/.config/fish/functions/$fn
 end
 
