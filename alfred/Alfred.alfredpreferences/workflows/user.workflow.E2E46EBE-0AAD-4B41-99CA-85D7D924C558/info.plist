@@ -15,6 +15,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>0EC141A3-7925-4552-8C87-1F624D5D97EF</key>
@@ -26,6 +28,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>24667B9E-3087-4D88-AB22-32BE001789E7</key>
@@ -37,6 +41,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -45,6 +51,8 @@
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
 				<string>html</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -53,6 +61,8 @@
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
 				<string>python</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -61,6 +71,8 @@
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
 				<string>code point</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>252537D5-FDAA-43DD-8EC6-5C7D1D74EFB4</key>
@@ -72,6 +84,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>EC1C792D-E7C6-43E0-8CCB-7573DF642AC9</key>
@@ -83,6 +97,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -99,19 +115,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
 				<key>escaping</key>
-				<integer>63</integer>
+				<integer>0</integer>
 				<key>script</key>
 				<string>import sys
 import symbols
-sys.stdout.write(symbols.to_python(symbols.get_by_idx({query})))</string>
+sys.stdout.write(symbols.get_by_idx({query})[1])</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>3</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>EC1C792D-E7C6-43E0-8CCB-7573DF642AC9</string>
+			<string>06C92DF6-8A72-42A1-9E1D-85A195AA62E9</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -120,25 +144,51 @@ sys.stdout.write(symbols.to_python(symbols.get_by_idx({query})))</string>
 				<true/>
 				<key>clipboardtext</key>
 				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
 			<string>BF903327-9935-42A7-84E4-F9822B1CDF35</string>
+			<key>version</key>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
 				<string>utf</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>loading symbols</string>
 				<key>script</key>
-				<string>python symbols.py -a {query}</string>
+				<string>/opt/homebrew/bin/python symbols.py -a '{query}'</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>subtext</key>
 				<string>find unicode symbols</string>
 				<key>title</key>
@@ -152,50 +202,24 @@ sys.stdout.write(symbols.to_python(symbols.get_by_idx({query})))</string>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>24667B9E-3087-4D88-AB22-32BE001789E7</string>
+			<key>version</key>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>escaping</key>
-				<integer>63</integer>
-				<key>script</key>
-				<string>import sys
-import symbols
-sys.stdout.write(symbols.to_codepoint(symbols.get_by_idx({query})))</string>
-				<key>type</key>
-				<integer>3</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>252537D5-FDAA-43DD-8EC6-5C7D1D74EFB4</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string>import sys
-import symbols
-sys.stdout.write(symbols.get_by_idx({query})[1])</string>
-				<key>type</key>
-				<integer>3</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>06C92DF6-8A72-42A1-9E1D-85A195AA62E9</string>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
+				<key>concurrently</key>
+				<false/>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
 				<string>import sys
 import symbols
 sys.stdout.write(symbols.to_html(symbols.get_by_idx({query})))</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>3</integer>
 			</dict>
@@ -203,6 +227,58 @@ sys.stdout.write(symbols.to_html(symbols.get_by_idx({query})))</string>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>0EC141A3-7925-4552-8C87-1F624D5D97EF</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>63</integer>
+				<key>script</key>
+				<string>import sys
+import symbols
+sys.stdout.write(symbols.to_python(symbols.get_by_idx({query})))</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>EC1C792D-E7C6-43E0-8CCB-7573DF642AC9</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>63</integer>
+				<key>script</key>
+				<string>import sys
+import symbols
+sys.stdout.write(symbols.to_codepoint(symbols.get_by_idx({query})))</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>252537D5-FDAA-43DD-8EC6-5C7D1D74EFB4</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -211,31 +287,43 @@ sys.stdout.write(symbols.to_html(symbols.get_by_idx({query})))</string>
 	<dict>
 		<key>06C92DF6-8A72-42A1-9E1D-85A195AA62E9</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>10</real>
 		</dict>
 		<key>0EC141A3-7925-4552-8C87-1F624D5D97EF</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>130</real>
 		</dict>
 		<key>24667B9E-3087-4D88-AB22-32BE001789E7</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>10</real>
 		</dict>
 		<key>252537D5-FDAA-43DD-8EC6-5C7D1D74EFB4</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>380</real>
 		</dict>
 		<key>BF903327-9935-42A7-84E4-F9822B1CDF35</key>
 		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
 			<key>ypos</key>
 			<real>10</real>
 		</dict>
 		<key>EC1C792D-E7C6-43E0-8CCB-7573DF642AC9</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>250</real>
 		</dict>
