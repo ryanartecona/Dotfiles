@@ -28,7 +28,7 @@ winMode:bind({'cmd','shift'}, 'space', function() winMode:exit() end)
 
 -- Show a center-screen message while in winMode
 function winMode:entered()
-  hs.alert.show('Hammerspoon mode on', 999999)
+  hs.alert.show('Window mover', 999999)
   hs.alert.show('(ESC or ⇧⌘SPC to quit)', 999999)
 end
 function winMode.exited()

@@ -12,3 +12,4 @@ __pycache__
 .direnv
 
 karabiner/automatic_backups
+.envrc

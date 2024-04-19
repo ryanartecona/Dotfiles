@@ -77,6 +77,9 @@ function allowed_paths --description "User-allowed \$path dirs"
     echo (opam var bin)
     echo (opam var sbin)
   end
+  if type -fq python3
+    echo (python3 -m site --user-base)/bin
+  end
   echo $HOME/.npm/bin
   echo $HOME/.go/bin
   echo /opt/homebrew/bin
@@ -127,6 +130,11 @@ if type -q rvm
   rvm >/dev/null 2>/dev/null
 end
 
+# rbenv init
+if type -q rbenv
+  rbenv init - fish | source
+end
+
 # Golang
 if not test -d ~/.go
   mkdir -p ~/.go
@@ -159,6 +167,13 @@ if type -q expand-word
   expand-word -p '^gb$' -e 'git branch | cut -c 3-'
   # gba<TAB> to choose among local & remote git branches
   expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+end
+
+if type -q fzf_configure_bindings
+  # PatrickF1/fzf.fish custom bindings
+  fzf_configure_bindings \
+    # Ctrl-o file search
+    --directory=\co
 end
 
 # setup initial autoenvstack, if starting from a dir with an .env.fish

@@ -101,3 +101,10 @@ Then, after making a change to darwin-configuration.nix, apply it with this:
 ```
 darwin-rebuild switch
 ```
+
+## Direnv
+
+```
+mkdir -p ~/.config/direnv
+ln -s ~/Dotfiles/direnvrc ~/.config/direnv/direnvrc
+```

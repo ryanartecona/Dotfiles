@@ -129,12 +129,14 @@
   {
     "key": "tab",
     "command": "extension.vim_tab",
-    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
+    // "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
+    "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
   },
   {
     "key": "tab",
     "command": "-extension.vim_tab",
-    "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
+    // "when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
+    "when": "editorTextFocus && vim.active && !inDebugRepl && vim.mode != 'Insert"
   },
   {
     "key": "x",
@@ -185,7 +187,12 @@
     "command": "magit.status"
   },
   {
+    "key": "ctrl+g",
+    "command": "magit.quit",
+    "when": "editorTextFocus && editorLangId == 'magit' && resourceFilename == 'status.magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/"
+  },
+  {
     "key": "alt+x g",
     "command": "-magit.status"
-  }
+  },
 ]

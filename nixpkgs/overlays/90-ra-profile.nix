@@ -12,6 +12,7 @@ self: super:
       asciinema
       asciidoc
       awscli
+      bat
       # bind # depends on broken llvm package 2022-09-18
       cmake
       coreutils
@@ -20,6 +21,7 @@ self: super:
       dune_2
       # elixir
       entr
+      fd
       figlet
       findutils
       fish
@@ -27,7 +29,7 @@ self: super:
       fzf
       gitFull
       git-crypt
-      gnused
+      # gnused
       gnutar
       go
       graphviz
@@ -40,7 +42,7 @@ self: super:
       # nasm
       nix-prefetch-scripts
       nixfmt
-      nodejs-slim-18_x
+      # nodejs-slim-18_x
       # nsq
       ocaml
       opam
@@ -56,7 +58,7 @@ self: super:
       tig
       tree
       wget
-      yarn
+      # yarn
 
       # From my ra-scripts overlay
       ra-e

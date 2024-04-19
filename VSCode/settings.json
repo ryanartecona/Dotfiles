@@ -16,7 +16,7 @@
   "explorer.confirmDragAndDrop": false,
   "docker.showExplorer": false,
   "workbench.colorTheme": "Ayu Mirage",
-  "workbench.editor.showTabs": true,
+  "workbench.editor.showTabs": "multiple",
   "workbench.sideBar.location": "left",
   "workbench.panel.defaultLocation": "right",
   "telemetry.enableCrashReporter": false,
@@ -92,7 +92,11 @@
   "gitlens.keymap": "chorded",
   "[ruby]": {
     "editor.rulers": [80],
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.insertSpaces": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.semanticHighlighting.enabled": true
   },
   "[nix]": {
     "editor.rulers": [80]
@@ -175,17 +179,36 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.multiCursorModifier": "ctrlCmd",
-  "terminal.integrated.tabs.enabled": false,
   "fish.path.fish": "",
   "fish.path.fish_indent": "/Users/rartecona/.nix-profile/bin/fish_indent",
   // VS Code doesn't seem to respect OS user default shell >:|
   "terminal.integrated.defaultProfile.osx": "fish",
   "editor.guides.indentation": false,
-  "workbench.editor.untitled.hint": "hidden",
   "python.testing.pytestEnabled": true,
   "python.venvPath": "~/.local/share/virtualenvs",
-  "window.zoomLevel": 1,
   "redhat.telemetry.enabled": false,
   "terraform.languageServer.enable": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "gitlens.advanced.fileHistoryFollowsRenames": true,
+  "autoAlign.associations": {
+    "csv": ",",
+    "bsv": "|",
+    "hcl": " =",
+    "tf": " ="
+  },
+  "rubyLsp.rubyVersionManager": "rbenv",
+  "go.toolsManagement.autoUpdate": true,
+  "workbench.editor.empty.hint": "hidden",
+  "terminal.integrated.tabs.enabled": false,
+  "typescript.tsserver.maxTsServerMemory": 6144,
+  "window.zoomLevel": 1,
   // "editor.quickSuggestions": null,
 }
