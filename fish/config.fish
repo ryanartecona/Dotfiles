@@ -167,6 +167,37 @@ if type -q expand-word
   expand-word -p '^gb$' -e 'git branch | cut -c 3-'
   # gba<TAB> to choose among local & remote git branches
   expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+  # ff<TAB> to find files
+  expand-word -p '^ff$' -e 'fd --type f .'
+  # fd<TAB> to find directories
+  expand-word -p '^fd$' -e 'fd --type d .'
+  # gf<TAB> to find files from git root
+  expand-word -p '^gf$' -e 'fd --type f . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
+  # gd<TAB> to find directories from git root
+  expand-word -p '^gd$' -e 'fd --type d . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
+
+  # ============================================================================
+  # === expand plugin doesn't register bindings in fisher /shrug ===============
+  # === below copied from https://github.com/oh-my-fish/plugin-expand/blob/master/key_bindings.fish
+  # ============================================================================
+  # Bind word expansion (and command completion) to the Tab key.
+  bind --sets-mode expand \t expand:execute
+
+  # During expansion, bind Backspace to revert the operation.
+  bind --mode expand --sets-mode default --key backspace --silent expand:revert
+
+  # Bind Tab to cycle through the available expansions.
+  bind --mode expand \t expand:choose-next
+
+  # If the user enters any key other than Backspace, exit expand mode and passthrough keys to the default binding.
+  bind --mode expand --sets-mode default '' ''
+
+  # vi mode workaround
+  # vi mode shall return to insert mode instead of the default mode
+  bind --mode insert --sets-mode vi_expand \t expand:execute
+  bind --mode vi_expand --sets-mode insert --key backspace --silent expand:revert
+  bind --mode vi_expand \t expand:choose-next
+  bind --mode vi_expand --sets-mode insert '' ''
 end
 
 if type -q fzf_configure_bindings
