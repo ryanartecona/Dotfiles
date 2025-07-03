@@ -15,7 +15,7 @@
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "docker.showExplorer": false,
-  "workbench.colorTheme": "Ayu Mirage",
+  "workbench.colorTheme": "Gruvbox Dark Soft",
   "workbench.editor.showTabs": "multiple",
   "workbench.sideBar.location": "left",
   "workbench.panel.defaultLocation": "right",
@@ -210,5 +210,15 @@
   "terminal.integrated.tabs.enabled": false,
   "typescript.tsserver.maxTsServerMemory": 6144,
   "window.zoomLevel": 1,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoFormatStrings": true,
+  "workbench.activityBar.location": "hidden",
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "vscode-neovim.editorLangIdExclusions": [
+    "magit"
+  ],
+  "workbench.editor.empty.hint": "hidden",
   // "editor.quickSuggestions": null,
 }
