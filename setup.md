@@ -85,16 +85,22 @@ ln -sf ~/Dotfiles/karabiner ~/.config/karabiner
 
 ## nix-darwin
 
-Install with the following (via https://github.com/LnL7/nix-darwin):
+Add nix-darwin channel
 ```
-nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
-./result/bin/darwin-installer
+sudo nix-channel --add https://github.com/nix-darwin/nix-darwin/archive/master.tar.gz darwin
+sudo nix-channel --update
 ```
 
 Link config file:
 ```
-mkdir -p ~/.nixpkgs
-ln -sf ~/Dotfiles/nixpkgs/darwin-configuration.nix ~/.nixpkgs/darwin-configuration.nix
+sudo mkdir -p /etc/nix-darwin
+sudo ln -sf ~/Dotfiles/nixpkgs/darwin-configuration.nix /etc/nix-darwin/configuration.nix
+```
+
+Install with the following (via https://github.com/LnL7/nix-darwin):
+```
+nix-build '<darwin>' -A darwin-rebuild
+sudo ./result/bin/darwin-rebuild switch -I darwin-config=/etc/nix-darwin/configuration.nix
 ```
 
 Then, after making a change to darwin-configuration.nix, apply it with this:
@@ -102,9 +108,26 @@ Then, after making a change to darwin-configuration.nix, apply it with this:
 darwin-rebuild switch
 ```
 
+nix-darwin can't change a user's shell, so also run this to use fish:
+```
+chsh -s /run/current-system/sw/bin/fish
+```
+
 ## Direnv
 
 ```
 mkdir -p ~/.config/direnv
 ln -s ~/Dotfiles/direnvrc ~/.config/direnv/direnvrc
+```
+
+## Alfred
+
+```
+ln -sf ~/Dotfiles/alfred/Alfred.alfredpreferences ~/Library/Application\ Support/Alfred/
+```
+
+## Neovim
+
+```
+ln -s ~/Dotfiles/nvim ~/.config/nvim
 ```

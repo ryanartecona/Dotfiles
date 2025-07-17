@@ -7,16 +7,11 @@
     vim
     direnv
     nixpkgs-fmt
-    rnix-lsp
   ];
 
-  # Use a custom configuration.nix location.
-  # $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
-  # environment.darwinConfig = "$HOME/.config/nixpkgs/darwin/configuration.nix";
+  nixpkgs.config.allowUnfree = true;
 
-  # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
-  # nix.package = pkgs.nix;
+  system.primaryUser = "ryanartecona";
 
   services.lorri.enable = true;
 
@@ -25,11 +20,18 @@
     "/opt/homebrew/sbin"
   ];
 
-  # Create /etc/bashrc that loads the nix-darwin environment.
-  # programs.zsh.enable = true;  # default shell on catalina
+  programs._1password.enable = true;
   programs.fish.enable = true;
+  programs.direnv.enable = true;
+
+  environment.shells = [
+    pkgs.fish
+  ];
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
-  system.stateVersion = 4;
+  system.stateVersion = 6;
+
+  # default nix installer uses gid 350 for nixbld group
+  ids.gids.nixbld = 350;
 }

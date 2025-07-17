@@ -11,11 +11,12 @@
   "editor.renderLineHighlight": "all",
   "editor.minimap.enabled": false,
   "editor.minimap.renderCharacters": false,
-  "editor.rulers": [80],
+  "editor.rulers": [
+    80
+  ],
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "docker.showExplorer": false,
-  "workbench.colorTheme": "Gruvbox Dark Soft",
   "workbench.editor.showTabs": "multiple",
   "workbench.sideBar.location": "left",
   "workbench.panel.defaultLocation": "right",
@@ -26,7 +27,10 @@
   "terminal.integrated.scrollback": 10000,
   "python.pythonPath": "python3",
   "reason.codelens.enabled": true,
-  "reason.diagnostics.tools": ["merlin", "bsb"],
+  "reason.diagnostics.tools": [
+    "merlin",
+    "bsb"
+  ],
   "reason.path.bsb": "node_modules/.bin/bsb",
   // "editor.tokenColorCustomizations": {
   //     // https://github.com/arcticicestudio/nord-vim/issues/48#issuecomment-330740663
@@ -57,11 +61,22 @@
   "vim.normalModeKeyBindingsNonRecursive": [
     {
       // Split line and move the trailing part down
-      "before": ["K"],
-      "after": ["i", "<CR>", "<Esc>", "k", "$"]
+      "before": [
+        "K"
+      ],
+      "after": [
+        "i",
+        "<CR>",
+        "<Esc>",
+        "k",
+        "$"
+      ]
     },
     {
-      "before": ["<leader>", "v"],
+      "before": [
+        "<leader>",
+        "v"
+      ],
       "after": [],
       "commands": [
         {
@@ -70,7 +85,10 @@
       ]
     },
     {
-      "before": ["<leader>", "V"],
+      "before": [
+        "<leader>",
+        "V"
+      ],
       "after": [],
       "commands": [
         {
@@ -79,19 +97,31 @@
       ]
     },
     {
-      "before": ["j"],
-      "after": ["g", "j"]
+      "before": [
+        "j"
+      ],
+      "after": [
+        "g",
+        "j"
+      ]
     },
     {
-      "before": ["k"],
-      "after": ["g", "k"]
+      "before": [
+        "k"
+      ],
+      "after": [
+        "g",
+        "k"
+      ]
     }
   ],
   "git.confirmSync": false,
   "vim.disableExtension": false,
   "gitlens.keymap": "chorded",
   "[ruby]": {
-    "editor.rulers": [80],
+    "editor.rulers": [
+      80
+    ],
     "editor.formatOnSave": false,
     "editor.defaultFormatter": "Shopify.ruby-lsp",
     "editor.insertSpaces": true,
@@ -99,7 +129,9 @@
     "editor.semanticHighlighting.enabled": true
   },
   "[nix]": {
-    "editor.rulers": [80]
+    "editor.rulers": [
+      80
+    ]
   },
   "[markdown]": {
     "editor.wordWrap": "bounded",
@@ -219,6 +251,7 @@
   "vscode-neovim.editorLangIdExclusions": [
     "magit"
   ],
-  "workbench.editor.empty.hint": "hidden",
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "workbench.colorTheme": "Gruvbox Dark Medium",
   // "editor.quickSuggestions": null,
 }

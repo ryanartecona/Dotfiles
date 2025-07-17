@@ -105,12 +105,6 @@ function valid_allowed_paths --description "User-allowed \$path dirs (that curre
 end
 
 
-# Fisherman wants fish at >2.3.0 for 'snippet' support, but this suffices
-# until fish v2.3 is released (check here: https://github.com/fish-shell/fish-shell/releases)
-for file in ~/.config/fish/conf.d/*.fish
-  source $file
-end
-
 # $fish_user_paths is a magic variable that prepends to $PATH
 set fish_user_paths (valid_allowed_paths)
 
@@ -164,17 +158,17 @@ set -gx SHELL_NESTING_LEVEL "$THIS_SHELL_NESTING_LEVEL"
 # Custom <TAB>-expandions
 if type -q expand-word
   # gb<TAB> to choose among local git branches
-  expand-word -p '^gb$' -e 'git branch | cut -c 3-'
+  expand-word --pattern '^gb$' --expander 'git branch | cut -c 3-'
   # gba<TAB> to choose among local & remote git branches
-  expand-word -p '^gba$' -e 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
+  expand-word --pattern '^gba$' --expander 'git branch -a | cut -c 3- | sed "s|remotes/[[:alpha:]]\+/||"'
   # ff<TAB> to find files
-  expand-word -p '^ff$' -e 'fd --type f .'
+  expand-word --pattern '^ff$' --expander 'fd --type f .'
   # fd<TAB> to find directories
-  expand-word -p '^fd$' -e 'fd --type d .'
+  expand-word --pattern '^fd$' --expander 'fd --type d .'
   # gf<TAB> to find files from git root
-  expand-word -p '^gf$' -e 'fd --type f . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
+  expand-word --pattern '^gf$' --expander 'fd --type f . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
   # gd<TAB> to find directories from git root
-  expand-word -p '^gd$' -e 'fd --type d . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
+  expand-word --pattern '^gd$' --expander 'fd --type d . (git rev-parse --show-cdup | sed -e "s,^\$,./,") | sed -e "s,^./,,"'
 
   # ============================================================================
   # === expand plugin doesn't register bindings in fisher /shrug ===============

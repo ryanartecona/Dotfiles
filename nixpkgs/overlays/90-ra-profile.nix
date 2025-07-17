@@ -27,6 +27,7 @@ self: super:
       fish
       fswatch
       fzf
+      gh
       gitFull
       git-crypt
       # gnused
@@ -44,6 +45,7 @@ self: super:
       nixfmt
       # nodejs-slim-18_x
       # nsq
+      neovim
       ocaml
       opam
       pandoc
@@ -53,7 +55,6 @@ self: super:
       # pythonPackages.pygments
       ranger
       ripgrep
-      sloccount
       terraform
       tig
       tree
