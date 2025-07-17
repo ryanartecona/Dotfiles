@@ -1,6 +1,7 @@
 [user]
 	name = Ryan Artecona
 	email = ryanartecona@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFaaHucvXiCrkZlOolK/z1uu/Mwk80jIgYEETfzuTto2
 [push]
 	default = current
 [pull]
@@ -22,6 +23,7 @@
 	user = ryanartecona
 [commit]
 	verbose = true
+	gpgsign = true
 [diff "blackbox"]
 	textconv = gpg --use-agent -q --batch --decrypt
 [hub]
@@ -33,3 +35,7 @@
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign

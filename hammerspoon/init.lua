@@ -50,7 +50,7 @@ winMode:bind({'cmd'}, 'c', hs.toggleConsole)
 -----------------------------
 
 -- Grid config
-hs.grid.setGrid {w=16, h=12}
+hs.grid.setGrid {w=6, h=6}
 hs.grid.setMargins {w=0, h=0}
 
 

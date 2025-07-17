@@ -3,7 +3,7 @@
   "editor.fontFamily": "PragmataPro Mono Liga",
   "editor.fontSize": 12,
   "editor.tabSize": 2,
-  "editor.fontLigatures": true,
+  "editor.fontLigatures": "'calt', 'liga', 'ss18'",
   "editor.formatOnSave": false,
   "editor.lineNumbers": "relative",
   "editor.lineHeight": 18,
@@ -236,11 +236,13 @@
     "hcl": " =",
     "tf": " ="
   },
-  "rubyLsp.rubyVersionManager": "rbenv",
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "rbenv"
+  },
   "go.toolsManagement.autoUpdate": true,
   "workbench.editor.empty.hint": "hidden",
   "terminal.integrated.tabs.enabled": false,
-  "typescript.tsserver.maxTsServerMemory": 6144,
+  "typescript.tsserver.maxTsServerMemory": 10240,
   "window.zoomLevel": 1,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoFormatStrings": true,
@@ -253,5 +255,27 @@
   ],
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "workbench.colorTheme": "Gruvbox Dark Medium",
+  "magit.forge-enabled": true,
+  "magit.quick-switch-enabled": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.largeFileOptimizations": false,
+  "files.associations": {
+    "*.mdx": "markdown"
+  },
+  "python.analysis.enablePytestSupport": false,
+  "python.analysis.exclude": [
+    "**/bazel-*",
+    "**/.pnpm",
+    "**/.mypy_cache"
+  ],
+  "vim.useSystemClipboard": true,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
   // "editor.quickSuggestions": null,
 }

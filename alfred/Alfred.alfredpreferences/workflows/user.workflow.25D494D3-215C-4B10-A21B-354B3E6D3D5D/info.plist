@@ -533,7 +533,7 @@ done</string>
 				<key>argument</key>
 				<integer>3</integer>
 				<key>argumenttext</key>
-				<string>Discord</string>
+				<string>Cursor</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -698,7 +698,7 @@ done</string>
 				<key>argument</key>
 				<integer>3</integer>
 				<key>argumenttext</key>
-				<string>Safari</string>
+				<string>Arc</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
