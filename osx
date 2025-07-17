@@ -30,6 +30,9 @@ defaults write com.apple.screencapture location ~/Screenshots
 # Disable long-press diacritics prompt in favor of key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+# cmd+ctrl drag to drag from anywhere in a window
+defaults write -g NSWindowShouldDragOnGesture -bool true
+
 
 # ============
 # === Misc ===
