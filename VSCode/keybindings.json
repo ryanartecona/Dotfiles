@@ -200,4 +200,14 @@
     "key": "alt+x g",
     "command": "-magit.status"
   },
+  {
+    "key": "cmd+b",
+    "command": "-markdown.extension.editing.toggleBold",
+    "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^markdown$|^rmd$|^quarto$/"
+  },
+  {
+    "key": "cmd+i",
+    "command": "-markdown.extension.editing.toggleItalic",
+    "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^markdown$|^rmd$|^quarto$/"
+  },
 ]
