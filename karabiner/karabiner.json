@@ -591,6 +591,16 @@
                     }
                 ]
             },
+            "devices": [
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 64086,
+                        "vendor_id": 1241
+                    },
+                    "ignore_vendor_events": true
+                }
+            ],
             "fn_function_keys": [
                 {
                     "from": { "key_code": "f1" },
@@ -705,7 +715,8 @@
             "virtual_hid_keyboard": {
                 "caps_lock_delay_milliseconds": 0,
                 "country_code": 0,
-                "keyboard_type": "ansi"
+                "keyboard_type": "ansi",
+                "keyboard_type_v2": "ansi"
             }
         }
     ]

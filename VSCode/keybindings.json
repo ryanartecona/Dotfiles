@@ -17,19 +17,19 @@
     "command": "-workbench.action.previousEditor"
   },
   {
-    "key": "ctrl+left",
+    "key": "alt+ctrl+left",
     "command": "workbench.action.navigateLeft"
   },
   {
-    "key": "ctrl+right",
+    "key": "alt+ctrl+right",
     "command": "workbench.action.navigateRight"
   },
   {
-    "key": "ctrl+down",
+    "key": "alt+ctrl+down",
     "command": "workbench.action.navigateDown"
   },
   {
-    "key": "ctrl+up",
+    "key": "alt+ctrl+up",
     "command": "workbench.action.navigateUp"
   },
   {
@@ -81,12 +81,12 @@
     "when": "terminalFocus"
   },
   {
-    "key": "ctrl+down",
+    "key": "ctrl+n",
     "command": "workbench.action.terminal.focusNext",
     "when": "terminalFocus"
   },
   {
-    "key": "ctrl+up",
+    "key": "ctrl+p",
     "command": "workbench.action.terminal.focusPrevious",
     "when": "terminalFocus"
   },

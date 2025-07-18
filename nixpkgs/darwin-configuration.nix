@@ -36,19 +36,31 @@
       ctrl-comma = ["layout tiling" "layout accordion horizontal vertical"];
       ctrl-cmd-comma = ["layout tiling" "layout accordion horizontal vertical"];
 
+      ctrl-left = "focus left";
+      ctrl-down = "focus down";
+      ctrl-up = "focus up";
+      ctrl-right = "focus right";
+
+      # deprecate?
       ctrl-h = "focus left";
       ctrl-j = "focus down";
       ctrl-k = "focus up";
       ctrl-l = "focus right";
 
+      ctrl-cmd-left = "move left";
+      ctrl-cmd-down = "move down";
+      ctrl-cmd-up = "move up";
+      ctrl-cmd-right = "move right";
+
+      # deprecate?
       ctrl-cmd-h = "move left";
       ctrl-cmd-j = "move down";
       ctrl-cmd-k = "move up";
       ctrl-cmd-l = "move right";
-      
-      ctrl-minus = "resize smart -100";
+
+      # ctrl-minus = "resize smart -100";
       ctrl-cmd-minus = "resize smart -100";
-      ctrl-equal = "resize smart +100";
+      # ctrl-equal = "resize smart +100";
       ctrl-cmd-equal = "resize smart +100";
 
       ctrl-1 = "workspace 1";
@@ -78,6 +90,7 @@
     };
     mode.service.binding = {
       esc = ["reload-config" "mode main"];
+      ctrl-cmd-space = "mode main";
       # reset layout
       r = ["flatten-workspace-tree" "balance-sizes" "mode main"];
       # Toggle between floating and tiling layout
