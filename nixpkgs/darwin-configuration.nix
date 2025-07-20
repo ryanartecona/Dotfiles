@@ -2,15 +2,26 @@
 
 # Reference: https://nix-darwin.github.io/nix-darwin/manual/
 {
-  # List packages installed in system profile. To search by name, run:
+  nix = {
+    package = pkgs.nix;
+    gc = {
+      automatic = true;
+      interval.Day = 7;
+      options = "--delete-older-than 7d";
+    };
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+  nixpkgs.config.allowUnfree = true;
+
   # $ nix-env -qaP | grep wget
+  # List packages installed in system profile. To search by name, run:
   environment.systemPackages = with pkgs; [ 
     vim
     direnv
     nixpkgs-fmt
   ];
-
-  nixpkgs.config.allowUnfree = true;
 
   system.primaryUser = "ryanartecona";
 
@@ -173,5 +184,5 @@
   system.stateVersion = 6;
 
   # default nix installer uses gid 350 for nixbld group
-  ids.gids.nixbld = 30000;
+  ids.gids.nixbld = 350;
 }
