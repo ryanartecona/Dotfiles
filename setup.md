@@ -105,7 +105,7 @@ sudo ./result/bin/darwin-rebuild switch -I darwin-config=/etc/nix-darwin/configu
 
 Then, after making a change to darwin-configuration.nix, apply it with this:
 ```
-darwin-rebuild switch
+sudo darwin-rebuild switch --flake .#home-studio
 ```
 
 nix-darwin can't change a user's shell, so also run this to use fish:
