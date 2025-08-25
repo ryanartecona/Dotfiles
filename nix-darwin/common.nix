@@ -32,7 +32,7 @@
       widthInc = 120;
       heightInc = 70;
     in {
-      accordion-padding = 50;
+      accordion-padding = 80;
       gaps = {
         outer.top = 10;
         outer.right = 10;
@@ -168,6 +168,13 @@
   environment.systemPath = [
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
+  ];
+
+  homebrew.enable = true;
+  homebrew.casks = [
+    "iterm2"
+    "karabiner-elements"
+    "alfred@4"
   ];
 
   programs._1password.enable = true;

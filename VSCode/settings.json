@@ -234,7 +234,8 @@
     "csv": ",",
     "bsv": "|",
     "hcl": " =",
-    "tf": " ="
+    "tf": " =",
+    "toml": "="
   },
   "rubyLsp.rubyVersionManager": {
     "identifier": "rbenv"
@@ -276,6 +277,11 @@
     "plaintext": false,
     "markdown": false,
     "scminput": false
+  },
+  "autoAlign.enabled": {
+    "csv": true,
+    "bsv": true,
+    "toml": false
   },
   // "editor.quickSuggestions": null,
 }
