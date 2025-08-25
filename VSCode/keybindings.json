@@ -210,4 +210,14 @@
     "command": "-markdown.extension.editing.toggleItalic",
     "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^markdown$|^rmd$|^quarto$/"
   },
+  {
+    "key": "alt+c",
+    "command": "-markdown.extension.checkTaskList",
+    "when": "false"
+  },
+  {
+    "key": "ctrl+x",
+    "command": "markdown.extension.checkTaskList",
+    "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^markdown$|^rmd$|^quarto$/"
+  }
 ]
