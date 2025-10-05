@@ -17,21 +17,26 @@
 
   # $ nix-env -qaP | grep wget
   # List packages installed in system profile. To search by name, run:
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     vim
     direnv
-    nixpkgs-fmt
+    nixfmt-rfc-style
+    # xz is a hidden dependency of nvm when gnutar also installed on macos
+    # ([thread](https://github.com/nvm-sh/nvm/issues/3034#issuecomment-1694564861))
+    xz
   ];
 
   system.primaryUser = "ryanartecona";
 
   services.lorri.enable = true;
-  
+
   services.aerospace.enable = true;
-  services.aerospace.settings = let 
+  services.aerospace.settings =
+    let
       widthInc = 120;
       heightInc = 70;
-    in {
+    in
+    {
       accordion-padding = 80;
       gaps = {
         outer.top = 10;
@@ -44,11 +49,23 @@
       # https://nikitabobko.github.io/AeroSpace/guide#default-config
       mode.main.binding = {
         # un-float and tile this window, toggling horizontal/vertical
-        ctrl-slash = ["layout tiling" "layout tiles horizontal vertical"];
-        ctrl-cmd-slash = ["layout tiling" "layout tiles horizontal vertical"];
+        ctrl-slash = [
+          "layout tiling"
+          "layout tiles horizontal vertical"
+        ];
+        ctrl-cmd-slash = [
+          "layout tiling"
+          "layout tiles horizontal vertical"
+        ];
         # un-float and accordion this window, toggling horizontal/vertical
-        ctrl-comma = ["layout tiling" "layout accordion horizontal vertical"];
-        ctrl-cmd-comma = ["layout tiling" "layout accordion horizontal vertical"];
+        ctrl-comma = [
+          "layout tiling"
+          "layout accordion horizontal vertical"
+        ];
+        ctrl-cmd-comma = [
+          "layout tiling"
+          "layout accordion horizontal vertical"
+        ];
 
         ctrl-left = "focus left";
         ctrl-down = "focus down";
@@ -74,8 +91,14 @@
 
         ctrl-minus = "resize smart -100";
         ctrl-equal = "resize smart +100";
-        ctrl-cmd-minus = [ "resize width -${toString widthInc}" "resize height -${toString heightInc}" ];
-        ctrl-cmd-equal = [ "resize width +${toString widthInc}" "resize height +${toString heightInc}" ];
+        ctrl-cmd-minus = [
+          "resize width -${toString widthInc}"
+          "resize height -${toString heightInc}"
+        ];
+        ctrl-cmd-equal = [
+          "resize width +${toString widthInc}"
+          "resize height +${toString heightInc}"
+        ];
 
         ctrl-1 = "workspace 1";
         ctrl-2 = "workspace 2";
@@ -87,15 +110,42 @@
         ctrl-8 = "workspace 8";
         ctrl-9 = "workspace 9";
 
-        ctrl-cmd-1 = ["move-node-to-workspace 1" "workspace 1"];
-        ctrl-cmd-2 = ["move-node-to-workspace 2" "workspace 2"];
-        ctrl-cmd-3 = ["move-node-to-workspace 3" "workspace 3"];
-        ctrl-cmd-4 = ["move-node-to-workspace 4" "workspace 4"];
-        ctrl-cmd-5 = ["move-node-to-workspace 5" "workspace 5"];
-        ctrl-cmd-6 = ["move-node-to-workspace 6" "workspace 6"];
-        ctrl-cmd-7 = ["move-node-to-workspace 7" "workspace 7"];
-        ctrl-cmd-8 = ["move-node-to-workspace 8" "workspace 8"];
-        ctrl-cmd-9 = ["move-node-to-workspace 9" "workspace 9"];
+        ctrl-cmd-1 = [
+          "move-node-to-workspace 1"
+          "workspace 1"
+        ];
+        ctrl-cmd-2 = [
+          "move-node-to-workspace 2"
+          "workspace 2"
+        ];
+        ctrl-cmd-3 = [
+          "move-node-to-workspace 3"
+          "workspace 3"
+        ];
+        ctrl-cmd-4 = [
+          "move-node-to-workspace 4"
+          "workspace 4"
+        ];
+        ctrl-cmd-5 = [
+          "move-node-to-workspace 5"
+          "workspace 5"
+        ];
+        ctrl-cmd-6 = [
+          "move-node-to-workspace 6"
+          "workspace 6"
+        ];
+        ctrl-cmd-7 = [
+          "move-node-to-workspace 7"
+          "workspace 7"
+        ];
+        ctrl-cmd-8 = [
+          "move-node-to-workspace 8"
+          "workspace 8"
+        ];
+        ctrl-cmd-9 = [
+          "move-node-to-workspace 9"
+          "workspace 9"
+        ];
 
         ctrl-tab = "workspace-back-and-forth";
         ctrl-cmd-tab = "move-workspace-to-monitor --wrap-around next";
@@ -103,56 +153,116 @@
         ctrl-cmd-space = "mode service";
       };
       mode.service.binding = {
-        esc = ["reload-config" "mode main"];
-        ctrl-cmd-space = [ 
-          "balance-sizes" 
-          "resize width +${toString (widthInc * 2)}" 
-          "resize height +${toString (heightInc * 2)}" 
-          "mode main" 
+        esc = [
+          "reload-config"
+          "mode main"
         ];
-        ctrl-cmd-0 = [ "balance-sizes" "mode main" ];
+        ctrl-cmd-space = [
+          "balance-sizes"
+          "resize width +${toString (widthInc * 2)}"
+          "resize height +${toString (heightInc * 2)}"
+          "mode main"
+        ];
+        ctrl-cmd-0 = [
+          "balance-sizes"
+          "mode main"
+        ];
         # reset layout
-        r = ["flatten-workspace-tree" "balance-sizes" "mode main"];
+        r = [
+          "flatten-workspace-tree"
+          "balance-sizes"
+          "mode main"
+        ];
         # Toggle between floating and tiling layout
-        f = ["layout floating tiling" "mode main"];
-        backspace = ["close-all-windows-but-current" "mode main"];
+        f = [
+          "layout floating tiling"
+          "mode main"
+        ];
+        backspace = [
+          "close-all-windows-but-current"
+          "mode main"
+        ];
 
         # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
         #s = ["layout sticky tiling" "mode main"]
 
-        ctrl-cmd-h = ["join-with left" "mode main"];
-        ctrl-cmd-j = ["join-with down" "mode main"];
-        ctrl-cmd-k = ["join-with up" "mode main"];
-        ctrl-cmd-l = ["join-with right" "mode main"];
+        ctrl-cmd-h = [
+          "join-with left"
+          "mode main"
+        ];
+        ctrl-cmd-j = [
+          "join-with down"
+          "mode main"
+        ];
+        ctrl-cmd-k = [
+          "join-with up"
+          "mode main"
+        ];
+        ctrl-cmd-l = [
+          "join-with right"
+          "mode main"
+        ];
 
-        ctrl-cmd-1 = [ "move-node-to-workspace 1" "mode main" ];
-        ctrl-cmd-2 = [ "move-node-to-workspace 2" "mode main" ];
-        ctrl-cmd-3 = [ "move-node-to-workspace 3" "mode main" ];
-        ctrl-cmd-4 = [ "move-node-to-workspace 4" "mode main" ];
-        ctrl-cmd-5 = [ "move-node-to-workspace 5" "mode main" ];
-        ctrl-cmd-6 = [ "move-node-to-workspace 6" "mode main" ];
-        ctrl-cmd-7 = [ "move-node-to-workspace 7" "mode main" ];
-        ctrl-cmd-8 = [ "move-node-to-workspace 8" "mode main" ];
-        ctrl-cmd-9 = [ "move-node-to-workspace 9" "mode main" ];
+        ctrl-cmd-1 = [
+          "move-node-to-workspace 1"
+          "mode main"
+        ];
+        ctrl-cmd-2 = [
+          "move-node-to-workspace 2"
+          "mode main"
+        ];
+        ctrl-cmd-3 = [
+          "move-node-to-workspace 3"
+          "mode main"
+        ];
+        ctrl-cmd-4 = [
+          "move-node-to-workspace 4"
+          "mode main"
+        ];
+        ctrl-cmd-5 = [
+          "move-node-to-workspace 5"
+          "mode main"
+        ];
+        ctrl-cmd-6 = [
+          "move-node-to-workspace 6"
+          "mode main"
+        ];
+        ctrl-cmd-7 = [
+          "move-node-to-workspace 7"
+          "mode main"
+        ];
+        ctrl-cmd-8 = [
+          "move-node-to-workspace 8"
+          "mode main"
+        ];
+        ctrl-cmd-9 = [
+          "move-node-to-workspace 9"
+          "mode main"
+        ];
 
         # make new iterm window
         ctrl-cmd-t = [
           # https://gist.github.com/reyjrar/1769355?permalink_comment_id=1498007#gistcomment-1498007
-          "exec-and-forget osascript -e 'if application \"iTerm\" is running then
-              tell application \"iTerm\"
-                  create window with default profile
-              end tell
-          else
-              activate application \"iTerm\"
-          end if'"
+          ''
+            exec-and-forget osascript -e 'if application "iTerm" is running then
+                tell application "iTerm"
+                    create window with default profile
+                end tell
+            else
+                activate application "iTerm"
+            end if'
+          ''
           "mode main"
         ];
 
         down = "volume down";
         up = "volume up";
-        cmd-down = ["volume set 0" "mode main"];
+        cmd-down = [
+          "volume set 0"
+          "mode main"
+        ];
       };
-  };
+    };
 
   services.jankyborders = {
     enable = true;
@@ -171,6 +281,10 @@
   ];
 
   homebrew.enable = true;
+  homebrew.brews = [
+    "nvm"
+    "exiftool"
+  ];
   homebrew.casks = [
     "iterm2"
     "karabiner-elements"

@@ -42,7 +42,6 @@ self: super:
       # moreutils # conflicts with GNU parallel below
       # nasm
       nix-prefetch-scripts
-      nixfmt
       # nodejs-slim-18_x
       # nsq
       neovim
