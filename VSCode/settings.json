@@ -281,7 +281,20 @@
   "autoAlign.enabled": {
     "csv": true,
     "bsv": true,
-    "toml": false
+    "toml": false,
+    "mdx": true
   },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.preferGoToSourceDefinition": true,
+  "typescript.reportStyleChecksAsWarnings": false,
+  "typescript.suggestionActions.enabled": false,
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "docker.extension.enableComposeLanguageServer": false,
   // "editor.quickSuggestions": null,
 }
