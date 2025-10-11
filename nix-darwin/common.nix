@@ -21,6 +21,7 @@
     vim
     direnv
     nixfmt-rfc-style
+    (pkgs.callPackage ../nix/exif.nix {})
     # xz is a hidden dependency of nvm when gnutar also installed on macos
     # ([thread](https://github.com/nvm-sh/nvm/issues/3034#issuecomment-1694564861))
     xz
