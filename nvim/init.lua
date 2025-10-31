@@ -109,10 +109,10 @@ lazy.setup({
         end
         return nested
       end
-      vim.keymap.set({'n', 'v', 'o'}, 'gk', highlighted('goto_parent'), keyopts)
-      vim.keymap.set({'n', 'v', 'o'}, 'gj', highlighted('goto_child'), keyopts)
-      vim.keymap.set({'n', 'v', 'o'}, 'gl', highlighted('goto_next'), keyopts)
-      vim.keymap.set({'n', 'v', 'o'}, 'gh', highlighted('goto_prev'), keyopts)
+      vim.keymap.set({'n', 'v', 'o'}, 'gh', highlighted('goto_parent'), keyopts)
+      vim.keymap.set({'n', 'v', 'o'}, 'gl', highlighted('goto_child'), keyopts)
+      vim.keymap.set({'n', 'v', 'o'}, 'gj', highlighted('goto_next'), keyopts)
+      vim.keymap.set({'n', 'v', 'o'}, 'gk', highlighted('goto_prev'), keyopts)
       vim.keymap.set({'v', 'o'}, 'in', tree_climber.select_node, keyopts)
       vim.keymap.set('n', '<c-l>', highlighted('swap_next'), keyopts)
       vim.keymap.set('n', '<c-h>', highlighted('swap_prev'), keyopts)
