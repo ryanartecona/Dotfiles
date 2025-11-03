@@ -17,7 +17,6 @@ let
         system = system;
         config.allowUnfree = true;
         overlays = [
-          (import ../nixpkgs/overlays/10-nix-with-manual.nix)
           (import ../nixpkgs/overlays/50-ra-scripts.nix)
         ];
       };
