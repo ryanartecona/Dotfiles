@@ -1,47 +1,61 @@
 # A top level nix-darwin config for each computer with different needs.
 # Structure inspired by https://github.com/MatthiasBenaets/nix-config/blob/master/darwin/default.nix
 # Use like `sudo darwin-rebuild switch --flake .#home-studio`.
-{ nixpkgs, nixpkgs-stable, nix-darwin, ... }:
+{
+  nixpkgs,
+  nixpkgs-stable,
+  nix-darwin,
+  home-manager,
+  ...
+}:
 
 let
-  systemConfig = system: {
-    system = system;
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
+  systemConfig =
+    system:
+    let
+      nixpkgsArgs = {
+        system = system;
+        config.allowUnfree = true;
+        overlays = [
+          (import ../nixpkgs/overlays/10-nix-with-manual.nix)
+          (import ../nixpkgs/overlays/50-ra-scripts.nix)
+        ];
+      };
+    in
+    {
+      system = system;
+      pkgs = import nixpkgs nixpkgsArgs;
+      stable = import nixpkgs-stable nixpkgsArgs;
     };
-    stable = import nixpkgs-stable {
-      inherit system;
-      config.allowUnfree = true;
-    };
-  };
 
 in
 {
-  home-studio = 
+  home-studio =
     let
       config = systemConfig "aarch64-darwin";
     in
     with config;
-      nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = config;
-        modules = [
-          ./common.nix
-        ];
-      };
+    nix-darwin.lib.darwinSystem {
+      inherit system;
+      specialArgs = config;
+      modules = [
+        ./common.nix
+        home-manager.darwinModules.home-manager
+      ];
+    };
 
-  work = 
+  work =
     let
       config = systemConfig "aarch64-darwin";
     in
-      with config;
-      nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = config;
-        modules = [
-          ./common.nix
-          ./old-nixbld.nix
-        ];
-      };
+    with config;
+    nix-darwin.lib.darwinSystem {
+      inherit system;
+      specialArgs = config;
+      modules = [
+        ./common.nix
+        ./old-nixbld.nix
+        home-manager.darwinModules.home-manager
+      ];
+    };
 }

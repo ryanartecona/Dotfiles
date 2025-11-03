@@ -85,6 +85,7 @@ function allowed_paths --description "User-allowed \$path dirs"
   echo /opt/homebrew/bin
   echo /usr/local/bin
   echo /usr/local/sbin
+  echo /etc/profiles/per-user/$USER/bin
   echo $HOME/.nix-profile/bin
   echo $HOME/.nix-profile/sbin
   echo /usr/bin
@@ -178,7 +179,7 @@ if type -q expand-word
   bind --sets-mode expand \t expand:execute
 
   # During expansion, bind Backspace to revert the operation.
-  bind --mode expand --sets-mode default --key backspace --silent expand:revert
+  bind --mode expand --sets-mode default --silent backspace expand:revert
 
   # Bind Tab to cycle through the available expansions.
   bind --mode expand \t expand:choose-next
@@ -189,7 +190,7 @@ if type -q expand-word
   # vi mode workaround
   # vi mode shall return to insert mode instead of the default mode
   bind --mode insert --sets-mode vi_expand \t expand:execute
-  bind --mode vi_expand --sets-mode insert --key backspace --silent expand:revert
+  bind --mode vi_expand --sets-mode insert --silent backspace expand:revert
   bind --mode vi_expand \t expand:choose-next
   bind --mode vi_expand --sets-mode insert '' ''
 end

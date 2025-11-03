@@ -13,8 +13,10 @@
       experimental-features = nix-command flakes
     '';
   };
-  nixpkgs.config.allowUnfree = true;
-  
+
+  # Use the pkgs from the nix-darwin flake for all darwin modules, i.e. home-manager
+  nixpkgs.pkgs = pkgs;
+
   imports = [
     ./aerospace.nix
   ];
@@ -27,7 +29,7 @@
     nixfmt-rfc-style
     nix-output-monitor
     exiftool
-    (pkgs.callPackage ../nix/exif.nix {})
+    (pkgs.callPackage ../nix/exif.nix { })
     # xz is a hidden dependency of nvm when gnutar also installed on macos
     # ([thread](https://github.com/nvm-sh/nvm/issues/3034#issuecomment-1694564861))
     xz
@@ -58,8 +60,21 @@
 
   environment.shells = [
     pkgs.fish
+    # this is where nix-env installs fish
     "/Users/ryanartecona/.nix-profile/bin/fish"
+    # this is where home-manager installs fish
+    "/etc/profiles/per-user/ryanartecona/bin/fish"
   ];
+
+  users.users.ryanartecona = {
+    name = "ryanartecona";
+    home = "/Users/ryanartecona";
+  };
+
+  # home-manager configuration
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.ryanartecona = import ../home-manager/home.nix;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
