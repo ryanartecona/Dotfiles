@@ -8,11 +8,37 @@
 	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
+		<key>31DDB803-0579-4ACF-8D47-8BEA5F55E464</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>36DACA6B-4E2C-497C-B868-57706EDA97BF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>37076E74-4AEF-4013-B218-5F31A8C881DE</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>889CC2B8-93D9-4F65-9D1A-4C0371FD761F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>78109248-9C19-46EE-9A0E-80882DE59CAF</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>36DACA6B-4E2C-497C-B868-57706EDA97BF</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -167,31 +193,174 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>openwith</key>
+				<string>/Applications/Cursor.app</string>
+				<key>sourcefile</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openfile</string>
+			<key>uid</key>
+			<string>36DACA6B-4E2C-497C-B868-57706EDA97BF</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsmulti</key>
+				<integer>1</integer>
+				<key>filetypes</key>
+				<array/>
+				<key>name</key>
+				<string>Open with Cursor</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.action</string>
+			<key>uid</key>
+			<string>78109248-9C19-46EE-9A0E-80882DE59CAF</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>anchorfields</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>daterange</key>
+				<integer>0</integer>
+				<key>fields</key>
+				<array>
+					<dict>
+						<key>field</key>
+						<string>kMDItemAlternateNames</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>{query}</string>
+						<key>words</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>kMDItemFinderComment</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>{query}</string>
+						<key>words</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>kMDItemDisplayName</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>*.code-workspace</string>
+						<key>words</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>kMDItemDisplayName</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>{query}</string>
+						<key>words</key>
+						<false/>
+					</dict>
+				</array>
+				<key>includesystem</key>
+				<false/>
+				<key>keyword</key>
+				<string>curs</string>
+				<key>limit</key>
+				<integer>0</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>scopes</key>
+				<array/>
+				<key>sortmode</key>
+				<integer>0</integer>
+				<key>subtext</key>
+				<string>Open Cursor workspace "{query}"</string>
+				<key>title</key>
+				<string>Open Cursor workspace</string>
+				<key>types</key>
+				<array/>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.filefilter</string>
+			<key>uid</key>
+			<string>31DDB803-0579-4ACF-8D47-8BEA5F55E464</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>31DDB803-0579-4ACF-8D47-8BEA5F55E464</key>
+		<dict>
+			<key>xpos</key>
+			<integer>215</integer>
+			<key>ypos</key>
+			<integer>425</integer>
+		</dict>
+		<key>36DACA6B-4E2C-497C-B868-57706EDA97BF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>530</integer>
+			<key>ypos</key>
+			<integer>305</integer>
+		</dict>
 		<key>37076E74-4AEF-4013-B218-5F31A8C881DE</key>
 		<dict>
 			<key>xpos</key>
-			<integer>220</integer>
+			<integer>215</integer>
 			<key>ypos</key>
-			<integer>55</integer>
+			<integer>50</integer>
+		</dict>
+		<key>78109248-9C19-46EE-9A0E-80882DE59CAF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>215</integer>
+			<key>ypos</key>
+			<integer>305</integer>
 		</dict>
 		<key>889CC2B8-93D9-4F65-9D1A-4C0371FD761F</key>
 		<dict>
 			<key>xpos</key>
 			<integer>530</integer>
 			<key>ypos</key>
-			<integer>55</integer>
+			<integer>50</integer>
 		</dict>
 		<key>B7A8A5AE-BFCF-4920-AD5E-53448C407063</key>
 		<dict>
 			<key>xpos</key>
-			<integer>220</integer>
+			<integer>215</integer>
 			<key>ypos</key>
-			<integer>175</integer>
+			<integer>170</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
