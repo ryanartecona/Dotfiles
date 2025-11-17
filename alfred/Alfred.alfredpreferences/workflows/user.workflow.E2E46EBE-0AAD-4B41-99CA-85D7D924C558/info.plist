@@ -120,15 +120,17 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>import sys
+				<string>/opt/homebrew/bin/python3 -c '
+import sys
 import symbols
-sys.stdout.write(symbols.get_by_idx({query})[1])</string>
+sys.stdout.write(symbols.get_by_idx({query})[1])
+'</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -136,25 +138,6 @@ sys.stdout.write(symbols.get_by_idx({query})[1])</string>
 			<string>06C92DF6-8A72-42A1-9E1D-85A195AA62E9</string>
 			<key>version</key>
 			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<true/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>BF903327-9935-42A7-84E4-F9822B1CDF35</string>
-			<key>version</key>
-			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -184,7 +167,7 @@ sys.stdout.write(symbols.get_by_idx({query})[1])</string>
 				<key>runningsubtext</key>
 				<string>loading symbols</string>
 				<key>script</key>
-				<string>/opt/homebrew/bin/python symbols.py -a '{query}'</string>
+				<string>/opt/homebrew/bin/python3 symbols.py -a '{query}'</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -202,6 +185,25 @@ sys.stdout.write(symbols.get_by_idx({query})[1])</string>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>24667B9E-3087-4D88-AB22-32BE001789E7</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>BF903327-9935-42A7-84E4-F9822B1CDF35</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
