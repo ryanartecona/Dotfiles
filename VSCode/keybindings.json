@@ -236,25 +236,13 @@
     "when": "editorFocus && !composerBarIsVisible"
   },
   {
-    "key": "cmd+i",
-    "command": "composer.newAgentChat"
-  },
-  {
-    "key": "shift+cmd+i",
-    "command": "-composer.newAgentChat"
-  },
-  {
-    "key": "cmd+i",
-    "command": "-composer.startComposerPrompt"
-  },
-  {
     "key": "cmd+k cmd+i",
-    "command": "editor.debug.action.showDebugHover",
-    "when": "editorTextFocus && inDebugMode"
+    "command": "editor.action.showHover",
+    "when": "editorTextFocus"
   },
   {
     "key": "cmd+r cmd+i",
-    "command": "-editor.debug.action.showDebugHover",
-    "when": "editorTextFocus && inDebugMode"
-  }
+    "command": "-editor.action.showHover",
+    "when": "editorTextFocus"
+  },
 ]
