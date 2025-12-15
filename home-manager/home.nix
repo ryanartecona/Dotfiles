@@ -72,6 +72,7 @@
     ocaml
     opam
     pandoc
+    patch
     parallel
     pinentry_mac
     python3
