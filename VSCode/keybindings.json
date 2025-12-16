@@ -245,4 +245,8 @@
     "command": "-editor.action.showHover",
     "when": "editorTextFocus"
   },
+  {
+    "key": "shift+cmd+t",
+    "command": "workbench.view.extension.test"
+  },
 ]

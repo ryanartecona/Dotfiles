@@ -27,6 +27,9 @@ let
   exif-ilford-hp5-plus = writeShellScriptBin "exif-ilford-hp5-plus" ''
     exiftool -Model="Ilford HP5 Plus" -ISO=400 "$@"
   '';
+  exif-ilford-ilfocolor-400-plus-vintage = writeShellScriptBin "exif-ilford-ilfocolor-400-plus-vintage" ''
+    exiftool -Model="Ilford Ilfocolor 400 Plus Vintage" -ISO=400 "$@"
+  '';
 
 in
 symlinkJoin {
@@ -39,5 +42,6 @@ symlinkJoin {
     exif-fujicolor-200
     exif-kodak-gold-200
     exif-ilford-hp5-plus
+    exif-ilford-ilfocolor-400-plus-vintage
   ];
 }
