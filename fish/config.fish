@@ -114,6 +114,11 @@ set fish_user_paths (valid_allowed_paths)
 #   fish_vi_mode
 # end
 
+# retool gcloud-cli
+if test -f $HOME/code/tmp-gcloud/google-cloud-sdk/path.fish.inc
+  source $HOME/code/tmp-gcloud/google-cloud-sdk/path.fish.inc
+end
+
 # OPAM configuration
 if type -fq opam
   # Let opam set the env vars it wants, but don't let it break my MANPATH
