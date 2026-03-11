@@ -65,6 +65,7 @@ end
 
 function allowed_paths --description "User-allowed \$path dirs"
   echo $HOME/bin
+  echo $HOME/.local/bin
   echo $HOME/.rvm/bin
   echo $HOME/.cabal/bin
   echo $HOME/Library/Haskell/bin
