@@ -8,6 +8,19 @@
 	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
+		<key>01EDC3EB-A948-4173-AD4A-2CC455AC1347</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>045CBB72-0BC0-4BDE-AB66-7185D959EC17</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>1F19CA62-17D8-4C2A-B749-137AE6E902D1</key>
 		<array>
 			<dict>
@@ -110,6 +123,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string></string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>045CBB72-0BC0-4BDE-AB66-7185D959EC17</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -159,19 +191,49 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>autopaste</key>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
 				<true/>
-				<key>clipboardtext</key>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>utf</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>1</integer>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>runningsubtext</key>
+				<string>Searching…</string>
+				<key>script</key>
 				<string></string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>unicode_search.py</string>
+				<key>subtext</key>
+				<string>Search for Unicode Descriptions</string>
+				<key>title</key>
+				<string>Search Unicode</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>045CBB72-0BC0-4BDE-AB66-7185D959EC17</string>
+			<string>01EDC3EB-A948-4173-AD4A-2CC455AC1347</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
@@ -229,6 +291,13 @@
 	<string>Search Unicode is an Alfred 5 Workflow to lookup and reverse lookup Unicode characters and emoji with their names.</string>
 	<key>uidata</key>
 	<dict>
+		<key>01EDC3EB-A948-4173-AD4A-2CC455AC1347</key>
+		<dict>
+			<key>xpos</key>
+			<real>240</real>
+			<key>ypos</key>
+			<real>395</real>
+		</dict>
 		<key>045CBB72-0BC0-4BDE-AB66-7185D959EC17</key>
 		<dict>
 			<key>xpos</key>
@@ -239,16 +308,16 @@
 		<key>1F19CA62-17D8-4C2A-B749-137AE6E902D1</key>
 		<dict>
 			<key>xpos</key>
-			<real>235</real>
+			<real>240</real>
 			<key>ypos</key>
-			<real>270</real>
+			<real>280</real>
 		</dict>
 		<key>9CC5C2CF-B7B6-4D99-9042-4D56C7B0D8F4</key>
 		<dict>
 			<key>xpos</key>
 			<real>235</real>
 			<key>ypos</key>
-			<real>420</real>
+			<real>540</real>
 		</dict>
 		<key>EB8A55A8-E3AB-46F6-B4CE-17752BD0C184</key>
 		<dict>
