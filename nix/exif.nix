@@ -16,6 +16,12 @@ let
   exif-minolta-md-35-70mm-f3-5 = writeShellScriptBin "exif-minolta-md-35-70mm-f3.5" ''
     exiftool -LensMake="Minolta MD" -LensModel="35-70mm f/3.5" -FocalLength=50 -FocalLengthIn35mmFormat=50 "$@"
   '';
+  exif-sigma-50mm-f2-8-macro = writeShellScriptBin "exif-sigma-50mm-f2-8-macro" ''
+    exiftool -LensMake="Sigma" -LensModel="50mm f/2.8 Macro" -FocalLength=50 -FocalLengthIn35mmFormat=50 "$@"
+  '';
+  exif-sigma-mini-wide-ii-28mm-f2-8 = writeShellScriptBin "exif-sigma-mini-wide-ii-28mm-f2.8" ''
+    exiftool -LensMake="Sigma" -LensModel="Mini-Wide II 28mm f/2.8" -FocalLength=28 -FocalLengthIn35mmFormat=28 "$@"
+  '';
 
   # film stocks
   exif-fujicolor-200 = writeShellScriptBin "exif-fujicolor-200" ''
@@ -24,11 +30,20 @@ let
   exif-kodak-gold-200 = writeShellScriptBin "exif-kodak-gold-200" ''
     exiftool -Model="Kodak Gold 200" -ISO=200 "$@"
   '';
+  exif-kodak-ultramax-400 = writeShellScriptBin "exif-kodak-ultramax-400" ''
+    exiftool -Model="Kodak Ultramax 400" -ISO=400 "$@"
+  '';
   exif-ilford-hp5-plus = writeShellScriptBin "exif-ilford-hp5-plus" ''
     exiftool -Model="Ilford HP5 Plus" -ISO=400 "$@"
   '';
   exif-ilford-ilfocolor-400-plus-vintage = writeShellScriptBin "exif-ilford-ilfocolor-400-plus-vintage" ''
     exiftool -Model="Ilford Ilfocolor 400 Plus Vintage" -ISO=400 "$@"
+  '';
+  exif-amber-t800 = writeShellScriptBin "exif-amber-t800" ''
+    exiftool -Model="Amber T800" -ISO=800 "$@"
+  '';
+  exif-ferrania-orto-50 = writeShellScriptBin "exif-ferrania-orto-50" ''
+    exiftool -Model="Ferrania Orto 50" -ISO=50 "$@"
   '';
 
 in
@@ -39,9 +54,14 @@ symlinkJoin {
     exif-minolta-xd
     exif-minolta-md-50mm-f1-4
     exif-minolta-md-35-70mm-f3-5
+    exif-sigma-50mm-f2-8-macro
+    exif-sigma-mini-wide-ii-28mm-f2-8
     exif-fujicolor-200
     exif-kodak-gold-200
+    exif-kodak-ultramax-400
     exif-ilford-hp5-plus
     exif-ilford-ilfocolor-400-plus-vintage
+    exif-amber-t800
+    exif-ferrania-orto-50
   ];
 }
