@@ -296,5 +296,8 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "docker.extension.enableComposeLanguageServer": false,
+  "claudeCode.preferredLocation": "sidebar",
+  "chat.viewSessions.orientation": "stacked",
+  "claudeCode.useCtrlEnterToSend": true,
   // "editor.quickSuggestions": null,
 }

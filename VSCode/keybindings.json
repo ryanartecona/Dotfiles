@@ -249,4 +249,9 @@
     "key": "shift+cmd+t",
     "command": "workbench.view.extension.test"
   },
+  {
+    "key": "ctrl+c",
+    "command": "workbench.view.extension.claude-sidebar-secondary",
+    "when": "viewContainer.workbench.view.extension.claude-sidebar-secondary.enabled"
+  },
 ]
