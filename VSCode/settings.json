@@ -247,7 +247,6 @@
   "window.zoomLevel": 1,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoFormatStrings": true,
-  "workbench.activityBar.location": "hidden",
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },

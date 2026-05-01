@@ -8,6 +8,9 @@ let
   exif-minolta-xd = writeShellScriptBin "exif-minolta-xd" ''
     exiftool -Make="Minolta XD" "$@"
   '';
+  exif-super-fujica-6 = writeShellScriptBin "exif-super-fujica-6" ''
+    exiftool -Make="Super Fujica 6" -LensMake="Fujinar" -LensModel="75mm f/2.8" -FocalLength=75 -FocalLengthIn35mmFormat=41 "$@"
+  '';
 
   # lenses
   exif-minolta-md-50mm-f1-4 = writeShellScriptBin "exif-minolta-md-50mm-f1.4" ''
@@ -29,6 +32,12 @@ let
   '';
   exif-kodak-gold-200 = writeShellScriptBin "exif-kodak-gold-200" ''
     exiftool -Model="Kodak Gold 200" -ISO=200 "$@"
+  '';
+  exif-kodak-kodacolor-100 = writeShellScriptBin "exif-kodak-kodacolor-100" ''
+    exiftool -Model="Kodak Kodacolor 100" -ISO=100 "$@"
+  '';
+  exif-kodak-tmax-100 = writeShellScriptBin "exif-kodak-tmax-100" ''
+    exiftool -Model="Kodak TMax 100" -ISO=100 "$@"
   '';
   exif-kodak-ultramax-400 = writeShellScriptBin "exif-kodak-ultramax-400" ''
     exiftool -Model="Kodak Ultramax 400" -ISO=400 "$@"
@@ -52,12 +61,15 @@ symlinkJoin {
   paths = [
     exif-olympus-xa
     exif-minolta-xd
+    exif-super-fujica-6
     exif-minolta-md-50mm-f1-4
     exif-minolta-md-35-70mm-f3-5
     exif-sigma-50mm-f2-8-macro
     exif-sigma-mini-wide-ii-28mm-f2-8
     exif-fujicolor-200
     exif-kodak-gold-200
+    exif-kodak-kodacolor-100
+    exif-kodak-tmax-100
     exif-kodak-ultramax-400
     exif-ilford-hp5-plus
     exif-ilford-ilfocolor-400-plus-vintage
