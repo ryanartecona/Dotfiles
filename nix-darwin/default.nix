@@ -6,6 +6,7 @@
   nixpkgs-stable,
   nix-darwin,
   home-manager,
+  nix-homebrew,
   ...
 }:
 
@@ -39,11 +40,12 @@ in
       specialArgs = config;
       modules = [
         ./common.nix
+        ./homebrew.nix
         home-manager.darwinModules.home-manager
       ];
     };
 
-  work =
+  work-2022 =
     let
       config = systemConfig "aarch64-darwin";
     in
@@ -53,7 +55,24 @@ in
       specialArgs = config;
       modules = [
         ./common.nix
+        ./homebrew.nix
         ./old-nixbld.nix
+        home-manager.darwinModules.home-manager
+      ];
+    };
+
+  work = 
+    let
+      config = systemConfig "x86_64-darwin";
+    in
+    with config;
+    nix-darwin.lib.darwinSystem {
+      inherit system;
+      specialArgs = config // { 
+        primaryUser = "ra"; 
+      };
+      modules = [
+        ./common.nix
         home-manager.darwinModules.home-manager
       ];
     };

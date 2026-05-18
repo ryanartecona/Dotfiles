@@ -1,10 +1,11 @@
+{ primaryUser ? "ryanartecona" }:
 { config, pkgs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "ryanartecona";
-  home.homeDirectory = "/Users/ryanartecona";
+  home.username = primaryUser;
+  home.homeDirectory = "/Users/${primaryUser}";
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -60,7 +61,7 @@
     graphviz
     htop
     httpie
-    gitAndTools.hub
+    hub
     jq
     lorri
     # moreutils # conflicts with GNU parallel below

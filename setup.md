@@ -29,14 +29,14 @@ ln -sf ~/Dotfiles/VSCode/snippets "$HOME/Library/Application Support/Code/User/s
 
 Install extenions:
 - advanced-new-file
-- Ayu theme (Mirage)
+- Gruvbox theme
 - direnv
 - edamagit
 - File Browser
 - Fish
 - GitLens
 - Nix IDE
-- Vim
+- NeoVim
 
 ## Fish shell
 
@@ -97,10 +97,10 @@ sudo mkdir -p /etc/nix-darwin
 sudo ln -sf ~/Dotfiles/nixpkgs/darwin-configuration.nix /etc/nix-darwin/configuration.nix
 ```
 
-Install with the following (via https://github.com/LnL7/nix-darwin):
+Install (first time) with the following (via https://github.com/LnL7/nix-darwin):
 ```
 nix-build '<darwin>' -A darwin-rebuild
-sudo ./result/bin/darwin-rebuild switch -I darwin-config=/etc/nix-darwin/configuration.nix
+sudo ./result/bin/darwin-rebuild switch --flake .#home-studio
 ```
 
 Then, after making a change to darwin-configuration.nix, apply it with this:

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, primaryUser ? "ryanartecona", ... }:
 
 # Reference: https://nix-darwin.github.io/nix-darwin/manual/
 {
@@ -26,7 +26,7 @@
   environment.systemPackages = with pkgs; [
     vim
     direnv
-    nixfmt-rfc-style
+    nixfmt
     nix-output-monitor
     exiftool
     (pkgs.callPackage ../nix/exif.nix { })
@@ -35,23 +35,13 @@
     xz
   ];
 
-  system.primaryUser = "ryanartecona";
+  system.primaryUser = primaryUser;
 
   services.lorri.enable = true;
 
   environment.systemPath = [
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
-  ];
-
-  homebrew.enable = true;
-  homebrew.brews = [
-    "nvm"
-  ];
-  homebrew.casks = [
-    "iterm2"
-    "karabiner-elements"
-    "alfred@4"
   ];
 
   programs._1password.enable = true;
@@ -61,20 +51,20 @@
   environment.shells = [
     pkgs.fish
     # this is where nix-env installs fish
-    "/Users/ryanartecona/.nix-profile/bin/fish"
+    "/Users/${primaryUser}/.nix-profile/bin/fish"
     # this is where home-manager installs fish
-    "/etc/profiles/per-user/ryanartecona/bin/fish"
+    "/etc/profiles/per-user/${primaryUser}/bin/fish"
   ];
 
-  users.users.ryanartecona = {
-    name = "ryanartecona";
-    home = "/Users/ryanartecona";
+  users.users.${primaryUser} = {
+    name = primaryUser;
+    home = "/Users/${primaryUser}";
   };
 
   # home-manager configuration
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.users.ryanartecona = import ../home-manager/home.nix;
+  home-manager.users.${primaryUser} = import ../home-manager/home.nix { inherit primaryUser; };
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
