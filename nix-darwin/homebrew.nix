@@ -8,6 +8,6 @@
   homebrew.casks = [
     "iterm2"
     "karabiner-elements"
-    "alfred@4"
+    "alfred"
   ];
 }

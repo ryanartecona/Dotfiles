@@ -6,7 +6,6 @@
   nixpkgs-stable,
   nix-darwin,
   home-manager,
-  nix-homebrew,
   ...
 }:
 
@@ -63,7 +62,7 @@ in
 
   work = 
     let
-      config = systemConfig "x86_64-darwin";
+      config = systemConfig "aarch64-darwin";
     in
     with config;
     nix-darwin.lib.darwinSystem {

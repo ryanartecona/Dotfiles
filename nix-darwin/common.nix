@@ -12,12 +12,15 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+    # necessary to build x86 on Apple Silicon macs
+    settings.extra-platforms = [ "x86_64-darwin" "aarch64-darwin" ];
   };
 
   # Use the pkgs from the nix-darwin flake for all darwin modules, i.e. home-manager
   nixpkgs.pkgs = pkgs;
 
   imports = [
+    ./osx-defaults.nix
     ./aerospace.nix
   ];
 
