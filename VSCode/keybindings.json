@@ -254,4 +254,9 @@
     "command": "workbench.view.extension.claude-sidebar-secondary",
     "when": "viewContainer.workbench.view.extension.claude-sidebar-secondary.enabled"
   },
+  {
+    "key": "shift+cmd+c",
+    "command": "-workbench.action.terminal.openNativeConsole",
+    "when": "!isSessionsWindow && !terminalFocus"
+  },
 ]

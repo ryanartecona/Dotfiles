@@ -254,7 +254,7 @@
     "magit"
   ],
   "terminal.integrated.enableMultiLinePasteWarning": "never",
-  "workbench.colorTheme": "Gruvbox Dark Hard",
+  "workbench.colorTheme": "Gruvbox Dark Medium",
   "magit.forge-enabled": true,
   "magit.quick-switch-enabled": true,
   "[typescriptreact]": {
@@ -300,5 +300,6 @@
   "claudeCode.useCtrlEnterToSend": true,
   "gitlens.ai.model": "vscode",
   "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+  "workbench.activityBar.location": "hidden",
   // "editor.quickSuggestions": null,
 }

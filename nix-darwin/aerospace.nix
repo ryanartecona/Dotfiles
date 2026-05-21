@@ -236,7 +236,7 @@
     };
 
   services.jankyborders = {
-    enable = true;
+    enable = false;
     # active_color = "0xffe1e3e4";
     active_color = "glow(0xffd1aef1)";
     inactive_color = "0xff494d64";
