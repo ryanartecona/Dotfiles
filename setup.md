@@ -57,6 +57,14 @@ fisher update
 
 Functions are symlinked individually, so new ones must be synced when added.
 
+## Git
+
+```fish
+ln -s ~/Dotfiles/gitconfig ~/.gitconfig
+mkdir -p ~/.config/git
+ln -s ~/Dotfiles/gitignore ~/.config/git/ignore
+```
+
 ## Hammerspoon
 
 Mainly used for window movement hotkeys.

@@ -8,8 +8,6 @@
 	rebase = true
 [color]
 	ui = true
-[core]
-	excludesfile = /Users/ryanartecona/.gitignore
 [alias]
 	ls = ls-tree -r HEAD --name-only
 	st = status --short --branch
