@@ -250,13 +250,23 @@
     "command": "workbench.view.extension.test"
   },
   {
-    "key": "ctrl+c",
-    "command": "workbench.view.extension.claude-sidebar-secondary",
-    "when": "viewContainer.workbench.view.extension.claude-sidebar-secondary.enabled"
+    "key": "shift+cmd+c",
+    "command": "-workbench.action.terminal.openNativeConsole",
+    "when": "!terminalFocus"
   },
   {
     "key": "shift+cmd+c",
     "command": "-workbench.action.terminal.openNativeConsole",
     "when": "!isSessionsWindow && !terminalFocus"
   },
+  {
+    "key": "shift+cmd+c",
+    "command": "workbench.view.extension.claude-sidebar-secondary",
+    "when": "activeAuxiliary != 'workbench.view.extension.claude-sidebar-secondary'"
+  },
+  {
+    "key": "shift+cmd+c",
+    "command": "workbench.action.toggleAuxiliaryBar",
+    "when": "activeAuxiliary == 'workbench.view.extension.claude-sidebar-secondary'"
+  }
 ]

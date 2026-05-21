@@ -10,6 +10,8 @@ result
 __pycache__
 .pytest_cache
 .direnv
+.claude/
+/.wt/
 
 karabiner/automatic_backups
 .envrc

@@ -272,7 +272,6 @@
   ],
   "vim.useSystemClipboard": true,
   "github.copilot.enable": {
-    "*": false,
     "plaintext": false,
     "markdown": false,
     "scminput": false
@@ -295,11 +294,11 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "docker.extension.enableComposeLanguageServer": false,
-  "claudeCode.preferredLocation": "sidebar",
-  "chat.viewSessions.orientation": "stacked",
+  "claudeCode.preferredLocation": "panel",
   "claudeCode.useCtrlEnterToSend": true,
   "gitlens.ai.model": "vscode",
   "gitlens.ai.vscode.model": "copilot:gpt-4.1",
   "workbench.activityBar.location": "hidden",
+  "chat.viewSessions.orientation": "stacked",
   // "editor.quickSuggestions": null,
 }
