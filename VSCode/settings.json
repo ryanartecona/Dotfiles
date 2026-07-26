@@ -262,7 +262,8 @@
   },
   "editor.largeFileOptimizations": false,
   "files.associations": {
-    "*.mdx": "markdown"
+    "*.mdx": "markdown",
+    "*.hcl": "terraform",
   },
   "python.analysis.enablePytestSupport": false,
   "python.analysis.exclude": [
@@ -301,4 +302,20 @@
   "workbench.activityBar.location": "hidden",
   "chat.viewSessions.orientation": "stacked",
   // "editor.quickSuggestions": null,
+  "[hcl]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
+  "git.blame.editorDecoration.enabled": false,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "testing.resultsView.layout": "treeLeft",
+  "yaml.disableSchemaDetection": [
+    "**/.github/workflows/*.yml",
+    "**/.github/workflows/*.yaml",
+    "**/.gitea/workflows/*.yml",
+    "**/.gitea/workflows/*.yaml",
+    "**/.forgejo/workflows/*.yml",
+    "**/.forgejo/workflows/*.yaml"
+  ],
 }

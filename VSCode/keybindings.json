@@ -268,5 +268,16 @@
     "key": "shift+cmd+c",
     "command": "workbench.action.toggleAuxiliaryBar",
     "when": "activeAuxiliary == 'workbench.view.extension.claude-sidebar-secondary'"
-  }
+  },
+  {
+    "key": "tab",
+    "command": "-vscode-neovim.send",
+    "when": "neovim.init && neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert' && editorLangId not in 'neovim.editorLangIdExclusions'"
+  },
+  {
+    "key": "tab",
+    "command": "vscode-neovim.send",
+    "when": "neovim.init && neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert' && editorLangId not in 'neovim.editorLangIdExclusions' && !inlineEditIsVisible",
+    "args": "<Tab>"
+  },
 ]
