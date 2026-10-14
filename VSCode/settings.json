@@ -203,8 +203,10 @@
     "**/.ammonite": true
   },
   "workbench.editorAssociations": {
+    "*.copilotmd": "vscode.markdown.preview.editor",
     "*.ipynb": "jupyter.notebook.ipynb",
-    "git-rebase-todo": "default"
+    "git-rebase-todo": "default",
+    "*.pdf": "pdf.preview"
   },
   "editor.linkedEditing": true,
   "[html]": {
@@ -219,7 +221,7 @@
   "python.testing.pytestEnabled": true,
   "python.venvPath": "~/.local/share/virtualenvs",
   "redhat.telemetry.enabled": false,
-  "terraform.languageServer.enable": true,
+  "terraform.languageServer.enable": false,
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
@@ -242,7 +244,6 @@
   },
   "go.toolsManagement.autoUpdate": true,
   "workbench.editor.empty.hint": "hidden",
-  "terminal.integrated.tabs.enabled": false,
   "typescript.tsserver.maxTsServerMemory": 10240,
   "window.zoomLevel": 1,
   "python.analysis.autoImportCompletions": true,
@@ -267,16 +268,14 @@
   },
   "python.analysis.enablePytestSupport": false,
   "python.analysis.exclude": [
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.*",
     "**/bazel-*",
     "**/.pnpm",
     "**/.mypy_cache"
   ],
   "vim.useSystemClipboard": true,
-  "github.copilot.enable": {
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false
-  },
   "autoAlign.enabled": {
     "csv": true,
     "bsv": true,
@@ -297,17 +296,15 @@
   "docker.extension.enableComposeLanguageServer": false,
   "claudeCode.preferredLocation": "panel",
   "claudeCode.useCtrlEnterToSend": true,
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
   "workbench.activityBar.location": "hidden",
   "chat.viewSessions.orientation": "stacked",
   // "editor.quickSuggestions": null,
   "[hcl]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
-  "git.blame.editorDecoration.enabled": false,
+  "git.blame.editorDecoration.enabled": true,
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "testing.resultsView.layout": "treeLeft",
   "yaml.disableSchemaDetection": [
@@ -318,4 +315,11 @@
     "**/.forgejo/workflows/*.yml",
     "**/.forgejo/workflows/*.yaml"
   ],
+  "github.copilot.nextEditSuggestions.allowWhitespaceOnlyChanges": false,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.nextEditSuggestions.eagerness": "low",
+  "ruff.configurationPreference": "filesystemFirst",
+  "terminal.integrated.tabs.enabled": false,
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "claudeCode.hideOnboarding": true,
 }

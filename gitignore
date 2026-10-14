@@ -12,6 +12,7 @@ __pycache__
 .direnv
 .claude/
 /.wt/
+/.pi
 
 karabiner/automatic_backups
 .envrc
