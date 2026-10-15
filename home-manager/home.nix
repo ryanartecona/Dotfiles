@@ -1,4 +1,7 @@
-{ primaryUser ? "ryanartecona" }:
+{
+  primaryUser ? "ryanartecona",
+  dotfilesPath ? "/Users/${primaryUser}/Dotfiles",
+}:
 { config, pkgs, ... }:
 
 {
@@ -24,7 +27,7 @@
   programs.fish.enable = true;
   programs.fish.shellInit = builtins.readFile ../fish/config.fish;
 
-  # dirs to put on $PATH. note home-manager prepends these, but then my 
+  # dirs to put on $PATH. note home-manager prepends these, but then my
   # config.fish sorts them back to the bottom.
   home.sessionPath = [
     "$HOME/bin"
@@ -90,4 +93,26 @@
     ra-e
     ra-echo-argv
   ];
+
+  # Pi (pi.dev) config: symlink live files from this repo instead of copying
+  # into the nix store, so edits take effect immediately without a rebuild.
+  # Secrets (auth.json, mcp-auth.json) and pi-managed state (install/, npm/,
+  # sessions/) are deliberately not managed here.
+  home.file =
+    let
+      live = rel: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${rel}";
+    in
+    {
+      ".pi/agent/settings.json".source = live "pi/agent/settings.json";
+      ".pi/agent/mcp.json".source = live "pi/agent/mcp.json";
+      ".pi/agent/keybindings.json".source = live "pi/agent/keybindings.json";
+      ".pi/agent/compact-tools.json".source = live "pi/agent/compact-tools.json";
+      ".pi/agent/pledit.json".source = live "pi/agent/pledit.json";
+      ".pi/agent/open-tui.json".source = live "pi/agent/open-tui.json";
+      ".pi/agent/zentui.json".source = live "pi/agent/zentui.json";
+      ".pi/agent/extensions".source = live "pi/agent/extensions";
+      ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";
+      ".pi/agent/npm/package-lock.json".source = live "pi/agent/npm/package-lock.json";
+      ".pi/mcp-adapter.json".source = live "pi/mcp-adapter.json";
+    };
 }

@@ -1,0 +1,174 @@
+{
+  "components": {
+    "editor": {
+      "enabled": true,
+      "style": "minimalist",
+      "codexQuota": false,
+      "colorSource": "theme",
+      "borderColorMode": "adaptive",
+      "modelLabel": "id",
+      "viewportIndicators": true,
+      "styles": {
+        "opencode": {
+          "metadataFormat": "$model  $provider(  $thinking)(  $codex_quota)",
+          "completionMenu": "palette"
+        },
+        "opencode-copy-friendly": {
+          "metadataFormat": "$model  $provider(  $thinking)(  $codex_quota)",
+          "completionMenu": "palette"
+        },
+        "accent-rail": {
+          "rail": "▎",
+          "asciiRail": "|",
+          "transparent": false
+        },
+        "minimalist": {
+          "pathDisplay": "project",
+          "contextFormat": "percent",
+          "contextGauge": false,
+          "showSessionName": true,
+          "showTimer": true,
+          "showCost": true,
+          "showCacheHit": false,
+          "showGit": false,
+          "contextThresholds": {
+            "warning": 70,
+            "error": 90
+          },
+          "separator": "dot"
+        }
+      }
+    },
+    "footer": {
+      "style": "starship",
+      "codexQuota": false,
+      "colorSource": "terminal",
+      "modelLabel": "id",
+      "styles": {
+        "starship": {
+          "format": "",
+          "responsive": true,
+          "compactFormat": "$cwd$wrap(in $session_name)$wrap(on $git_branch) $git_status$wrap$context$wrap_sep$tokens$wrap_sep($codex_quota)",
+          "compactMaxLines": 2,
+          "separator": "pipe",
+          "contextStyle": "text+gauge",
+          "contextThresholds": {
+            "warning": 70,
+            "error": 90
+          },
+          "pathDisplay": {
+            "mode": "full",
+            "depth": 0
+          },
+          "segments": {
+            "cwd": true,
+            "sessionName": true,
+            "gitBranch": true,
+            "gitStatus": true,
+            "gitCounts": false,
+            "gitCommit": false,
+            "gitMetrics": false,
+            "runtime": true,
+            "modelInfo": false,
+            "context": true,
+            "tokens": true,
+            "cost": false,
+            "sessionDuration": false,
+            "username": false,
+            "time": false,
+            "os": false,
+            "packageVersion": false
+          },
+          "gitBranch": {
+            "maxLength": "full"
+          },
+          "gitCommit": {
+            "hashLength": 7,
+            "onlyDetached": true,
+            "showTag": true
+          },
+          "gitMetrics": {
+            "onlyNonzero": true,
+            "ignoreSubmodules": false
+          },
+          "extensionStatuses": {
+            "defaultPlacement": "right",
+            "placements": {
+              "pi-lens-lsp": "right"
+            },
+            "colorModes": {
+              "mcp": "zentui",
+              "pi-lens-lsp": "zentui"
+            }
+          }
+        }
+      }
+    },
+    "userMessages": {
+      "enabled": true,
+      "style": "labeled",
+      "colorSource": "terminal",
+      "styles": {
+        "framed": {},
+        "framed-copy-friendly": {},
+        "compact": {},
+        "labeled": {}
+      }
+    },
+    "selectorBorders": {
+      "enabled": false,
+      "style": "zentui",
+      "colorSource": "terminal"
+    },
+    "thinkingSteps": {
+      "enabled": true,
+      "mode": "tree"
+    },
+    "workingLine": {
+      "enabled": false,
+      "turnSummary": true,
+      "spinner": "braille",
+      "spinnerIntervalMs": 100,
+      "animateSpinnerColor": false,
+      "textIntervalMs": 60,
+      "textAnimation": "classic",
+      "placement": "above",
+      "colorSource": "theme",
+      "messages": {
+        "custom": false,
+        "values": [
+          "Sautéing…",
+          "Cooking…",
+          "Ionizing…",
+          "Zigzagging…",
+          "Razzle-dazzling…",
+          "Photosynthesizing…",
+          "Nucleating…",
+          "Brewing…",
+          "Combobulating…",
+          "Boogieing…",
+          "Befuddling…",
+          "Alchemizing…",
+          "Conjuring…",
+          "Baking…",
+          "Simmering…",
+          "Blanching…"
+        ]
+      },
+      "segments": {
+        "tool": true,
+        "elapsed": true,
+        "thought": true,
+        "tokens": true
+      }
+    },
+    "extensionStatuses": {
+      "visibility": {
+        "pi-lens-lsp": "show"
+      }
+    }
+  },
+  "icons": {
+    "mode": "auto"
+  }
+}

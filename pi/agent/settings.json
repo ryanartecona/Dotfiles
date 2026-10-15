@@ -1,0 +1,65 @@
+{
+  "lastChangelogVersion": "1.2.0",
+  "defaultTools": [
+    "+grep",
+    "+find",
+    "+ls"
+  ],
+  "defaultProvider": "openrouter",
+  "defaultModel": "moonshotai/kimi-k3",
+  "enabledModels": [
+    "anthropic/claude-fable-5-1",
+    "anthropic/claude-opus-5-5",
+    "anthropic/claude-sonnet-5-5",
+    "openrouter/deepseek/deepseek-v4.1-flash",
+    "openrouter/z-ai/glm-5.3-flashx",
+    "openrouter/moonshotai/kimi-k3",
+    "anthropic/claude-haiku-5-5",
+    "openrouter/~openai/gpt-luna-latest",
+    "openrouter/~openai/gpt-sol-latest",
+    "openrouter/~openai/gpt-terra-latest"
+  ],
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:pi-lens",
+    "npm:pi-compact-tools",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:pi-open-tui",
+    "../../code/ra/pi-tmux-mcp/pi",
+    "npm:@narumitw/pi-caffeinate",
+    "npm:pi-observational-memory",
+    "npm:@tintinweb/pi-subagents"
+  ],
+  "extensions": [
+    "-builtin:mcp"
+  ],
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "quietStartup": true,
+  "observational-memory": {
+    "observeAfterTokens": 10000,
+    "reflectAfterTokens": 20000,
+    "compactAfterTokens": 81000,
+    "compactAfterTokensMode": "ratio",
+    "compactAfterTokensRatio": 0.5,
+    "observationsPoolMaxTokens": 20000,
+    "observationsPoolTargetTokens": 10000,
+    "agentMaxTurns": 16,
+    "model": {
+      "provider": "anthropic",
+      "id": "claude-haiku-5-5",
+      "thinking": "low"
+    },
+    "showWorkerNotifications": true,
+    "passive": false,
+    "debugLog": false
+  },
+  "treeFilterMode": "default",
+  "tuiMode": "fullscreen",
+  "defaultThinkingLevel": "medium"
+}

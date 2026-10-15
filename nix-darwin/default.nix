@@ -36,7 +36,9 @@ in
     with config;
     nix-darwin.lib.darwinSystem {
       inherit system;
-      specialArgs = config;
+      specialArgs = config // {
+        primaryUser = "ra";
+      };
       modules = [
         ./common.nix
         ./homebrew.nix

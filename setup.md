@@ -139,3 +139,26 @@ ln -sf ~/Dotfiles/alfred/Alfred.alfredpreferences ~/Library/Application\ Support
 ```
 ln -s ~/Dotfiles/nvim ~/.config/nvim
 ```
+
+## Pi
+
+First, run pi's official installer (https://pi.dev) — it recreates `~/.pi/agent/install/`, `~/.pi/agent/bin/`, and its bundled node.
+
+On nix machines, home-manager creates the config symlinks (see the `home.file` block in `home-manager/home.nix`) on the next `darwin-rebuild switch`. They are out-of-store symlinks pointing at the live files in this repo, so editing pi config takes effect immediately with no rebuild.
+
+On non-nix machines, symlink manually:
+```
+ln -sf ~/Dotfiles/pi/mcp-adapter.json ~/.pi/mcp-adapter.json
+for f in settings.json mcp.json keybindings.json compact-tools.json pledit.json open-tui.json zentui.json; do
+  ln -sf ~/Dotfiles/pi/agent/$f ~/.pi/agent/$f
+done
+ln -sf ~/Dotfiles/pi/agent/extensions ~/.pi/agent/extensions
+```
+
+Launch `pi` once — it reads the `packages` list from `settings.json` and installs extension packages into `~/.pi/agent/npm/`.
+
+Then re-authenticate: run pi's login flow (recreates `auth.json`), and redo MCP OAuth flows as needed (recreates `mcp-auth.json`). `auth.json` and `mcp-auth.json` contain secrets and are deliberately not in the repo.
+
+Notes:
+- `mcp.json` references `${SLACK_MCP_CLIENT_ID}` / `${SLACK_MCP_CLIENT_SECRET}` — make sure those are exported in the environment (e.g. from fish config or an untracked local file).
+- `settings.json` lists `../../code/ra/pi-tmux-mcp/pi` in its `packages`, so clone that repo to the same relative path (`~/code/ra/pi-tmux-mcp/pi`) or edit the entry.
