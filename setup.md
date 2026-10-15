@@ -142,11 +142,9 @@ ln -s ~/Dotfiles/nvim ~/.config/nvim
 
 ## Pi
 
-First, run pi's official installer (https://pi.dev) — it recreates `~/.pi/agent/install/`, `~/.pi/agent/bin/`, and its bundled node.
+On nix machines, home-manager installs pi itself (built from source via the `pi` flake input pinned in `flake.nix`) and creates the config symlinks (the `home.file` block in `home-manager/home.nix`) on the next `darwin-rebuild switch`. The symlinks are out-of-store links pointing at the live files in this repo, so editing pi config takes effect immediately with no rebuild. `pi update` does not apply to a nix install — upgrade by updating the `pi` flake input and switching.
 
-On nix machines, home-manager creates the config symlinks (see the `home.file` block in `home-manager/home.nix`) on the next `darwin-rebuild switch`. They are out-of-store symlinks pointing at the live files in this repo, so editing pi config takes effect immediately with no rebuild.
-
-On non-nix machines, symlink manually:
+On non-nix machines, first run pi's official installer (https://pi.dev), then symlink manually:
 ```
 ln -sf ~/Dotfiles/pi/mcp-adapter.json ~/.pi/mcp-adapter.json
 for f in settings.json mcp.json keybindings.json compact-tools.json pledit.json open-tui.json zentui.json; do

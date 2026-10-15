@@ -1,4 +1,4 @@
-{ config, pkgs, primaryUser ? "ryanartecona", ... }:
+{ config, pkgs, primaryUser ? "ryanartecona", piPackage ? null, ... }:
 
 # Reference: https://nix-darwin.github.io/nix-darwin/manual/
 {
@@ -67,7 +67,7 @@
   # home-manager configuration
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.users.${primaryUser} = import ../home-manager/home.nix { inherit primaryUser; };
+  home-manager.users.${primaryUser} = import ../home-manager/home.nix { inherit primaryUser piPackage; };
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog

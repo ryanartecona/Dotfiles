@@ -6,6 +6,7 @@
   nixpkgs-stable,
   nix-darwin,
   home-manager,
+  pi,
   ...
 }:
 
@@ -25,6 +26,7 @@ let
       system = system;
       pkgs = import nixpkgs nixpkgsArgs;
       stable = import nixpkgs-stable nixpkgsArgs;
+      piPackage = pi.packages.${system}.default;
     };
 
 in

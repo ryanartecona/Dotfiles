@@ -1,8 +1,14 @@
 {
   primaryUser ? "ryanartecona",
   dotfilesPath ? "/Users/${primaryUser}/Dotfiles",
+  piPackage ? null,
 }:
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # Home Manager needs a bit of information about you and the
@@ -92,7 +98,10 @@
     # From my ra-scripts overlay
     ra-e
     ra-echo-argv
-  ];
+  ]
+  # Pi coding agent, from the flake input pinned in flake.nix (null when the
+  # input isn't wired through, e.g. standalone home-manager use).
+  ++ lib.optional (piPackage != null) piPackage;
 
   # Pi (pi.dev) config: symlink live files from this repo instead of copying
   # into the nix store, so edits take effect immediately without a rebuild.
