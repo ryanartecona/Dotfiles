@@ -16,15 +16,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Pi coding agent, pinned to a main-branch rev. Rationale:
-    # - the v1.2.0 tag's nix build is broken (installCheckPhase requires
-    #   esbuild, which 1.2.0 dropped from its install-lock)
-    # - main HEAD b06c1f2 (2026-10-14) is also broken (kimi-coding provider
-    #   switched to openai-completions without regenerating model data)
-    # - this rev is main~1: has the esbuild fix, predates the kimi breakage
-    # To upgrade: `nix flake update pi` after switching the url to a branch
-    # (e.g. .../pi/main or .../pi/stable), or swap in a newer rev/tag.
-    pi.url = "github:earendil-works/pi/87f9a36419e8164bba77397d15c54ff39fac5e8a";
+    # Pi coding agent, tracking the stable branch. Upstream's nix.yml workflow
+    # builds every v* tag on aarch64-darwin and only fast-forwards stable to a
+    # tag after the build + smoke test pass, so stable never points at a
+    # nix-broken release. flake.lock still pins the exact revision, so pi only
+    # moves on `nix flake update pi`. To pin an exact release instead, use a
+    # tag url (e.g. github:earendil-works/pi/v1.3.0).
+    pi.url = "github:earendil-works/pi/stable";
   };
 
   outputs = inputs @ { self, nixpkgs, nixpkgs-stable, ... }: {
