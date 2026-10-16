@@ -118,6 +118,7 @@
       ".pi/agent/compact-tools.json".source = live "pi/agent/compact-tools.json";
       ".pi/agent/pledit.json".source = live "pi/agent/pledit.json";
       ".pi/agent/open-tui.json".source = live "pi/agent/open-tui.json";
+      ".pi/agent/subagents.json".source = live "pi/agent/subagents.json";
       ".pi/agent/zentui.json".source = live "pi/agent/zentui.json";
       ".pi/agent/extensions".source = live "pi/agent/extensions";
       ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";

@@ -147,7 +147,7 @@ On nix machines, home-manager installs pi itself (built from source via the `pi`
 On non-nix machines, first run pi's official installer (https://pi.dev), then symlink manually:
 ```
 ln -sf ~/Dotfiles/pi/mcp-adapter.json ~/.pi/mcp-adapter.json
-for f in settings.json mcp.json keybindings.json compact-tools.json pledit.json open-tui.json zentui.json; do
+for f in settings.json mcp.json keybindings.json compact-tools.json pledit.json open-tui.json zentui.json subagents.json; do
   ln -sf ~/Dotfiles/pi/agent/$f ~/.pi/agent/$f
 done
 ln -sf ~/Dotfiles/pi/agent/extensions ~/.pi/agent/extensions

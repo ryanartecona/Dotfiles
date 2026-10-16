@@ -13,6 +13,7 @@
 	st = status --short --branch
 	pushf = push --force-with-lease
 	fixup = commit --amend --no-edit
+	wt = worktree
 [http]
 	sslVerify = true
 [credential]
