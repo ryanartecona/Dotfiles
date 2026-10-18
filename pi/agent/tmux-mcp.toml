@@ -1,0 +1,23 @@
+# tmux-mcp policy — user/global rules
+
+# Read-only Microsoft Graph lookups via the Azure CLI (az rest --method get),
+# allowed on Pi's native Bash channel.
+
+# Grammar: there is no built-in az grammar; without one the parse is Unknown
+# and an allow never fires. Declares only `az rest` with --method and --url;
+# anything else (other subcommands, undeclared options) stays Unknown and
+# cannot match the allow below.
+[commands.az]
+parser = "gnu"
+arguments = ["subcommand"]
+
+[commands.az.rest]
+arguments = ["--method:", "--url:"]
+
+[[rules]]
+id = "az-rest-get-local"
+via = "bash"
+command = "az rest"
+when = 'args.method == ["get"]'
+action = "allow"
+exempts = ["infra-in-a-pane"]
