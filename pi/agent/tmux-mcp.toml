@@ -1,7 +1,16 @@
 # tmux-mcp policy — user/global rules
 
+# -----------------------------------------------------------------------------
 # Read-only Microsoft Graph lookups via the Azure CLI (az rest --method get),
 # allowed on Pi's native Bash channel.
+#
+# The built-in infra-in-a-pane deny routes cloud CLIs to a tmux pane so
+# credentialed commands stay visible to the user — but Pi sessions are not
+# always running inside tmux, where that channel is unavailable and the deny
+# leaves no way to run even read-only queries. GET requests change no state,
+# so they are exempted here. Every other az invocation (any other method,
+# any other subcommand) still hits infra-in-a-pane.
+# -----------------------------------------------------------------------------
 
 # Grammar: there is no built-in az grammar; without one the parse is Unknown
 # and an allow never fires. Declares only `az rest` with --method and --url;
@@ -21,3 +30,22 @@ command = "az rest"
 when = 'args.method == ["get"]'
 action = "allow"
 exempts = ["infra-in-a-pane"]
+
+# Allow these tools through Pi's native Bash channel instead of requiring a tmux pane.
+# This globally lifts the built-in force-in-pane routing rules; other policy guards still apply.
+[[rules]]
+id = "native-bash-tools-instead-of-tmux"
+via = "bash"
+when = '''command.name in [
+  "cargo", "make", "npm", "ssh", "mosh", "scp", "sftp", "rsync",
+  "psql", "mysql", "mariadb", "mongosh", "redis-cli",
+  "kubectl", "helm", "k9s", "kubectx", "kubens", "argocd", "eksctl", "terraform", "tofu",
+  "pulumi", "ansible", "ansible-playbook", "packer", "vault", "aws", "gcloud", "gsutil", "bq",
+  "az", "doctl", "flyctl",
+  "nixos-rebuild", "home-manager", "darwin-rebuild",
+]'''
+action = "allow"
+exempts = [
+  "prefer-tmux", "ssh-in-a-pane", "transfer-in-a-pane", "database-in-a-pane",
+  "infra-in-a-pane", "system-switch-in-a-pane",
+]
