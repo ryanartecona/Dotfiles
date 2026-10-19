@@ -72,10 +72,38 @@ all tools). Package-shipped agent dirs are not scanned.
   `[agentProfiles]` or redefine profiles (consider tighten-only merging, as
   `deniedDomains` already unions); `[agentProfiles]` names are validated only
   when a child starts, not at config load; `resume` keeps the agent's original
-  type (profile re-resolution on resume unverified); `tools` and `tmuxProfile`
-  remain inert until chunk 4. Workflow and scheduled spawns skip the
+  type (profile re-resolution on resume unverified). Workflow and scheduled spawns skip the
   parent-side block (child-side lookup still applies; workflows are off in
   this config).
+
+**Chunk 4 (unification) implemented:**
+- **Tool selection** (`tools.ts`): a profile's signed `tools` deltas
+  (`-write`, `+grep`) hide/add tools in the main session via
+  `setActiveTools` (undone and re-applied on each switch, so the user's own
+  `/tools` choices survive) and are enforced by a `tool_call` blocker in every
+  session, including subagents. Subagents skip the visibility layer because
+  pi-subagents re-narrows each child's tools every turn. `+name` only
+  activates tools registered at apply time (later MCP tools are not picked up).
+- **tmux-mcp** (`tmux.ts`): tmux-mcp's pi package already gates native bash on
+  every call (spawns `tmux-mcp policy-check`), so hallpass runs NO second
+  gate. A profile's `tmuxProfile` (string or list) is applied through
+  tmux-mcp's `pi.events` interface (`shell-profile/get`, `set-active`). The
+  event bus is per session, so a child's selection never touches its parent's.
+  Names are not validated (an unknown name makes tmux-mcp's check error and
+  block bash).
+- **Precedence (decided): the hallpass profile wins whenever it is chosen.**
+  Session start, `/hp-profile` (including re-selecting the active profile)
+  and `/hp-reload` apply the profile's `tmuxProfile`. In between, cycling
+  tmux-mcp's profile directly (shift+tab) is allowed and sticks until the next
+  hallpass selection. The user plans to disable direct cycling later so
+  hallpass is the single knob.
+- A profile without `tmuxProfile` leaves tmux-mcp alone, except it restores the
+  pre-hallpass selection when tmux is still on the one hallpass set; a
+  selection the user cycled to since is kept.
+- Only the session-start sync is re-checked once at the first prompt (to
+  survive extension load order, where tmux-mcp's own restore can run after
+  ours). Explicit selections do not arm that re-check, so a cycle made right
+  after a switch is not undone.
 
 **Chunk 3 finding:** hallpass loads into subagent sessions (as designed), so
 subagents' bash is sandboxed by the default profile today. A subagent that
@@ -424,10 +452,12 @@ no fork needed unless that seam breaks.
 3. **Subagents**: verify `tool_call` interception of Agent calls
    (empirical, first task), frontmatter `hallpass_profile:` parsing, identity
    resolution, escape-hatch policing, child-session activation.
-4. **Unification**: tmux-mcp `via: "bash"` evaluation per call
-   (`policy-eval` CLI bridge), `tmuxProfile` refs, tool-selection
-   profiles, dynamic capability grant UX (skills/tools that select
-   profiles from task descriptions).
+4. **Unification** (implemented; see "Chunk 4" in the status block):
+   tool-selection profiles and `tmuxProfile` selection. The planned
+   `policy-eval` bridge was dropped because tmux-mcp's pi package already
+   gates native bash. Dynamic capability grants (skills/tools that select
+   profiles from a task description) moved to 
+   "Revisit after the planned chunks" (§9).
 
 ---
 

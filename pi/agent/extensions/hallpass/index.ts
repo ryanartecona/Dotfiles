@@ -25,6 +25,8 @@ import {
 import { assignedProfileName, discoverAgents, subagentTypeFromSessionName } from "./agents.ts";
 import { explainFailure, looksLikeFsDenial, OutputTail } from "./diagnose.ts";
 import { installFileToolGuard } from "./guard.ts";
+import { createTmuxProfileSync } from "./tmux.ts";
+import { createToolSelection, installToolBlocker } from "./tools.ts";
 import {
 	loadConfig,
 	summarizeProfile,
@@ -55,6 +57,8 @@ export default function hallpass(pi: ExtensionAPI) {
 	};
 	let currentName: string | undefined;
 	let isChild = false;
+	const toolSelection = createToolSelection(pi);
+	const tmuxSync = createTmuxProfileSync(pi);
 
 	function currentProfile(): Profile | undefined {
 		if (currentName) {
@@ -89,6 +93,8 @@ export default function hallpass(pi: ExtensionAPI) {
 		// Network "open" is a process-wide floor in chunk 1 (see sandbox.ts);
 		// explicit switches move it. Fs policy stays exactly per-call.
 		setNetworkFloor(profile.network.mode);
+		toolSelection.apply(profile);
+		tmuxSync.sync(profile);
 		updateStatus(ctx);
 		return `switched to profile "${name}" — effective on the next tool call`;
 	}
@@ -135,11 +141,25 @@ export default function hallpass(pi: ExtensionAPI) {
 
 		setDeniedDomains(config.deniedDomains);
 		// A child must not move the process-wide network floor (it would change the parent's network).
-		if (!isChild) ensureNetworkFloor(currentProfile()?.network.mode);
+		if (!isChild) {
+			ensureNetworkFloor(currentProfile()?.network.mode);
+			// Children's tool scope belongs to pi-subagents; the tool_call blocker covers them.
+			toolSelection.apply(currentProfile());
+		}
+		// Children have their own event bus and tmux-mcp instance, so they sync too.
+		tmuxSync.syncAtStart(currentProfile());
 		updateStatus(ctx);
 		for (const warning of config.warnings) {
 			ctx.ui.notify(`hallpass: ${warning}`, "warning");
 		}
+	});
+
+	// tmux-mcp's own session restore can run after ours (extension load order); re-sync once at the
+	// first prompt after session start so the hallpass profile's tmux selection wins. Explicit
+	// selections (/hp-profile, reload) don't arm this, so a shift+tab cycle afterwards sticks.
+	pi.on("before_agent_start", () => {
+		tmuxSync.syncIfPending(currentProfile());
+		return undefined;
 	});
 
 	// -----------------------------------------------------------------------
@@ -283,6 +303,8 @@ export default function hallpass(pi: ExtensionAPI) {
 		const profile = currentProfile();
 		if (profile) {
 			setNetworkFloor(profile.network.mode);
+			if (!isChild) toolSelection.apply(profile);
+			tmuxSync.sync(profile);
 			if (currentName !== previousName) pi.appendEntry(ENTRY_TYPE, { profile: currentName });
 		}
 		updateStatus(ctx);
@@ -346,6 +368,7 @@ export default function hallpass(pi: ExtensionAPI) {
 	// -----------------------------------------------------------------------
 
 	installFileToolGuard(pi, currentProfile, () => cwd);
+	installToolBlocker(pi, currentProfile);
 
 	// -----------------------------------------------------------------------
 	// User `!` / `!!` shell (opt-in per profile)

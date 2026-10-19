@@ -5,10 +5,15 @@
 # Path entries support ~, $CWD (session cwd), and $ENV_VAR expansion;
 # subpath semantics (an entry covers everything under it).
 #
-# Reserved slots (parsed now, enforced in later chunks):
-#   tools        = pi tool-selection delta, e.g. ["-write", "+grep"]  (chunk 4)
-#   tmuxProfile  = tmux-mcp fine-grain policy profile name            (chunk 4)
-#   [agentProfiles] = subagent type -> profile name                   (chunk 3)
+# Per-profile extras:
+#   tools        = signed tool-selection deltas, e.g. ["-write", "+grep"].
+#                  Disabled tools are hidden from the model (main session) and
+#                  blocked on call (every session, incl. subagents).
+#   tmuxProfile  = tmux-mcp policy profile name (or a list) to activate while this
+#                  hallpass profile is active. tmux-mcp itself gates native bash;
+#                  hallpass only selects the profile. Omit to leave tmux-mcp alone
+#                  (a prior hallpass selection is undone). Names are not validated.
+#   [agentProfiles] = subagent type -> profile name (see below)
 
 default = "dev"
 

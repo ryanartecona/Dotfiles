@@ -12,6 +12,7 @@ import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { parse as parseToml } from "smol-toml";
 import type { SandboxRuntimeConfig } from "@anthropic-ai/sandbox-runtime";
+import { parseToolDeltas } from "./tools.ts";
 
 export interface FilesystemProfile {
 	denyRead: string[];
@@ -34,10 +35,10 @@ export interface Profile {
 	sandbox: boolean;
 	filesystem: FilesystemProfile;
 	network: NetworkProfile;
-	/** Reserved (chunk 4): pi tool-selection delta, e.g. ["-write", "+grep"]. */
+	/** pi tool-selection deltas, e.g. ["-write", "+grep"]; see tools.ts. */
 	tools?: string[];
 	/** Reserved (chunk 4): tmux-mcp fine-grain policy profile name. */
-	tmuxProfile?: string;
+	tmuxProfiles?: string[];
 	/** Also wrap user-typed `!`/`!!` commands in this profile's sandbox. */
 	sandboxUserBash: boolean;
 }
@@ -68,6 +69,13 @@ function asStringArray(value: unknown, label: string, warnings: string[]): strin
 		return [];
 	}
 	return value as string[];
+}
+
+/** `tmuxProfile` may be one name or a list of names (tmux-mcp activates a set). */
+function parseTmuxProfiles(value: unknown, label: string, warnings: string[]): string[] | undefined {
+	if (value === undefined) return undefined;
+	if (typeof value === "string") return value ? [value] : undefined;
+	return asStringArray(value, label, warnings);
 }
 
 function parseProfile(name: string, raw: unknown, warnings: string[]): Profile | undefined {
@@ -110,8 +118,8 @@ function parseProfile(name: string, raw: unknown, warnings: string[]): Profile |
 			mode,
 			allowedDomains: asStringArray(net.allowedDomains, `profile "${name}" network.allowedDomains`, warnings),
 		},
-		tools: Array.isArray(table.tools) ? asStringArray(table.tools, `profile "${name}" tools`, warnings) : undefined,
-		tmuxProfile: typeof table.tmuxProfile === "string" ? table.tmuxProfile : undefined,
+		tools: parseToolDeltas(table.tools, `profile "${name}" tools`, warnings),
+		tmuxProfiles: parseTmuxProfiles(table.tmuxProfile, `profile "${name}" tmuxProfile`, warnings),
 		sandboxUserBash: table.sandboxUserBash === true,
 	};
 }
@@ -257,7 +265,7 @@ export function summarizeProfile(profile: Profile): string {
 	];
 	if (profile.filesystem.denyWrite.length) lines.push(`deny-write: ${profile.filesystem.denyWrite.join(", ")}`);
 	if (profile.filesystem.denyRead.length) lines.push(`deny-read: ${profile.filesystem.denyRead.join(", ")}`);
-	if (profile.tmuxProfile) lines.push(`tmux-mcp profile: ${profile.tmuxProfile} (reserved, not yet enforced)`);
-	if (profile.tools) lines.push(`tools: ${profile.tools.join(" ")} (reserved, not yet applied)`);
+	if (profile.tmuxProfiles?.length) lines.push(`tmux-mcp profile: ${profile.tmuxProfiles.join(", ")}`);
+	if (profile.tools?.length) lines.push(`tools: ${profile.tools.join(" ")}`);
 	return lines.join("\n");
 }
