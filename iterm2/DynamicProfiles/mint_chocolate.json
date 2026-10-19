@@ -3,9 +3,11 @@
     {
       "Name": "Mint Chocolate",
       "Guid": "5DB74CE0-2352-43D9-B77D-F3860DF6D8E4",
+      "Rewritable": false,
       "Working Directory": "/Users/rartecon",
       "ASCII Ligatures": true,
       "Prompt Before Closing 2": 0,
+      "Use Separate Colors for Light and Dark Mode" : false,
       "Selected Text Color": {
         "Green Component": 0.846136212348938,
         "Red Component": 0.8732770681381226,
