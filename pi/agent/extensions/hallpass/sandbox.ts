@@ -45,15 +45,21 @@ import {
 } from "@anthropic-ai/sandbox-runtime";
 import type { NetworkProfile } from "./profiles.ts";
 
-// SAFETY: initialize() performs no Zod validation (verified in 0.0.80 — the
-// schema only runs on the CLI config-file path), so the compile-time-required
-// keys just need to be present and complete. The base config is intentionally
-// the restrictive floor (offline network, no fs rules): every grant is applied
-// per call, because the manager is shared by concurrent sessions.
-const BASE_CONFIG = {
-	network: { allowedDomains: [], deniedDomains: [] },
-	filesystem: { denyRead: [], allowWrite: [], denyWrite: [] },
-} as unknown as SandboxRuntimeConfig;
+// The base config is intentionally the restrictive floor (offline network, no
+// fs rules): every grant is applied per call, because the manager is shared by
+// concurrent sessions. The only process-global policy is the always-deny
+// domain list, which srt checks before any allow (including the ask callback
+// that implements "open").
+function buildBaseConfig(deniedDomains: string[]): SandboxRuntimeConfig {
+	// SAFETY: initialize()/updateConfig() perform no Zod validation (verified in
+	// 0.0.80: the schema only runs on the CLI config-file path), so the
+	// compile-time-required keys just need to be present and complete; the
+	// filesystem lists are a deliberate empty floor.
+	return {
+		network: { allowedDomains: [], deniedDomains: [...deniedDomains] },
+		filesystem: { denyRead: [], allowWrite: [], denyWrite: [] },
+	} as unknown as SandboxRuntimeConfig;
+}
 
 // Process-wide shared state (survives jiti's per-session module reloads).
 // The ask callback closes over this object, so the floor stays live no
@@ -62,13 +68,35 @@ interface SharedSandboxState {
 	initPromise?: Promise<void>;
 	floorInitialized: boolean;
 	floorOpen: boolean;
+	deniedDomains: string[];
 }
 // SAFETY: widening globalThis with a namespaced slot; the cast only adds an
 // optional property, and all access goes through `shared` below.
 const shared = (globalThis as { __hallpassSandbox?: SharedSandboxState }).__hallpassSandbox ??= {
 	floorInitialized: false,
 	floorOpen: false,
+	deniedDomains: [],
 };
+
+/**
+ * Set the process-wide always-deny domain list (top-level `[network]
+ * deniedDomains`). Applied at init; if the manager is already initialized,
+ * live-swapped via updateConfig (a global, per-request-read swap — the right
+ * tool for a global list, the wrong one for per-session policy).
+ */
+export function setDeniedDomains(domains: string[]): void {
+	const unchanged =
+		domains.length === shared.deniedDomains.length && domains.every((d, i) => d === shared.deniedDomains[i]);
+	if (unchanged) return;
+	shared.deniedDomains = [...domains];
+	if (shared.initPromise) {
+		void shared.initPromise
+			.then(() => SandboxManager.updateConfig(buildBaseConfig(shared.deniedDomains)))
+			.catch(() => {
+				// Init failure is surfaced by the next wrapCommand; nothing to update.
+			});
+	}
+}
 
 /** Set the process-wide network floor from an explicit user action. */
 export function setNetworkFloor(mode: NetworkProfile["mode"]): void {
@@ -88,7 +116,7 @@ const askCallback: SandboxAskCallback = ({ host, port }) => {
 	if (shared.floorOpen) return Promise.resolve(true);
 	return Promise.resolve({
 		allow: false as const,
-		reason: `hallpass: network access denied — no active profile allows it (${host}:${port}). Switch with /hallpass switch <name>.`,
+		reason: `hallpass: network access to ${host}:${port} is not allowed by the active profile`,
 	});
 };
 
@@ -97,7 +125,11 @@ export function ensureSandboxInitialized(): Promise<void> {
 	// srt's own initialize() is also one-shot (a second call returns early),
 	// so this is belt-and-braces dedupe across module instances.
 	if (!shared.initPromise) {
-		shared.initPromise = SandboxManager.initialize(BASE_CONFIG, askCallback, false).catch(
+		shared.initPromise = SandboxManager.initialize(
+			buildBaseConfig(shared.deniedDomains),
+			askCallback,
+			LOG_MONITOR_ENABLED,
+		).catch(
 			(err: unknown) => {
 				shared.initPromise = undefined;
 				throw err;
@@ -107,10 +139,35 @@ export function ensureSandboxInitialized(): Promise<void> {
 	return shared.initPromise;
 }
 
+/**
+ * srt's macOS violation log monitor (a `log stream` child). OFF by default:
+ * verified on this machine (macOS, srt 0.0.80) that it never receives
+ * filesystem denials (the OS does not log them under srt's tag; `log show`
+ * confirms), delivering only noise such as `sysctl-read`. Network denials do
+ * not need it (the proxy records them synchronously). Opt in with
+ * HALLPASS_LOG_MONITOR=1 to experiment on other macOS versions.
+ */
+export const LOG_MONITOR_ENABLED = process.platform === "darwin" && process.env.HALLPASS_LOG_MONITOR === "1";
+
+/**
+ * Violation kinds that fire on essentially every sandboxed command (e.g.
+ * `sysctl-read kern.iossupportversion`) and give the model nothing to act on.
+ * Filtered here rather than via srt's ignoreViolations so they also do not
+ * satisfy the settle poll in violations().
+ */
+const NON_ACTIONABLE_VIOLATION = /\b(?:sysctl-|mach-|iokit-|ipc-|system-|signal|pseudo-tty|user-preference-)/;
+
 export interface WrappedCommand {
 	command: string;
 	/** Release per-call registrations. Call when the command finishes. */
 	cleanup: () => void;
+	/**
+	 * srt's `<sandbox_violations>` block for this invocation, or "" when there
+	 * are none. Proxy (network) denials are recorded synchronously; macOS
+	 * filesystem denials arrive asynchronously via the log monitor, so pass
+	 * `settleMs` to poll briefly for them. Call before cleanup().
+	 */
+	violations: (settleMs?: number) => Promise<string>;
 }
 
 /**
@@ -142,13 +199,32 @@ export async function wrapCommand(
 	}
 
 	try {
+		// The attribution key srt files violations under is exactly this id.
+		const key = grantId ?? attributionId;
 		const wrapped = await SandboxManager.wrapWithSandbox(command, undefined, srtConfig, signal, {
-			commandId: grantId ?? attributionId,
+			commandId: key,
 		});
 		return {
 			command: wrapped,
 			cleanup: () => {
 				if (grantId) SandboxManager.unregisterCommandNetworkLists(grantId);
+			},
+			violations: async (settleMs = 0) => {
+				const read = () => {
+					const lines = SandboxManager.getSandboxViolationStore()
+						.getViolationsForCommand(key)
+						.map((violation) => violation.line)
+						.filter((line) => !NON_ACTIONABLE_VIOLATION.test(line));
+					const unique = [...new Set(lines)];
+					return unique.length > 0 ? `<sandbox_violations>\n${unique.join("\n")}\n</sandbox_violations>` : "";
+				};
+				const deadline = Date.now() + settleMs;
+				let found = read();
+				while (!found && Date.now() < deadline) {
+					await new Promise((resolve) => setTimeout(resolve, 50));
+					found = read();
+				}
+				return found;
 			},
 		};
 	} catch (err) {

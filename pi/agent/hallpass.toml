@@ -1,7 +1,7 @@
 # hallpass profiles
 #
 # Each profile compiles to a per-bash-call sandbox (srt) config and a
-# path guard for pi's file tools. Switch with /hallpass switch <name>.
+# path guard for pi's file tools. Switch with /hp-profile (or /hp).
 # Path entries support ~, $CWD (session cwd), and $ENV_VAR expansion;
 # subpath semantics (an entry covers everything under it).
 #
@@ -12,15 +12,21 @@
 
 default = "dev"
 
+# Always-deny domains, applied to EVERY profile (including network.mode = "open").
+# Process-global by design: srt's deny list cannot be scoped per profile. Project
+# files can add entries but never remove the user's.
+[network]
+deniedDomains = ["169.254.169.254", "metadata.google.internal"]
+
 # Everyday development: cwd + caches writable, obvious credential stores
 # unreadable, open network.
 # NOTE: ~/.ssh stays readable so ssh-based git keeps working. Deny it (and
 # prefer https remotes) in stricter profiles.
-# NOTE: on macOS use /private/tmp, not /tmp — srt 0.0.80 keeps the bare "/tmp"
-# symlink unresolved and seatbelt then never matches it (verified smoke test).
+# NOTE: symlinks in path entries are resolved by hallpass, so "/tmp" works on
+# macOS (where it is /private/tmp) and on Linux.
 [profiles.dev]
 description = "cwd + caches writable, credential stores unreadable, open network"
-filesystem.allowWrite = ["$CWD", "/private/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.allowWrite = ["$CWD", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
 filesystem.denyWrite = []
 filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.config/gh/hosts.yml"]
 network.mode = "open"
@@ -30,7 +36,7 @@ tmuxProfile = "default"
 # No network at all; cwd writable.
 [profiles.offline]
 description = "fully offline, cwd writable"
-filesystem.allowWrite = ["$CWD", "/private/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.allowWrite = ["$CWD", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
 filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.ssh", "~/.config/gh/hosts.yml"]
 network.mode = "offline"
 sandboxUserBash = true

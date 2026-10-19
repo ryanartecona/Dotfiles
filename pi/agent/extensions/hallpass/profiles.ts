@@ -7,9 +7,9 @@
  *   .pi/hallpass.toml           (project, cwd-relative)
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { isAbsolute, join, resolve } from "node:path";
+import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { parse as parseToml } from "smol-toml";
 import type { SandboxRuntimeConfig } from "@anthropic-ai/sandbox-runtime";
 
@@ -25,7 +25,6 @@ export type NetworkMode = "open" | "offline" | "allowlist";
 export interface NetworkProfile {
 	mode: NetworkMode;
 	allowedDomains: string[];
-	deniedDomains: string[];
 }
 
 export interface Profile {
@@ -48,6 +47,11 @@ export interface HallpassConfig {
 	profiles: Map<string, Profile>;
 	/** Reserved (chunk 3): subagent type -> profile name. */
 	agentProfiles: Record<string, string>;
+	/**
+	 * Always-deny domains, applied to every profile (including "open"). srt's
+	 * deny list is process-global, so it cannot be per-profile; see sandbox.ts.
+	 */
+	deniedDomains: string[];
 	warnings: string[];
 }
 
@@ -85,6 +89,12 @@ function parseProfile(name: string, raw: unknown, warnings: string[]): Profile |
 	if (mode === "allowlist" && !Array.isArray(net.allowedDomains)) {
 		warnings.push(`profile "${name}": network.mode is "allowlist" but network.allowedDomains is missing/invalid`);
 	}
+	if (net.deniedDomains !== undefined) {
+		warnings.push(
+			`profile "${name}": network.deniedDomains is not supported per profile (srt's deny list is process-global); ` +
+				`move it to the top-level [network] deniedDomains, which applies to every profile`,
+		);
+	}
 
 	return {
 		name,
@@ -99,7 +109,6 @@ function parseProfile(name: string, raw: unknown, warnings: string[]): Profile |
 		network: {
 			mode,
 			allowedDomains: asStringArray(net.allowedDomains, `profile "${name}" network.allowedDomains`, warnings),
-			deniedDomains: asStringArray(net.deniedDomains, `profile "${name}" network.deniedDomains`, warnings),
 		},
 		tools: Array.isArray(table.tools) ? asStringArray(table.tools, `profile "${name}" tools`, warnings) : undefined,
 		tmuxProfile: typeof table.tmuxProfile === "string" ? table.tmuxProfile : undefined,
@@ -112,7 +121,8 @@ export function loadConfig(cwd: string): HallpassConfig {
 	const warnings: string[] = [];
 	const profiles = new Map<string, Profile>();
 	let defaultProfile = "";
-	let agentProfiles: Record<string, string> = {};
+	const agentProfiles: Record<string, string> = {};
+	const deniedDomains = new Set<string>();
 
 	for (const path of configPaths(cwd)) {
 		if (!existsSync(path)) continue;
@@ -124,6 +134,17 @@ export function loadConfig(cwd: string): HallpassConfig {
 			continue;
 		}
 		if (typeof doc.default === "string") defaultProfile = doc.default;
+		const rawNetwork = doc.network;
+		if (typeof rawNetwork === "object" && rawNetwork !== null) {
+			// Union across user + project files: a project can add denies, never remove the user's.
+			for (const entry of asStringArray(
+				(rawNetwork as Record<string, unknown>).deniedDomains,
+				`${path} [network] deniedDomains`,
+				warnings,
+			)) {
+				deniedDomains.add(entry);
+			}
+		}
 		const rawProfiles = doc.profiles;
 		if (typeof rawProfiles === "object" && rawProfiles !== null) {
 			for (const [name, raw] of Object.entries(rawProfiles as Record<string, unknown>)) {
@@ -145,7 +166,7 @@ export function loadConfig(cwd: string): HallpassConfig {
 	if (defaultProfile && !profiles.has(defaultProfile)) {
 		warnings.push(`default profile "${defaultProfile}" is not defined`);
 	}
-	return { defaultProfile, profiles, agentProfiles, warnings };
+	return { defaultProfile, profiles, agentProfiles, deniedDomains: [...deniedDomains], warnings };
 }
 
 // ---------------------------------------------------------------------------
@@ -158,14 +179,41 @@ export function hasGlobChars(p: string): boolean {
 	return GLOB_CHARS.test(p);
 }
 
-/** Expand $CWD, ~, and $ENV_VARS; resolve relative paths against cwd. Globs are kept as-is. */
+/**
+ * Resolve symlinks in the longest existing ancestor of `p`, re-appending the
+ * non-existent tail. Needed because srt 0.0.80 keeps a bare symlinked entry
+ * like "/tmp" unresolved while seatbelt evaluates the real path
+ * ("/private/tmp"), so the rule never matches. Resolving here lets profiles
+ * say "/tmp" portably (Linux has no /private/tmp).
+ */
+function realpathBestEffort(p: string): string {
+	let current = p;
+	const tail: string[] = [];
+	for (;;) {
+		try {
+			const real = realpathSync(current);
+			return tail.length > 0 ? join(real, ...tail.reverse()) : real;
+		} catch {
+			const parent = dirname(current);
+			if (parent === current) return p;
+			tail.push(basename(current));
+			current = parent;
+		}
+	}
+}
+
+/**
+ * Expand $CWD, ~, and $ENV_VARS; resolve relative paths against cwd and
+ * symlinks (see realpathBestEffort). Glob entries are kept as-is.
+ */
 export function expandPath(entry: string, cwd: string): string {
 	let p = entry;
 	if (p === "~" || p.startsWith("~/")) p = homedir() + p.slice(1);
 	p = p.replaceAll("$CWD", cwd);
 	p = p.replace(/\$\{(\w+)\}|\$(\w+)/g, (_m, braced, bare) => process.env[braced ?? bare] ?? "");
-	if (!hasGlobChars(p) && !isAbsolute(p)) p = resolve(cwd, p);
-	return p;
+	if (hasGlobChars(p)) return p;
+	if (!isAbsolute(p)) p = resolve(cwd, p);
+	return realpathBestEffort(p);
 }
 
 function expandAll(entries: string[], cwd: string): string[] {
@@ -186,9 +234,7 @@ function expandAll(entries: string[], cwd: string): string[] {
  * Network is deliberately NOT included: in srt 0.0.80, customConfig.network
  * never reaches the proxy filter — per-call network policy goes through
  * registerCommandNetworkLists + the ask callback instead (see sandbox.ts).
- * The profile's `network.deniedDomains` is parsed but not yet enforced
- * (per-call denies need either a global updateConfig or callback support;
- * chunk 2 decision).
+ * Denies are the process-global top-level `[network] deniedDomains`.
  */
 export function toSrtFilesystemConfig(profile: Profile, cwd: string): Partial<SandboxRuntimeConfig> {
 	return {
@@ -206,7 +252,7 @@ export function summarizeProfile(profile: Profile): string {
 	const lines = [
 		`profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}`,
 		`sandbox: ${profile.sandbox ? "on" : "OFF (bash unsandboxed)"}`,
-		`network: ${profile.network.mode}${profile.network.mode === "allowlist" ? ` (${profile.network.allowedDomains.join(", ") || "none"})` : ""}${profile.network.deniedDomains.length ? `; denied: ${profile.network.deniedDomains.join(", ")} (not yet enforced)` : ""}`,
+		`network: ${profile.network.mode}${profile.network.mode === "allowlist" ? ` (${profile.network.allowedDomains.join(", ") || "none"})` : ""}`,
 		`write: ${profile.filesystem.allowWrite.length ? profile.filesystem.allowWrite.join(", ") : "(nothing writable outside srt defaults)"}`,
 	];
 	if (profile.filesystem.denyWrite.length) lines.push(`deny-write: ${profile.filesystem.denyWrite.join(", ")}`);

@@ -22,6 +22,7 @@ import {
 	type ExtensionAPI,
 	type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
+import { explainFailure, looksLikeFsDenial, OutputTail } from "./diagnose.ts";
 import { installFileToolGuard } from "./guard.ts";
 import {
 	loadConfig,
@@ -30,7 +31,13 @@ import {
 	type HallpassConfig,
 	type Profile,
 } from "./profiles.ts";
-import { ensureNetworkFloor, setNetworkFloor, wrapCommand } from "./sandbox.ts";
+import {
+	ensureNetworkFloor,
+	LOG_MONITOR_ENABLED,
+	setDeniedDomains,
+	setNetworkFloor,
+	wrapCommand,
+} from "./sandbox.ts";
 
 const ENTRY_TYPE = "hallpass:profile";
 
@@ -40,6 +47,7 @@ export default function hallpass(pi: ExtensionAPI) {
 		defaultProfile: "",
 		profiles: new Map(),
 		agentProfiles: {},
+		deniedDomains: [],
 		warnings: ["hallpass config not loaded yet"],
 	};
 	let currentName: string | undefined;
@@ -104,6 +112,7 @@ export default function hallpass(pi: ExtensionAPI) {
 			currentName = [...config.profiles.keys()][0];
 		}
 
+		setDeniedDomains(config.deniedDomains);
 		ensureNetworkFloor(currentProfile()?.network.mode);
 		updateStatus(ctx);
 		for (const warning of config.warnings) {
@@ -213,6 +222,7 @@ export default function hallpass(pi: ExtensionAPI) {
 				? config.defaultProfile
 				: [...config.profiles.keys()][0];
 		}
+		setDeniedDomains(config.deniedDomains);
 		const profile = currentProfile();
 		if (profile) {
 			setNetworkFloor(profile.network.mode);
@@ -252,11 +262,22 @@ export default function hallpass(pi: ExtensionAPI) {
 				const message = err instanceof Error ? err.message : String(err);
 				throw new Error(
 					`hallpass: failed to sandbox command (profile "${profile.name}"): ${message}\n` +
-						`Fix the sandbox setup or switch profiles with /hallpass switch <name>.`,
+						`Fix the sandbox setup, or ask the user to switch profiles (/hp-profile).`,
 				);
 			}
 			try {
-				return await localBash.execute(id, { ...params, command: wrapped.command }, signal, onUpdate);
+				const result = await localBash.execute(id, { ...params, command: wrapped.command }, signal, onUpdate);
+				if (result.isError) {
+					const first = result.content[0];
+					const output = first?.type === "text" ? first.text : "";
+					// Only the optional log monitor delivers fs denials, asynchronously; wait briefly for it.
+					const violations = await wrapped.violations(LOG_MONITOR_ENABLED && looksLikeFsDenial(output) ? 300 : 0);
+					const extra = explainFailure(profile, output, violations);
+					if (extra && first?.type === "text") {
+						result.content[0] = { ...first, text: `${first.text}\n\n${extra}` };
+					}
+				}
+				return result;
 			} finally {
 				wrapped.cleanup();
 			}
@@ -287,8 +308,24 @@ export default function hallpass(pi: ExtensionAPI) {
 						options.signal,
 						`user-${crypto.randomUUID()}`,
 					);
+					const tail = new OutputTail();
 					try {
-						return await local.exec(wrapped.command, commandCwd, options);
+						const result = await local.exec(wrapped.command, commandCwd, {
+							...options,
+							onData: (data) => {
+								tail.push(data);
+								options.onData(data);
+							},
+						});
+						if (result.exitCode !== 0) {
+							const output = tail.toString();
+							const violations = await wrapped.violations(
+								LOG_MONITOR_ENABLED && looksLikeFsDenial(output) ? 300 : 0,
+							);
+							const extra = explainFailure(profile, output, violations);
+							if (extra) options.onData(Buffer.from(`\n${extra}\n`));
+						}
+						return result;
 					} finally {
 						wrapped.cleanup();
 					}

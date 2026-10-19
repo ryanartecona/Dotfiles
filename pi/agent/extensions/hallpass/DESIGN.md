@@ -19,8 +19,38 @@ before the simplification and has not been re-run since.
  A later print-mode startup/registry check was blocked
 by inability to write `~/.pi/agent/settings.json.lock` and missing model
 API key, so command registration is verified by typecheck but not by that
-runtime check. Known srt 0.0.80 quirks documented in §4. Next: chunk 2
-(violation-annotation UX, user_bash polish), chunk 3 (subagents).
+runtime check. Known srt 0.0.80 quirks documented in §4.
+
+Chunk 2 (network/diagnostics polish) implemented: failed bash and `!`
+commands get srt's `<sandbox_violations>` block plus a `<hallpass>` hint
+(diagnose.ts); top-level `[network] deniedDomains` is a process-global
+always-deny list (applies in every mode, incl. open; per-profile
+`deniedDomains` only warns); path entries resolve symlinks, so `/tmp` works
+on macOS and Linux. `tsc --noEmit` clean. Behaviorally verified in an unsandboxed
+subagent: `/tmp` writes work via symlink resolution; fs denials give the
+`<hallpass>` hint; global deny list blocks in open mode and live-updates via
+`updateConfig`; offline denials carry srt's violation block; allowlist works
+alongside the deny list. Filesystem violations: srt's macOS `log stream`
+monitor was tried and **does not work here**. It runs and captures noise
+(`sysctl-read kern.iossupportversion` on every command, now filtered), but
+it never receives filesystem denials: the generated profile carries the log
+tags, yet macOS does not log the denial (`log show` confirms), even with a
+2s wait. So the monitor is opt-in only (`HALLPASS_LOG_MONITOR=1`) and fs
+denials are explained by hallpass's own pattern hint; network denials still
+get srt's exact violation line.
+
+**Accepted limitation (dev-time only):** with cwd inside this dotfiles repo,
+the `dev` profile's `$CWD` write access includes hallpass's own source and
+`node_modules/@anthropic-ai/sandbox-runtime`, so a sandboxed command could
+modify the sandbox for later sessions (srt warns about this). Deliberately
+not denied: it only applies while developing hallpass itself, where that
+write access is wanted.
+
+**Chunk 3 finding:** hallpass loads into subagent sessions (as designed), so
+subagents' bash is sandboxed by the default profile today. A subagent that
+needs to run its own srt (e.g. a test harness) fails with `listen EPERM` on
+the nested proxy socket under `/tmp/claude`. Per-agent profile assignment
+(chunk 3) must account for this; the `unsandboxed` profile is the escape.
 
 Chunk-1 deployment notes:
 - `~/.pi/agent/hallpass.toml` is a manual symlink to the dotfiles repo —
