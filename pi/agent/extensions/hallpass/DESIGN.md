@@ -428,6 +428,49 @@ no fork needed unless that seam breaks.
 - [ ] bash replacement composes with other installed extensions that
       touch bash (none known today; keep load-order note in README).
 
+## 9. Revisit after the planned chunks (UX when work is blocked)
+
+Not scheduled. Revisit once chunks 1–4 are done. Problem: when an agent's
+work is blocked by an access restriction, the model sees only a bare
+`Operation not permitted` / `403`. Chunk 2's `<hallpass>` failure hint helps
+after the fact, but the model has no standing awareness of its limits and
+may retry, work around the block, or try to "jailbreak" itself. Ideas to
+evaluate together (they compose):
+
+1. **Model-visible profile awareness.** Put the active profile's name and
+   description (and a terse capability summary) in context, e.g. via
+   `before_agent_start` prompt sections, so the model knows what it can and
+   cannot do, recognizes an access block as policy, and stops and reports
+   instead of trying to bypass it. Must stay current across `/hp-profile`
+   switches (the system prompt/tool state is rebuilt per run, so a prompt
+   section tied to current profile state is the natural fit) and apply per
+   subagent profile once chunk 3 lands.
+2. **A profile-maintenance agent.** A dedicated profile/subagent with write
+   access to the global hallpass profile rules, so the user can delegate
+   quick rule updates forked from any point in the conversation (context
+   from the blocked work travels with the fork) without leaving the flow.
+3. **A `hallpass_update_settings` tool** that updates hallpass's in-session
+   settings (profile rules, grants). Needs: user confirmation on every call
+   (`ctx.ui.confirm`), and *selective* enablement: not active in ordinary
+   sessions, only exposed to the profile-maintenance agent (tool selection
+   per agent, tying into the chunk-4 profile/tool-selection work). Value: the
+   user describes the desired change in prose and the agent works out the
+   exact settings. Open questions: session-only vs persisted to
+   `hallpass.toml`; validation against the schema; audit trail via
+   `appendEntry`.
+4. **A `hallpass_status` read-only tool** (low risk, can be broadly
+   available) that returns the current effective settings (active profile,
+   fs/network rules, deny list, user-bash flag, tool selection) so the agent
+   reflects real state into context instead of guessing. Candidate
+   foundation for 1: the awareness prompt can point at this tool for detail.
+
+Related threads: dynamic capability grants from a loose task description
+(chunk 4 / original goals); the process-wide network floor limitation
+(§4), which per-session identity should fix before settings can safely differ
+per session; and the `HALLPASS_LOG_MONITOR` finding (fs violations get no
+exact-path line from srt on macOS), which makes the model-facing hint more
+important.
+
 ## References
 
 - srt: github.com/anthropics/sandbox-runtime (`SandboxManager`,
