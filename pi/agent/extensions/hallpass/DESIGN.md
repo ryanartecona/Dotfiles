@@ -524,6 +524,22 @@ evaluate together (they compose):
    fs/network rules, deny list, user-bash flag, tool selection) so the agent
    reflects real state into context instead of guessing. Candidate
    foundation for 1: the awareness prompt can point at this tool for detail.
+5. **Ambient env var scrubbing.** A per-profile way to unset some of the
+   environment variables the pi process itself has (API keys, tokens, cloud
+   credentials, `PI_*` session metadata) so they are not visible to bash tool
+   calls, with glob matching on names (e.g. `unsetEnv = ["AWS_*", "*_TOKEN",
+   "OPENROUTER_API_KEY"]`). Not about blocked work, but the same "limit what
+   the agent can reach" theme and a natural profile field next to the
+   filesystem and network rules. Implementation notes to check when picking
+   it up: srt already unsets named env vars per wrap (`env -u`, driven by its
+   `credentials` config), but takes literal names, so globs would be expanded
+   against `process.env` at wrap time and passed as concrete names; pi injects
+   its own `PI_*` variables into bash calls after profile logic runs
+   (see pi `environment-variables.md`), so ordering matters; decide whether it
+   also applies to `!`/`!!` commands (`sandboxUserBash`) and to unsandboxed
+   profiles (scrubbing without a sandbox is plain env filtering); and
+   unsetting is not a secrecy boundary on its own, since a sandboxed command
+   can still read credentials from files unless `denyRead` covers them.
 
 Related threads: dynamic capability grants from a loose task description
 (chunk 4 / original goals); the process-wide network floor limitation
