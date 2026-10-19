@@ -21,15 +21,18 @@
  *   dies with the pi process. Wrapped commands must be executed ASYNC (a sync
  *   exec in the proxy-hosting process self-deadlocks).
  *
- * CHUNK-1 LIMITATION — network "open" mode: srt has no per-call allow-all
- * (bare "*" is rejected in allow entries), and the ask callback receives
- * only {host, port} with no command identity. So "open" is decided by the
- * ask callback reading a PROCESS-WIDE floor that tracks the last explicit
- * /hallpass switch (initialized from the default profile). Correct for
- * single-session use; with concurrent in-process sessions on divergent
- * network modes, the floor is shared (fail-open toward "open"). Revisit in
- * chunk 3 when per-session identity lands. Filesystem policy is unaffected:
- * it is baked per call and always exact.
+ * NETWORK "open" MODE: srt has no per-call allow-all (bare "*" is rejected in
+ * allow entries), and the ask callback receives only {host, port} with no
+ * command identity. So "open" is decided in the ask callback from in-flight
+ * state: deny whenever ANY restricted (offline/allowlist) command is running
+ * (fail closed); otherwise allow if an open command is running, or, for
+ * background processes that outlive their command, if the process-wide floor
+ * (the main session's last profile) is open. Consequence: an open command that
+ * overlaps a restricted one (e.g. parallel subagents on different profiles)
+ * gets its non-granted network denied. Filesystem policy is unaffected: it is
+ * baked per call and always exact.
+ *
+ * Subagent sessions never move the floor; only the main session does.
  *
  * STATE PLACEMENT: pi's jiti loader runs with moduleCache disabled, so
  * hallpass's own modules may be re-instantiated per session, while srt (plain
@@ -69,6 +72,10 @@ interface SharedSandboxState {
 	floorInitialized: boolean;
 	floorOpen: boolean;
 	deniedDomains: string[];
+	/** Wrapped commands currently running under an "open" profile. */
+	inFlightOpen: number;
+	/** Wrapped commands currently running under offline/allowlist profiles. */
+	inFlightRestricted: number;
 }
 // SAFETY: widening globalThis with a namespaced slot; the cast only adds an
 // optional property, and all access goes through `shared` below.
@@ -76,6 +83,8 @@ const shared = (globalThis as { __hallpassSandbox?: SharedSandboxState }).__hall
 	floorInitialized: false,
 	floorOpen: false,
 	deniedDomains: [],
+	inFlightOpen: 0,
+	inFlightRestricted: 0,
 };
 
 /**
@@ -113,7 +122,9 @@ export function ensureNetworkFloor(mode: NetworkProfile["mode"] | undefined): vo
 }
 
 const askCallback: SandboxAskCallback = ({ host, port }) => {
-	if (shared.floorOpen) return Promise.resolve(true);
+	if (shared.inFlightRestricted === 0 && (shared.inFlightOpen > 0 || shared.floorOpen)) {
+		return Promise.resolve(true);
+	}
 	return Promise.resolve({
 		allow: false as const,
 		reason: `hallpass: network access to ${host}:${port} is not allowed by the active profile`,
@@ -176,7 +187,7 @@ export interface WrappedCommand {
  * policy:
  *   offline  — no grant; the proxy denies everything not explicitly granted.
  *   allowlist — random per-call grant, revoked by cleanup().
- *   open     — no grant; the ask callback consults the process-wide floor.
+ *   open     — no grant; the ask callback decides from in-flight state (see header).
  *
  * `attributionId` (pi's tool-call id) labels violations; it is NOT a grant
  * key (grant keys must be random).
@@ -204,9 +215,17 @@ export async function wrapCommand(
 		const wrapped = await SandboxManager.wrapWithSandbox(command, undefined, srtConfig, signal, {
 			commandId: key,
 		});
+		const isOpen = network.mode === "open";
+		if (isOpen) shared.inFlightOpen++;
+		else shared.inFlightRestricted++;
+		let released = false;
 		return {
 			command: wrapped,
 			cleanup: () => {
+				if (released) return;
+				released = true;
+				if (isOpen) shared.inFlightOpen--;
+				else shared.inFlightRestricted--;
 				if (grantId) SandboxManager.unregisterCommandNetworkLists(grantId);
 			},
 			violations: async (settleMs = 0) => {

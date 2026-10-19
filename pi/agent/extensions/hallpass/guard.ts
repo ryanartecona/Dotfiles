@@ -47,11 +47,12 @@ function underAny(p: string, roots: string[]): boolean {
 export function installFileToolGuard(
 	pi: ExtensionAPI,
 	getProfile: () => Profile | undefined,
-	cwd: string,
+	getCwd: () => string,
 ): void {
 	pi.on("tool_call", (event) => {
 		const profile = getProfile();
 		if (!profile) return undefined;
+		const cwd = getCwd();
 
 		const isRead = READ_TOOLS.has(event.toolName);
 		const isWrite = WRITE_TOOLS.has(event.toolName);

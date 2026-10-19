@@ -46,6 +46,37 @@ modify the sandbox for later sessions (srt warns about this). Deliberately
 not denied: it only applies while developing hallpass itself, where that
 write access is wanted.
 
+**Chunk 3 (subagents) implemented, partly verified:** `agents.ts` reads agent
+`.md` frontmatter itself (pi-subagents drops unknown keys): `hallpass_profile:` key,
+plus whether hallpass loads in the child (`extensions: false`, `isolated`,
+`exclude_extensions`, allowlist without hallpass). A child identifies itself
+from its session name `{agent}#{id8}` (set before `session_start`; verified
+in pi-subagents source). Profile precedence in a child: frontmatter
+`hallpass_profile:`, then `[agentProfiles]` by type, then `[agentProfiles]["*"]`,
+then restored/default. Parent-side `tool_call` on `Agent` blocks spawning an
+agent that would bypass hallpass while a sandboxed profile is active. Children
+never move the process-wide network floor. Network "open" now decides from
+in-flight state (deny if any restricted command is running; fail closed),
+replacing the floor-only rule. cwd is taken from `ctx.cwd` (worktree-isolated
+children). Unit tests of the frontmatter/identity logic pass; `tsc` clean.
+Not yet verified end to end: a real child session picking up its profile, and
+whether `tool_call` fires for the `Agent` tool (core source says it does for
+all tools). Package-shipped agent dirs are not scanned.
+
+**Chunk 3 review gaps (from a read-only audit of the subagent surface):**
+- Fixed: the `Agent` tool's per-call `isolated: true` also strips extensions;
+  the parent-side block now refuses it under a sandboxed profile.
+- Open (decisions): an assigned profile name that does not exist falls back
+  to the default profile (fails open; a stricter fallback is possible); project
+  `.pi/hallpass.toml` and project agent files have no trust gate and can loosen
+  `[agentProfiles]` or redefine profiles (consider tighten-only merging, as
+  `deniedDomains` already unions); `[agentProfiles]` names are validated only
+  when a child starts, not at config load; `resume` keeps the agent's original
+  type (profile re-resolution on resume unverified); `tools` and `tmuxProfile`
+  remain inert until chunk 4. Workflow and scheduled spawns skip the
+  parent-side block (child-side lookup still applies; workflows are off in
+  this config).
+
 **Chunk 3 finding:** hallpass loads into subagent sessions (as designed), so
 subagents' bash is sandboxed by the default profile today. A subagent that
 needs to run its own srt (e.g. a test harness) fails with `listen EPERM` on
@@ -173,7 +204,7 @@ Package: `@tintinweb/pi-subagents` at
 - Agent frontmatter parser (`custom-agents.ts:185–216`) **drops unknown
   keys** — but agent-file discovery is trivially replicable
   (`~/.pi/agent/agents/` ← `.agents/agents/` ← `.pi/agents/` ← package
-  dirs). Hallpass parses the same `.md` files itself for a `profile:` key.
+  dirs). Hallpass parses the same `.md` files itself for a `hallpass_profile:` key.
 - Lifecycle events on `pi.events`: `subagents:created {id, type, …}`,
   `subagents:started/completed/failed/steered/compacted`.
 - Workflow-engine `agent()` calls go through the identical spawn path.
@@ -349,13 +380,13 @@ callback support — chunk 2 decision).
 
 ## 6. Subagent integration (no fork of pi-subagents)
 
-Assignment **data** lives in each agent's frontmatter (`profile: <name>`);
+Assignment **data** lives in each agent's frontmatter (`hallpass_profile: <name>`);
 assignment **logic** lives entirely in hallpass. Fallback/override map in
 hallpass config (`[agentProfiles]`).
 
 1. **Parse agent files independently**: replicate discovery
    (`~/.pi/agent/agents/`, `.agents/agents/`, `.pi/agents/`, package
-   dirs), read frontmatter `profile:` ourselves (pi-subagents drops
+   dirs), read frontmatter `hallpass_profile:` ourselves (pi-subagents drops
    unknown keys, which is fine — we never ask it for them).
 2. **Parent-side spawn observation/interception**: `pi.on("tool_call")`
    for the `Agent` tool (believed to fire for extension tools — **verify
@@ -391,7 +422,7 @@ no fork needed unless that seam breaks.
    `registerCommandNetworkLists` per call, violation annotation UX,
    `sandboxUserBash` handling.
 3. **Subagents**: verify `tool_call` interception of Agent calls
-   (empirical, first task), frontmatter `profile:` parsing, identity
+   (empirical, first task), frontmatter `hallpass_profile:` parsing, identity
    resolution, escape-hatch policing, child-session activation.
 4. **Unification**: tmux-mcp `via: "bash"` evaluation per call
    (`policy-eval` CLI bridge), `tmuxProfile` refs, tool-selection

@@ -22,6 +22,7 @@ import {
 	type ExtensionAPI,
 	type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
+import { assignedProfileName, discoverAgents, subagentTypeFromSessionName } from "./agents.ts";
 import { explainFailure, looksLikeFsDenial, OutputTail } from "./diagnose.ts";
 import { installFileToolGuard } from "./guard.ts";
 import {
@@ -42,7 +43,9 @@ import {
 const ENTRY_TYPE = "hallpass:profile";
 
 export default function hallpass(pi: ExtensionAPI) {
-	const cwd = process.cwd();
+	// The session's cwd, refreshed at session_start: subagents with worktree isolation run
+	// in a different directory than the process was started in.
+	let cwd = process.cwd();
 	let config: HallpassConfig = {
 		defaultProfile: "",
 		profiles: new Map(),
@@ -51,6 +54,7 @@ export default function hallpass(pi: ExtensionAPI) {
 		warnings: ["hallpass config not loaded yet"],
 	};
 	let currentName: string | undefined;
+	let isChild = false;
 
 	function currentProfile(): Profile | undefined {
 		if (currentName) {
@@ -94,6 +98,10 @@ export default function hallpass(pi: ExtensionAPI) {
 	// -----------------------------------------------------------------------
 
 	pi.on("session_start", async (_event, ctx) => {
+		if (ctx.cwd !== cwd) {
+			cwd = ctx.cwd;
+			localBash = createBashTool(cwd);
+		}
 		config = loadConfig(cwd);
 
 		let restored: string | undefined;
@@ -104,7 +112,20 @@ export default function hallpass(pi: ExtensionAPI) {
 			}
 		}
 
-		if (restored && config.profiles.has(restored)) {
+		// Subagent child session? Its profile comes from agent frontmatter / [agentProfiles].
+		const childType = subagentTypeFromSessionName(pi.getSessionName());
+		const assigned = childType
+			? assignedProfileName(childType, discoverAgents(cwd), config.agentProfiles)
+			: undefined;
+		if (childType) {
+			if (assigned && !config.profiles.has(assigned)) {
+				ctx.ui.notify(`hallpass: subagent "${childType}" assigned unknown profile "${assigned}"; using default`, "warning");
+			}
+			isChild = true;
+		}
+		if (assigned && config.profiles.has(assigned)) {
+			currentName = assigned;
+		} else if (restored && config.profiles.has(restored)) {
 			currentName = restored;
 		} else if (config.profiles.has(config.defaultProfile)) {
 			currentName = config.defaultProfile;
@@ -113,11 +134,47 @@ export default function hallpass(pi: ExtensionAPI) {
 		}
 
 		setDeniedDomains(config.deniedDomains);
-		ensureNetworkFloor(currentProfile()?.network.mode);
+		// A child must not move the process-wide network floor (it would change the parent's network).
+		if (!isChild) ensureNetworkFloor(currentProfile()?.network.mode);
 		updateStatus(ctx);
 		for (const warning of config.warnings) {
 			ctx.ui.notify(`hallpass: ${warning}`, "warning");
 		}
+	});
+
+	// -----------------------------------------------------------------------
+	// Parent side: refuse to spawn subagents that would escape hallpass
+	// -----------------------------------------------------------------------
+
+	pi.on("tool_call", (event) => {
+		if (event.toolName !== "Agent") return undefined;
+		const profile = currentProfile();
+		if (!profile?.sandbox) return undefined;
+		const input = event.input as { subagent_type?: unknown; isolated?: unknown };
+		// The Agent tool's per-call `isolated: true` strips extensions (hallpass included) from the
+		// child regardless of the agent file, so it must be refused under a sandboxed profile too.
+		if (input.isolated === true) {
+			return {
+				block: true,
+				reason:
+					`hallpass: spawning an agent with isolated=true would run it without hallpass (unsandboxed) ` +
+					`while profile "${profile.name}" is active. Retry without isolated, or ask the user to switch ` +
+					`to an unsandboxed profile.`,
+			};
+		}
+		const type = input.subagent_type;
+		if (typeof type !== "string") return undefined;
+		const info = discoverAgents(cwd).get(type.toLowerCase());
+		if (info && !info.hallpassLoads) {
+			return {
+				block: true,
+				reason:
+					`hallpass: agent "${info.name}" is configured so hallpass does not load in its session ` +
+					`(extensions disabled/isolated/excluded), which would run it unsandboxed while profile ` +
+					`"${profile.name}" is active. Ask the user to change the agent or switch to an unsandboxed profile.`,
+			};
+		}
+		return undefined;
 	});
 
 	// -----------------------------------------------------------------------
@@ -240,7 +297,7 @@ export default function hallpass(pi: ExtensionAPI) {
 	// bash tool override: per-call srt wrap (Gondolin pattern)
 	// -----------------------------------------------------------------------
 
-	const localBash = createBashTool(cwd);
+	let localBash = createBashTool(cwd);
 
 	pi.registerTool({
 		...localBash,
@@ -288,7 +345,7 @@ export default function hallpass(pi: ExtensionAPI) {
 	// File-tool path guard
 	// -----------------------------------------------------------------------
 
-	installFileToolGuard(pi, currentProfile, cwd);
+	installFileToolGuard(pi, currentProfile, () => cwd);
 
 	// -----------------------------------------------------------------------
 	// User `!` / `!!` shell (opt-in per profile)
