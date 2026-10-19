@@ -1,0 +1,21 @@
+{
+  "name": "pi-hallpass",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Profile-driven sandboxing for pi's bash tool (srt/seatbelt)",
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {
+    "@anthropic-ai/sandbox-runtime": "0.0.80",
+    "smol-toml": "1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.6.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

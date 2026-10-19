@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@earendil-works/pi-coding-agent": [
+        "/nix/store/1dk928k0qh903lhi3806a94j2kci7018-pi-1.3.0/lib/pi/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
+      ]
+    }
+  },
+  "include": ["*.ts"]
+}

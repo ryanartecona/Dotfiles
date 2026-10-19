@@ -1,0 +1,55 @@
+# hallpass profiles
+#
+# Each profile compiles to a per-bash-call sandbox (srt) config and a
+# path guard for pi's file tools. Switch with /hallpass switch <name>.
+# Path entries support ~, $CWD (session cwd), and $ENV_VAR expansion;
+# subpath semantics (an entry covers everything under it).
+#
+# Reserved slots (parsed now, enforced in later chunks):
+#   tools        = pi tool-selection delta, e.g. ["-write", "+grep"]  (chunk 4)
+#   tmuxProfile  = tmux-mcp fine-grain policy profile name            (chunk 4)
+#   [agentProfiles] = subagent type -> profile name                   (chunk 3)
+
+default = "dev"
+
+# Everyday development: cwd + caches writable, obvious credential stores
+# unreadable, open network.
+# NOTE: ~/.ssh stays readable so ssh-based git keeps working. Deny it (and
+# prefer https remotes) in stricter profiles.
+# NOTE: on macOS use /private/tmp, not /tmp — srt 0.0.80 keeps the bare "/tmp"
+# symlink unresolved and seatbelt then never matches it (verified smoke test).
+[profiles.dev]
+description = "cwd + caches writable, credential stores unreadable, open network"
+filesystem.allowWrite = ["$CWD", "/private/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.denyWrite = []
+filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.config/gh/hosts.yml"]
+network.mode = "open"
+sandboxUserBash = false
+tmuxProfile = "default"
+
+# No network at all; cwd writable.
+[profiles.offline]
+description = "fully offline, cwd writable"
+filesystem.allowWrite = ["$CWD", "/private/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.ssh", "~/.config/gh/hosts.yml"]
+network.mode = "offline"
+sandboxUserBash = true
+
+# Read-only and offline: for review/audit sessions.
+[profiles.audit]
+description = "read-only, offline"
+filesystem.allowWrite = []
+filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.ssh", "~/.config/gh/hosts.yml"]
+network.mode = "offline"
+sandboxUserBash = true
+tools = ["-write", "-edit"]
+
+# Escape hatch: no sandboxing (file-tool path guard still applies).
+[profiles.unsandboxed]
+description = "bash unsandboxed (escape hatch); file-tool guard still active"
+sandbox = false
+network.mode = "open"
+
+# Per-subagent profile assignment (chunk 3; agent frontmatter `profile:` wins).
+[agentProfiles]
+"*" = "dev"

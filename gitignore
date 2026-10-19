@@ -13,6 +13,7 @@ __pycache__
 .claude/
 /.wt/
 /.pi
+node_modules/
 
 karabiner/automatic_backups
 .envrc

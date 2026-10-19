@@ -7,8 +7,28 @@ sandbox-runtime (`srt`), plus — in later chunks — unification with tmux-mcp'
 fine-grain command policy, tool selection, and per-subagent profile
 assignment.
 
-Status: **design approved for chunk 1**. Research complete; no
-implementation yet.
+Status: **chunk 1 complete and verified** (2026-10-18). Core sandboxing
+live: profiles, bash override with per-call srt wrapping, file-tool guard,
+branch-persisted profile state. `tsc --noEmit` clean; behavioral smoke
+tests pass (dev/offline/allowlist; fs EPERM + proxy 403); initial `pi -p`
+load test passes. Interactive UX pass added `/hp` dashboard
+(status / switch / reload) plus direct shortcuts `/hp-status` (plain
+summary), `/hp-profile [name]` (picker) and `/hp-reload`; simplified after
+review (dropped redundant `/hp-profiles` browser). `tsc --noEmit` was clean
+before the simplification and has not been re-run since.
+ A later print-mode startup/registry check was blocked
+by inability to write `~/.pi/agent/settings.json.lock` and missing model
+API key, so command registration is verified by typecheck but not by that
+runtime check. Known srt 0.0.80 quirks documented in §4. Next: chunk 2
+(violation-annotation UX, user_bash polish), chunk 3 (subagents).
+
+Chunk-1 deployment notes:
+- `~/.pi/agent/hallpass.toml` is a manual symlink to the dotfiles repo —
+  NOT home-manager-managed yet; a rebuild may drop it.
+- macOS: use `/private/tmp` in allowWrite, not `/tmp` (srt 0.0.80 keeps
+  the bare symlink unresolved and seatbelt never matches it).
+- npm audit flags 2 high-severity advisories in srt 0.0.80's dep tree
+  (unreviewed; beta dep pinned deliberately).
 
 ---
 
@@ -220,30 +240,54 @@ needed initially).
 ### The singleton rule (critical design constraint)
 
 Because subagent sessions share the process, there is **one**
-`SandboxManager`. Therefore:
+`SandboxManager`. Verified against srt 0.0.80 (smoke tests, 2026-10-18):
 
-- `initialize()` must be idempotent across hallpass instances (guard with
-  a module-level `let initialized` / promise dedupe).
-- The manager-level config is the **restrictive floor** (e.g. offline).
-- Per-call network policy rides via
-  `registerCommandNetworkLists(toolCallId, …)` + per-call `customConfig`
-  in `wrapWithSandbox` — **not** via `updateConfig`, which is global and
-  would race between concurrent sessions with different profiles.
-- Filesystem policy is per-call by construction (baked at wrap time).
+- `initialize()` is one-shot and performs **no Zod validation**; the base
+  config must carry **complete arrays** — the proxy filter iterates
+  `config.network.*` per request and 500s everything on `undefined`.
+- Base config = **restrictive floor** (`allowedDomains: []`, empty fs
+  lists). Widening is per call:
+  `registerCommandNetworkLists(randomId, {allowedDomains})` +
+  `wrapWithSandbox(…, {commandId: randomId})`. The grant id must be random
+  ≥128 bits — **pi tool-call ids do not qualify** (they're only used as
+  violation-attribution labels).
+- Per-call `customConfig.network` **never reaches the proxy filter** in
+  0.0.80 — it only toggles whether restriction applies. So `toSrtConfig`
+  compiles **filesystem only**; network is handled by sandbox.ts.
+- `updateConfig()` is process-global — never used for per-session policy.
+- Filesystem policy is exact per call (baked at wrap time).
+- The proxy is in-process (ephemeral localhost port + unix-socket mux),
+  dies with the pi process. Wrapped commands must be executed **async**
+  (sync exec in the proxy-hosting process self-deadlocks).
+- pi's jiti loader uses `moduleCache: false`: hallpass's own modules may
+  reload per session, but srt (plain ESM in node_modules) is a true
+  singleton. → all process-wide hallpass state lives on **globalThis**.
 
-### Per-bash-call flow
+**Network "open" mode (chunk-1 limitation):** srt has no per-call
+allow-all (bare `*` rejected in allow entries) and the ask callback
+receives only `{host, port}` — no command identity. So "open" is decided
+by an **ask callback reading a process-wide floor** that tracks the last
+explicit `/hallpass switch` (initialized from the default profile at first
+session start). Correct for single-session use; concurrent in-process
+sessions on divergent network modes share the floor (fail-open toward
+"open"). Revisit in chunk 3. Per-profile `network.deniedDomains` is parsed
+but **not yet enforced** (per-call denies need global updateConfig or
+callback support — chunk 2 decision).
+
+### Per-bash-call flow (as implemented, chunk 1)
 
 1. Model calls `bash`; pi dispatches hallpass's replacement `execute(id,
-   params, signal, onUpdate, ctx)`.
-2. Hallpass reads current profile ref → compiles srt `customConfig`.
-3. If profile has domain allowlist: `registerCommandNetworkLists(id, …)`.
-4. `wrapped = await wrapWithSandbox(params.command, shell, customConfig,
-   signal, {commandId: id})`.
-5. Execute `wrapped` via the real local bash operations (stream output,
-   honor signal/timeout).
-6. `unregisterCommandNetworkLists(id)`; on non-zero exit, run
-   `annotateStderrWithSandboxFailures(id, stderr)` to translate denials
-   for the model.
+   params, signal, onUpdate)`.
+2. Hallpass reads current profile ref → compiles fs-only srt config.
+3. allowlist profile: `registerCommandNetworkLists(randomId, …)`.
+4. `wrapped = await wrapWithSandbox(command, undefined, fsConfig, signal,
+   {commandId: randomId ?? id})`.
+5. Execute `wrapped` through the built-in local bash tool (streaming,
+   truncation, timeout, PI_* env all preserved); `finally: cleanup()`
+   revokes the grant.
+6. open/offline: no grant; proxy + ask callback decide (floor).
+7. (chunk 2) on non-zero exit, `annotateStderrWithSandboxFailures` to
+   translate denials for the model.
 
 ### State / profile switching
 
@@ -331,14 +375,22 @@ no fork needed unless that seam breaks.
 - [ ] **`tool_call` fires for the pi-subagents `Agent` tool with mutable
       input + block** (core docs say yes for all tools; Explore agent
       claimed otherwise — 5-minute empirical test, first task of chunk 3).
+- [x] ~~jiti module sharing~~ — RESOLVED: jiti uses `moduleCache: false`
+      for extension modules; srt singleton is native-ESM-cached.
+      Process-wide hallpass state lives on globalThis.
+- [x] ~~srt base-config shape~~ — RESOLVED: complete arrays, restrictive
+      floor; partial network object poisons the proxy (500s).
+- [x] ~~per-call network policy mechanism~~ — RESOLVED:
+      registerCommandNetworkLists + random commandId (verified 200/403);
+      customConfig.network does not reach the filter in 0.0.80.
 - [ ] jiti module caching actually shares module-level state across
       sessions in one process (fallback identity channel). If not, use
       `pi.events` bus or accept session-name parsing only.
-- [ ] srt `initialize()` idempotence across multiple extension instances
-      in one process; pin version (0.0.x churn).
-- [ ] srt proxy behavior when *no* network rules are needed — confirm
-      `initialize()` cost is acceptable at session start, or defer init
-      until first wrap.
+- [x] ~~srt `initialize()` idempotence~~ — RESOLVED: one-shot, early
+      return; second calls are silently ignored. Version pinned (0.0.80).
+- [ ] srt proxy starts at initialize (not lazily) because the base config
+      defines allowedDomains; init is deferred until first sandboxed wrap
+      (hallpass calls ensureSandboxInitialized lazily per command).
 - [ ] `session.getSessionName()` (or equivalent) is reachable from an
       extension inside a subagent session at `session_start`.
 - [ ] SBPL/sandbox-exec behavior on current macOS for our rule shapes
