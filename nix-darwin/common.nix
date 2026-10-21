@@ -32,6 +32,9 @@
     nixfmt
     nix-output-monitor
     exiftool
+    # GUI app: installed here so it lands in /Applications/Nix Apps. Its config
+    # lives in home-manager/home.nix.
+    ghostty-bin
     (pkgs.callPackage ../nix/exif.nix { })
     # xz is a hidden dependency of nvm when gnutar also installed on macos
     # ([thread](https://github.com/nvm-sh/nvm/issues/3034#issuecomment-1694564861))

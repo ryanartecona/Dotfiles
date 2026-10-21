@@ -1,0 +1,9 @@
+# Ghostty config. Symlinked to ~/.config/ghostty/config by home-manager, so
+# edits here apply live (reload with cmd+shift+, in Ghostty).
+# Reference: https://ghostty.org/docs/config/reference
+# Validate:  ghostty +validate-config
+
+font-family = "PragmataPro Mono"
+font-size = 14
+
+theme = "GitHub-Dark-Dimmed"

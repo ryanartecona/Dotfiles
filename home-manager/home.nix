@@ -103,6 +103,18 @@
   # input isn't wired through, e.g. standalone home-manager use).
   ++ lib.optional (piPackage != null) piPackage;
 
+  # Ghostty terminal config. The app itself (ghostty-bin) is installed by
+  # nix-darwin (environment.systemPackages) so it lands in /Applications/Nix
+  # Apps. Config is a live symlink below rather than programs.ghostty.settings,
+  # so it can be edited without a rebuild.
+  programs.ghostty = {
+    enable = true;
+    package = null;
+  };
+
+  xdg.configFile."ghostty/config".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/ghostty/config";
+
   # Pi (pi.dev) config: symlink live files from this repo instead of copying
   # into the nix store, so edits take effect immediately without a rebuild.
   # Secrets (auth.json, mcp-auth.json) and pi-managed state (install/, npm/,
