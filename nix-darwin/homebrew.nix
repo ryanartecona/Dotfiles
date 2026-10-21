@@ -4,6 +4,7 @@
   homebrew.enable = true;
   homebrew.brews = [
     "nvm"
+    "awscli"
   ];
   homebrew.casks = [
     "iterm2"

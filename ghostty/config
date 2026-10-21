@@ -6,4 +6,5 @@
 font-family = "PragmataPro Mono"
 font-size = 14
 
-theme = "GitHub-Dark-Dimmed"
+theme = "GitHub Dark Dimmed"
+# theme = "Material Darker"

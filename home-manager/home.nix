@@ -45,7 +45,7 @@
   home.packages = with pkgs; [
     asciinema
     asciidoc
-    awscli
+    # awscli
     bat
     # bind # depends on broken llvm package 2022-09-18
     cmake

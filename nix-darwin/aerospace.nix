@@ -212,7 +212,7 @@
         ];
 
         # make new iterm window
-        ctrl-cmd-t = [
+        ctrl-cmd-y = [
           # https://gist.github.com/reyjrar/1769355?permalink_comment_id=1498007#gistcomment-1498007
           ''
             exec-and-forget osascript -e 'if application "iTerm" is running then
@@ -221,6 +221,21 @@
                 end tell
             else
                 activate application "iTerm"
+            end if'
+          ''
+          "mode main"
+        ];
+
+        # make new ghostty window (requires ghostty >= 1.3.0 for AppleScript)
+        ctrl-cmd-t = [
+          ''
+            exec-and-forget osascript -e 'if application "Ghostty" is running then
+                tell application "Ghostty"
+                    new window
+                    activate
+                end tell
+            else
+                activate application "Ghostty"
             end if'
           ''
           "mode main"
