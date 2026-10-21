@@ -10,6 +10,6 @@
     "pi-mcp-adapter": "^5.4.0",
     "pi-observational-memory": "^3.1.4",
     "pi-open-tui": "^0.3.11",
-    "pi-web-access": "^0.43.0"
+    "pi-web-access": "^0.44.0"
   }
 }
