@@ -599,7 +599,7 @@ done</string>
 				<key>argument</key>
 				<integer>3</integer>
 				<key>argumenttext</key>
-				<string>iTerm</string>
+				<string>Nix Apps/Ghostty</string>
 				<key>focusedappvariable</key>
 				<false/>
 				<key>focusedappvariablename</key>
@@ -797,125 +797,127 @@ done</string>
 		<key>00BFD57D-8E12-4938-A261-4600CD63AFF6</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1555</integer>
+			<real>1555</real>
 		</dict>
 		<key>05321A68-4612-4F5B-BC6B-B7272EDC01B5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1005</integer>
+			<real>1005</real>
 		</dict>
 		<key>157871BA-9B06-463F-BA06-6317CF44CE4F</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>15</integer>
+			<real>15</real>
 		</dict>
 		<key>1A071DDE-A988-41A9-BC3F-E47EB7DB11A9</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1665</integer>
+			<real>1665</real>
 		</dict>
 		<key>255E78AE-39B1-4A82-82FD-D69BCB01D112</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1225</integer>
+			<real>1225</real>
 		</dict>
 		<key>288A0B32-E9DE-4A81-9359-F7F22085A891</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>455</integer>
+			<real>455</real>
 		</dict>
 		<key>36DC1139-B5D5-4660-972A-C0896771E11A</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1335</integer>
+			<real>1335</real>
 		</dict>
 		<key>55808A08-AC87-422F-B3E1-3D6F4784225B</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>125</integer>
+			<real>125</real>
 		</dict>
 		<key>624AD1CD-3937-4F17-ACF2-04C553E8A2B7</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>895</integer>
+			<real>895</real>
 		</dict>
 		<key>6AAB6B8C-F19D-4358-B31E-4C3C9DAB773D</key>
 		<dict>
 			<key>note</key>
 			<string>open /Applications/{query}.app</string>
 			<key>xpos</key>
-			<integer>495</integer>
+			<real>495</real>
 			<key>ypos</key>
-			<integer>785</integer>
+			<real>785</real>
 		</dict>
 		<key>6B3BE912-30E2-4848-8B51-890BE4B4AE94</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1115</integer>
+			<real>1115</real>
 		</dict>
 		<key>78C9AF81-2301-41FF-BA0E-19B983C8E38D</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>345</integer>
+			<real>345</real>
 		</dict>
 		<key>924F8FAD-54F0-4509-9680-68C863E1765C</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>675</integer>
+			<real>675</real>
 		</dict>
 		<key>994AA06E-F5F6-489C-AADE-B963008610C3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>235</integer>
+			<real>235</real>
 		</dict>
 		<key>9A9616F9-B7DE-4872-938C-4753D333A2B2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>565</integer>
+			<real>565</real>
 		</dict>
 		<key>B1E80A31-2D2F-4BC8-9E9F-D0BBA18DD8E0</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>785</integer>
+			<real>785</real>
 		</dict>
 		<key>C7F0BE9F-FF73-4DD5-B18A-AA9A5BF96583</key>
 		<dict>
 			<key>xpos</key>
-			<integer>95</integer>
+			<real>95</real>
 			<key>ypos</key>
-			<integer>1445</integer>
+			<real>1445</real>
 		</dict>
 	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
 	<key>webaddress</key>
 	<string></string>
 </dict>

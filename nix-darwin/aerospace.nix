@@ -8,7 +8,7 @@
       heightInc = 70;
     in
     {
-      accordion-padding = 80;
+      accordion-padding = 50;
       gaps = {
         outer.top = 10;
         outer.right = 10;
@@ -231,8 +231,7 @@
           ''
             exec-and-forget osascript -e 'if application "Ghostty" is running then
                 tell application "Ghostty"
-                    new window
-                    activate
+                    activate window (new window)
                 end tell
             else
                 activate application "Ghostty"
