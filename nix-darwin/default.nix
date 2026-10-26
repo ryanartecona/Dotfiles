@@ -27,6 +27,8 @@ let
       pkgs = import nixpkgs nixpkgsArgs;
       stable = import nixpkgs-stable nixpkgsArgs;
       piPackage = pi.packages.${system}.default;
+      # default
+      primaryUser = "ryanartecona";
     };
 
 in
@@ -38,9 +40,7 @@ in
     with config;
     nix-darwin.lib.darwinSystem {
       inherit system;
-      specialArgs = config // {
-        primaryUser = "ra";
-      };
+      specialArgs = config;
       modules = [
         ./common.nix
         ./homebrew.nix

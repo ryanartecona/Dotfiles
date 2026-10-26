@@ -29,6 +29,7 @@
   environment.systemPackages = with pkgs; [
     vim
     direnv
+    nixd
     nixfmt
     nix-output-monitor
     exiftool
