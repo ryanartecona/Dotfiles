@@ -18,7 +18,8 @@
     "openrouter/~openai/gpt-luna-latest",
     "openrouter/~openai/gpt-sol-latest",
     "openrouter/~openai/gpt-terra-latest",
-    "openrouter/z-ai/glm-5.3"
+    "openrouter/z-ai/glm-5.3",
+    "openrouter/moonshotai/kimi-k3.1-pro"
   ],
   "packages": [
     "npm:pi-mcp-adapter",
