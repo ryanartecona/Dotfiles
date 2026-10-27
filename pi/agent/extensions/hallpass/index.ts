@@ -99,6 +99,36 @@ export default function hallpass(pi: ExtensionAPI) {
 		return `switched to profile "${name}" — effective on the next tool call`;
 	}
 
+	// Cycle through every defined profile in config order, wrapping at the ends.
+	// Forward/backward are bound to alt+n / alt+p below.
+	function cycleProfile(step: 1 | -1, ctx: ExtensionContext): void {
+		const names = [...config.profiles.keys()];
+		const first = names[0];
+		if (first === undefined) {
+			ctx.ui.notify("hallpass: no profiles defined", "warning");
+			return;
+		}
+		let current = first;
+		if (currentName && config.profiles.has(currentName)) {
+			current = currentName;
+		} else if (config.profiles.has(config.defaultProfile)) {
+			current = config.defaultProfile;
+		}
+		const next = names[(names.indexOf(current) + step + names.length) % names.length];
+		if (next === undefined) return;
+		ctx.ui.notify(`hallpass: ${switchProfile(next, ctx)}`, "info");
+	}
+
+	pi.registerShortcut("alt+n", {
+		description: "Cycle hallpass profile forward",
+		handler: (ctx) => cycleProfile(1, ctx),
+	});
+
+	pi.registerShortcut("alt+p", {
+		description: "Cycle hallpass profile backward",
+		handler: (ctx) => cycleProfile(-1, ctx),
+	});
+
 	// -----------------------------------------------------------------------
 	// Session lifecycle: load config, restore profile from the active branch
 	// -----------------------------------------------------------------------
