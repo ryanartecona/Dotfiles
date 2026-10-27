@@ -548,6 +548,16 @@ per session; and the `HALLPASS_LOG_MONITOR` finding (fs violations get no
 exact-path line from srt on macOS), which makes the model-facing hint more
 important.
 
+## 10. UX improvements
+
+Related to sections 9.1, 9.2, 9.3 above.
+
+1. hallpass config tweaks. there should be a top-level optional field `cycleProfiles` which defaults to all defined profiles, but if present defines which fields are seen by the cycle hotkeys. this will allow more situational profiles to be added without cluttering the commonly used ones. also add a per-profile `agentUsage` field which can contain agent-facing instructions when reflected in-context.
+2. make hallpass profiles composable. this means a hallpass profile should be able to inherit from a parent profile and only add/remove the specific rules it wants to be different. profile config schema might need to change to allow this. I kinda like the pi model used by tools for this, where a raw list means full override, but `+tool` or `-tool` means just add or remove this tool, respectively. a possible alternative is to organize the schema to be dictionary structured rather than list structured, so a simple deep merge achieves a semantic delta.
+3. support ephemeral per-session hallpass settings. once profiles are composable as above, this should allow for ephemeral settings to live in memory. semantically, session config can be treated as an initially-empty profile which is always layered at the end of the inheritance chain. user cycling picks a profile, which is itself possibly the child of an inherited parent profile, and the session config can be logically another child profile, but one that is not defined in config and whose settings never persist. session config should be viewable in hp-status, and there should also be a slash command for making manual edits. 
+4. add reflection tools. a `hallpass_status` tool should return to the agent the same info that `/hp-status` shows the user, notably including agentUsage, and should be default enabled. a `hallpass_session_edit` tool should allow the agent to request session level changes subject to user approval (auto reject if not in an interactive session). with this, e.g. a plan-before-implement flow could have an agent start in a restrictive sandbox for planning, the agent then requesting session edits sufficient to carry out its plan, and the user can approve those edits with an approved plan for the agent to do its main work in a minimally destructive environment.
+5. add agent-facing hallpass docs/skills. some plugins ship skills or other docs to allow end users' agents to understand their config and make edits for them by just prompting. hallpass should also make that possible. the guidance for what hallpass supports, how profiles work, and how to use which parts of the sandbox config surface should have lots of overlap between a plugin-shipped skill as well as the hallpass_session_edit tool instructions, so make sure the tool instructions reference the skill without duplicating it.
+
 ## References
 
 - srt: github.com/anthropics/sandbox-runtime (`SandboxManager`,
