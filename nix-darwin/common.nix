@@ -34,7 +34,16 @@
     exiftool
     # GUI app: installed here so it lands in /Applications/Nix Apps. Its config
     # lives in home-manager/home.nix.
-    ghostty-bin
+    # Pinned ahead of nixpkgs to 1.4.0 (released 2026-10-27); nixpkgs unstable
+    # was still on 1.3.1. Remove this override once nixpkgs catches up.
+    # TODO: remove override when pkgs.ghostty-bin >= 1.4.0
+    (ghostty-bin.overrideAttrs (old: rec {
+      version = "1.4.0";
+      src = pkgs.fetchurl {
+        url = "https://release.files.ghostty.org/${version}/Ghostty.dmg";
+        hash = "sha256-OgIHXb0kMY13hCavQd7lUH1T7MRXjt6WkS7Jzm0Y0+g=";
+      };
+    }))
     (pkgs.callPackage ../nix/exif.nix { })
     # xz is a hidden dependency of nvm when gnutar also installed on macos
     # ([thread](https://github.com/nvm-sh/nvm/issues/3034#issuecomment-1694564861))
