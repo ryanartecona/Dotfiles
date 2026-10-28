@@ -8,6 +8,7 @@ import {
 	loadConfig,
 	parseSessionPatch,
 	resolveEffectiveProfile,
+	toSrtConfig,
 	type HallpassConfig,
 	type Profile,
 } from "../profiles.ts";
@@ -43,6 +44,7 @@ filesystem.allowWrite = ["/a", "/b"]
 filesystem.denyRead = ["/secret"]
 network.mode = "offline"
 network.allowedDomains = ["example.com"]
+network.allowUnixSockets = ["/run/base.sock"]
 tmuxProfile = ["default"]
 tools = ["-write", "-edit"]
 [profiles.child]
@@ -50,6 +52,7 @@ extends = "base"
 filesystem.allowWrite = ["-/a", "+/c"]
 filesystem.denyRead = []
 network.allowedDomains = ["+github.com"]
+network.allowUnixSockets = ["+/run/child.sock"]
 tmuxProfile = ["+focused"]
 tools = ["+write"]
 `);
@@ -62,6 +65,7 @@ tools = ["+write"]
 	assert.deepEqual(child.filesystem.denyRead, []);
 	assert.equal(child.network.mode, "offline");
 	assert.deepEqual(child.network.allowedDomains, ["example.com", "github.com"]);
+	assert.deepEqual(child.network.allowUnixSockets, ["/run/base.sock", "/run/child.sock"]);
 	assert.deepEqual(child.tmuxProfiles, ["default", "focused"]);
 	assert.deepEqual(child.tools, ["+write", "-edit"]);
 	assert.deepEqual(base.filesystem.allowWrite, ["/a", "/b"], "child resolution must not mutate parent");
@@ -174,11 +178,13 @@ agentUsage = "session only"
 filesystem.allowWrite = ["+$CWD"]
 network.mode = "allowlist"
 network.allowedDomains = ["+github.com"]
+network.allowUnixSockets = ["+$CWD/session.sock"]
 tools = ["+write"]
 `);
 	assert.equal(patch.agentUsage, "session only");
 	assert.deepEqual(patch.filesystem.allowWrite, ["+$CWD"]);
 	assert.equal(patch.network.mode, "allowlist");
+	assert.deepEqual(patch.network.allowUnixSockets, ["+$CWD/session.sock"]);
 	assert.deepEqual(patch.tools, ["+write"]);
 	assert.throws(() => parseSessionPatch(`extends = "dev"`), /extends is implicit|unknown field/);
 	assert.throws(() => parseSessionPatch(`cycleProfiles = ["dev"]`), /unknown field/);
@@ -233,18 +239,23 @@ agentUsage = "plan first"
 filesystem.allowWrite = ["+$CWD"]
 network.mode = "allowlist"
 network.allowedDomains = ["+github.com"]
+network.allowUnixSockets = ["+$CWD/session.sock"]
 tools = ["+write", "+edit"]
 `);
 	const effective = resolveEffectiveProfile(base, patch);
 	assert.deepEqual(effective.filesystem.allowWrite, ["$CWD"]);
 	assert.equal(effective.network.mode, "allowlist");
 	assert.deepEqual(effective.network.allowedDomains, ["github.com"]);
+	assert.deepEqual(effective.network.allowUnixSockets, ["$CWD/session.sock"]);
 	assert.deepEqual(effective.tools, ["+write", "+edit"]);
 	assert.equal(effective.agentUsage, "plan first");
 	assert.deepEqual(effective.inheritanceChain, ["audit"]);
 	assert.deepEqual(base.filesystem.allowWrite, []);
 	assert.equal(base.network.mode, "offline");
 	assert.deepEqual(base.tools, ["-write", "-edit"]);
+	const srtConfig = toSrtConfig(effective, "/work");
+	assert.deepEqual(srtConfig.network?.allowUnixSockets, ["/work/session.sock"]);
+	assert.equal(srtConfig.network?.allowedDomains, undefined, "proxy domains must remain outside customConfig");
 });
 
 test("shared status includes session state and agentUsage; approval preview contains a policy diff", () => {

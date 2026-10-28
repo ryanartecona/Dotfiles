@@ -269,6 +269,7 @@ filesystem.allowWrite = ["$CWD", "/tmp"]
 filesystem.denyWrite  = ["$CWD/.env"]
 filesystem.denyRead   = ["~/.ssh", "~/.aws", "~/.gnupg"]
 network.mode = "open"               # open | offline | allowlist
+network.allowUnixSockets = []        # macOS socket-path grants; Linux ignores
 tools = ["+grep", "+find", "+ls"]   # pi tool-selection delta (chunk: tools)
 sandboxUserBash = false             # wrap `!`/`!!` too?
 tmuxProfile = "default"             # fine-grain ref (chunk 4)
@@ -340,10 +341,15 @@ Because subagent sessions share the process, there is **one**
   `wrapWithSandbox(…, {commandId: randomId})`. The grant id must be random
   ≥128 bits — **pi tool-call ids do not qualify** (they're only used as
   violation-attribution labels).
-- Per-call `customConfig.network` **never reaches the proxy filter** in
-  0.0.80 — it only toggles whether restriction applies. So `toSrtConfig`
-  compiles **filesystem only**; network is handled by sandbox.ts.
-- `updateConfig()` is process-global — never used for per-session policy.
+- Per-call `customConfig.network.allowedDomains` **never reaches the proxy
+  filter** in 0.0.80 — it only toggles whether restriction applies. Domain
+  policy is handled by sandbox.ts. `network.allowUnixSockets` is likewise read
+  from global config rather than customConfig, so it needs a special path.
+- `updateConfig()` is process-global. Domain denies are the only persistent
+  global policy. For per-profile Unix sockets, all wraps acquire a globalThis
+  queue; hallpass installs the expanded socket list, wraps (baking SBPL), then
+  restores the empty list before releasing the lock. Commands execute after
+  the lock is released, and deny-list updates use the same queue.
 - Filesystem policy is exact per call (baked at wrap time).
 - The proxy is in-process (ephemeral localhost port + unix-socket mux),
   dies with the pi process. Wrapped commands must be executed **async**
@@ -367,10 +373,13 @@ callback support — chunk 2 decision).
 
 1. Model calls `bash`; pi dispatches hallpass's replacement `execute(id,
    params, signal, onUpdate)`.
-2. Hallpass reads current profile ref → compiles fs-only srt config.
+2. Hallpass reads current profile ref → compiles per-call fs + expanded Unix
+   socket config.
 3. allowlist profile: `registerCommandNetworkLists(randomId, …)`.
-4. `wrapped = await wrapWithSandbox(command, undefined, fsConfig, signal,
-   {commandId: randomId ?? id})`.
+4. Under the wrap queue, temporarily install any socket list and call
+   `wrapWithSandbox(command, undefined, srtConfig, signal, {commandId:
+   randomId ?? id})`; restore the empty global socket list immediately after
+   wrapping.
 5. Execute `wrapped` through the built-in local bash tool (streaming,
    truncation, timeout, PI_* env all preserved); `finally: cleanup()`
    revokes the grant.

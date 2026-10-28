@@ -91,6 +91,7 @@ network.allowedDomains = ["github.com", "*.githubusercontent.com"]
 - `filesystem.denyRead`, `allowRead`, `allowWrite`, `denyWrite`: string lists passed to srt and used by the file-tool guard. An `allowRead` entry can reallow a subpath of a `denyRead` root.
 - `network.mode`: `"open"`, `"offline"`, or `"allowlist"`; root default is `"open"`.
 - `network.allowedDomains`: domains used in allowlist mode. Changing this list alone does not change an inherited offline/open mode.
+- `network.allowUnixSockets`: composable list of Unix socket paths allowed by srt. Path-based on macOS and ignored by srt on Linux. Empty by default. Hallpass expands paths and applies the list per bash wrap, including session overlays.
 - `tools`: signed pi tool operations described above.
 - `tmuxProfile`: one tmux-mcp profile name or a composable list of names. Omit to inherit; `[]` clears an inherited selection.
 
@@ -129,6 +130,7 @@ Because this is a complete overlay, include other existing session fields when t
 
 - Filesystem policy is baked per bash call. Session edits affect the next call, not an already-running command.
 - Network deny-list state is process-global. Do not attempt to make it profile- or session-specific.
+- Unix socket grants can expose powerful host services. In particular, allowing Docker/Podman control sockets can amount to a host sandbox bypass; request only the specific socket required.
 - `sandbox = false` is an explicit escape hatch, not a safe default for untrusted work.
 - Environment/file credentials are separate concerns: a domain allowlist does not prevent reading credentials allowed by filesystem policy.
 - Prefer narrow, task-specific grants. Do not request broad access merely because a narrower rule would require more thought.

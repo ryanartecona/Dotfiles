@@ -33,11 +33,14 @@ export type NetworkMode = "open" | "offline" | "allowlist";
 export interface NetworkProfile {
 	mode: NetworkMode;
 	allowedDomains: string[];
+	/** macOS path allowlist passed to srt at wrap time; ignored by srt on Linux. */
+	allowUnixSockets: string[];
 }
 
 export interface NetworkProfilePatch {
 	mode?: NetworkMode;
 	allowedDomains?: string[];
+	allowUnixSockets?: string[];
 }
 
 /** A not-yet-resolved profile. Undefined fields inherit; empty lists replace/clear. */
@@ -147,7 +150,7 @@ const PROFILE_KEYS = new Set([
 	"sandboxUserBash",
 ]);
 const FILESYSTEM_KEYS = new Set(["denyRead", "allowRead", "allowWrite", "denyWrite"]);
-const NETWORK_KEYS = new Set(["mode", "allowedDomains", "deniedDomains"]);
+const NETWORK_KEYS = new Set(["mode", "allowedDomains", "allowUnixSockets", "deniedDomains"]);
 
 function rejectUnknownKeys(
 	table: Record<string, unknown>,
@@ -219,6 +222,8 @@ function parseProfilePatch(
 		}
 		const allowedDomains = parseComposableList(net.allowedDomains, `${label}.network.allowedDomains`, warnings);
 		if (allowedDomains !== undefined) patch.network.allowedDomains = allowedDomains;
+		const allowUnixSockets = parseComposableList(net.allowUnixSockets, `${label}.network.allowUnixSockets`, warnings);
+		if (allowUnixSockets !== undefined) patch.network.allowUnixSockets = allowUnixSockets;
 	}
 
 	patch.tools = parseToolDeltas(raw.tools, `${label} tools`, warnings);
@@ -278,7 +283,7 @@ function defaultProfile(name: string): Profile {
 		inheritanceChain: [name],
 		sandbox: true,
 		filesystem: { denyRead: [], allowRead: [], allowWrite: [], denyWrite: [] },
-		network: { mode: "open", allowedDomains: [] },
+		network: { mode: "open", allowedDomains: [], allowUnixSockets: [] },
 		sandboxUserBash: false,
 	};
 }
@@ -295,7 +300,7 @@ function failClosedProfile(name: string): Profile {
 			"Do not attempt workarounds. Ask the user to fix hallpass.toml and run /hp-reload.",
 		sandbox: true,
 		filesystem: { denyRead: ["/"], allowRead: [], allowWrite: [], denyWrite: ["/"] },
-		network: { mode: "offline", allowedDomains: [] },
+		network: { mode: "offline", allowedDomains: [], allowUnixSockets: [] },
 		tools: ["-bash", "-write", "-edit", "-Agent"],
 		sandboxUserBash: true,
 	};
@@ -318,6 +323,7 @@ function applyPatch(base: Profile, patch: ProfilePatch, name: string): Profile {
 		network: {
 			mode: patch.network.mode ?? base.network.mode,
 			allowedDomains: mergeList(base.network.allowedDomains, patch.network.allowedDomains) ?? [],
+			allowUnixSockets: mergeList(base.network.allowUnixSockets, patch.network.allowUnixSockets) ?? [],
 		},
 		tools: mergeToolDeltas(base.tools, patch.tools),
 		tmuxProfiles: mergeList(base.tmuxProfiles, patch.tmuxProfiles),
@@ -530,8 +536,12 @@ function expandAll(entries: string[], cwd: string): string[] {
 	return entries.map((e) => expandPath(e, cwd));
 }
 
-/** Compile the effective profile's filesystem policy to a per-call srt config. */
-export function toSrtFilesystemConfig(profile: Profile, cwd: string): Partial<SandboxRuntimeConfig> {
+/**
+ * Compile per-call srt config. Domain policy remains in sandbox.ts because srt's
+ * proxy ignores customConfig.network.allowedDomains. allowUnixSockets is also
+ * handled there: srt 0.0.80 reads it from global config at wrap time.
+ */
+export function toSrtConfig(profile: Profile, cwd: string): Partial<SandboxRuntimeConfig> {
 	return {
 		filesystem: {
 			denyRead: expandAll(profile.filesystem.denyRead, cwd),
@@ -539,6 +549,11 @@ export function toSrtFilesystemConfig(profile: Profile, cwd: string): Partial<Sa
 			allowWrite: expandAll(profile.filesystem.allowWrite, cwd),
 			denyWrite: expandAll(profile.filesystem.denyWrite, cwd),
 		},
+		// SAFETY: Partial<SandboxRuntimeConfig> is shallow; srt accepts a partial
+		// nested network object and hallpass deliberately omits proxy domain fields.
+		network: {
+			allowUnixSockets: expandAll(profile.network.allowUnixSockets, cwd),
+		} as SandboxRuntimeConfig["network"],
 	};
 }
 
@@ -548,6 +563,7 @@ export function summarizeProfile(profile: Profile): string {
 		`profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}${profile.invalid ? " [INVALID; FAIL-CLOSED]" : ""}`,
 		`sandbox: ${profile.sandbox ? "on" : "OFF (bash unsandboxed)"}`,
 		`network: ${profile.network.mode}${profile.network.mode === "allowlist" ? ` (${profile.network.allowedDomains.join(", ") || "none"})` : ""}`,
+		`unix sockets: ${profile.network.allowUnixSockets.length ? profile.network.allowUnixSockets.join(", ") : "(none allowed)"}`,
 		`write: ${profile.filesystem.allowWrite.length ? profile.filesystem.allowWrite.join(", ") : "(nothing writable outside srt defaults)"}`,
 	];
 	if (profile.filesystem.allowRead.length) lines.push(`allow-read: ${profile.filesystem.allowRead.join(", ")}`);

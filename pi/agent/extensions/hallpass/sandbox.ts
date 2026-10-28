@@ -13,10 +13,11 @@
  *   {commandId: randomId}. commandId must be random, >=128 bits — pi
  *   tool-call ids do NOT qualify.
  * - Per-call customConfig.network.allowedDomains does NOT reach the proxy
- *   filter in 0.0.80; it only toggles whether restriction applies. All
- *   network policy below is enforced by (a) per-command grants and (b) the
- *   ask callback.
- * - updateConfig() is process-global — never used for per-session policy.
+ *   filter in 0.0.80; it only toggles whether restriction applies. Domain
+ *   policy is enforced by (a) per-command grants and (b) the ask callback.
+ * - allowUnixSockets is also ignored from customConfig in 0.0.80. It is
+ *   installed with updateConfig only while wrapping, under a process-wide
+ *   queue, then restored before any other session can wrap.
  * - The proxy is in-process (ephemeral localhost port + unix-socket backend),
  *   dies with the pi process. Wrapped commands must be executed ASYNC (a sync
  *   exec in the proxy-hosting process self-deadlocks).
@@ -50,16 +51,16 @@ import type { NetworkProfile } from "./profiles.ts";
 
 // The base config is intentionally the restrictive floor (offline network, no
 // fs rules): every grant is applied per call, because the manager is shared by
-// concurrent sessions. The only process-global policy is the always-deny
-// domain list, which srt checks before any allow (including the ask callback
-// that implements "open").
-function buildBaseConfig(deniedDomains: string[]): SandboxRuntimeConfig {
+// concurrent sessions. Persistent process-global policy is limited to the
+// always-deny domain list; per-call Unix socket grants are installed only
+// under withWrapLock and restored before the next wrap.
+function buildBaseConfig(deniedDomains: string[], allowUnixSockets: string[] = []): SandboxRuntimeConfig {
 	// SAFETY: initialize()/updateConfig() perform no Zod validation (verified in
 	// 0.0.80: the schema only runs on the CLI config-file path), so the
 	// compile-time-required keys just need to be present and complete; the
 	// filesystem lists are a deliberate empty floor.
 	return {
-		network: { allowedDomains: [], deniedDomains: [...deniedDomains] },
+		network: { allowedDomains: [], deniedDomains: [...deniedDomains], allowUnixSockets: [...allowUnixSockets] },
 		filesystem: { denyRead: [], allowWrite: [], denyWrite: [] },
 	} as unknown as SandboxRuntimeConfig;
 }
@@ -76,6 +77,10 @@ interface SharedSandboxState {
 	inFlightOpen: number;
 	/** Wrapped commands currently running under offline/allowlist profiles. */
 	inFlightRestricted: number;
+	/** Serializes wrap-time global socket updates across all in-process sessions. */
+	wrapQueue: Promise<void>;
+	/** Socket grants currently installed in srt's global config (inside wrapQueue only). */
+	allowUnixSockets: string[];
 }
 // SAFETY: widening globalThis with a namespaced slot; the cast only adds an
 // optional property, and all access goes through `shared` below.
@@ -85,25 +90,47 @@ const shared = (globalThis as { __hallpassSandbox?: SharedSandboxState }).__hall
 	deniedDomains: [],
 	inFlightOpen: 0,
 	inFlightRestricted: 0,
+	wrapQueue: Promise.resolve(),
+	allowUnixSockets: [],
 };
+// Fields added after earlier hallpass versions may be absent on globalThis after /reload.
+shared.wrapQueue ??= Promise.resolve();
+shared.allowUnixSockets ??= [];
+
+/** Wrap only, never command execution: socket config is baked before the lock is released. */
+async function withWrapLock<T>(fn: () => Promise<T>): Promise<T> {
+	const previous = shared.wrapQueue;
+	let release = (): void => undefined;
+	shared.wrapQueue = new Promise<void>((resolve) => {
+		release = resolve;
+	});
+	await previous;
+	try {
+		return await fn();
+	} finally {
+		release();
+	}
+}
 
 /**
  * Set the process-wide always-deny domain list (top-level `[network]
  * deniedDomains`). Applied at init; if the manager is already initialized,
  * live-swapped via updateConfig (a global, per-request-read swap — the right
- * tool for a global list, the wrong one for per-session policy).
+ * tool for a global list; wrap-time socket updates use the same queue).
  */
 export function setDeniedDomains(domains: string[]): void {
 	const unchanged =
 		domains.length === shared.deniedDomains.length && domains.every((d, i) => d === shared.deniedDomains[i]);
 	if (unchanged) return;
 	shared.deniedDomains = [...domains];
-	if (shared.initPromise) {
-		void shared.initPromise
-			.then(() => SandboxManager.updateConfig(buildBaseConfig(shared.deniedDomains)))
-			.catch(() => {
-				// Init failure is surfaced by the next wrapCommand; nothing to update.
-			});
+	const init = shared.initPromise;
+	if (init) {
+		void withWrapLock(async () => {
+			await init;
+			await SandboxManager.updateConfig(buildBaseConfig(shared.deniedDomains, shared.allowUnixSockets));
+		}).catch(() => {
+			// Init failure is surfaced by the next wrapCommand; nothing to update.
+		});
 	}
 }
 
@@ -212,8 +239,23 @@ export async function wrapCommand(
 	try {
 		// The attribution key srt files violations under is exactly this id.
 		const key = grantId ?? attributionId;
-		const wrapped = await SandboxManager.wrapWithSandbox(command, undefined, srtConfig, signal, {
-			commandId: key,
+		const wrapped = await withWrapLock(async () => {
+			const allowUnixSockets = srtConfig.network?.allowUnixSockets ?? [];
+			if (allowUnixSockets.length === 0) {
+				return SandboxManager.wrapWithSandbox(command, undefined, srtConfig, signal, { commandId: key });
+			}
+
+			// srt 0.0.80 ignores customConfig.network.allowUnixSockets and reads its
+			// global config instead. Install the per-call grant only while wrapping,
+			// then restore the restrictive floor before another session can wrap.
+			shared.allowUnixSockets = [...allowUnixSockets];
+			try {
+				await SandboxManager.updateConfig(buildBaseConfig(shared.deniedDomains, allowUnixSockets));
+				return await SandboxManager.wrapWithSandbox(command, undefined, srtConfig, signal, { commandId: key });
+			} finally {
+				shared.allowUnixSockets = [];
+				await SandboxManager.updateConfig(buildBaseConfig(shared.deniedDomains));
+			}
 		});
 		const isOpen = network.mode === "open";
 		if (isOpen) shared.inFlightOpen++;

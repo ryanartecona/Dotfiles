@@ -17,6 +17,10 @@
 #
 # Per-profile extras:
 #   agentUsage   = agent-facing instructions reflected in-context and in status.
+#   network.allowUnixSockets = Unix socket paths allowed by srt (macOS path
+#                  allowlist; ignored on Linux). Empty by default. Composable
+#                  like other lists. WARNING: container control sockets can
+#                  expose the host; grant only specific required paths.
 #   tools        = signed tool-selection deltas, e.g. ["-write", "+grep"].
 #                  Across inheritance the last operation per tool wins; [] clears.
 #                  Disabled tools are hidden from the model (main session) and

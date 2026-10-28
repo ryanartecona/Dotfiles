@@ -22,7 +22,7 @@ import {
 	loadConfig,
 	parseSessionPatch,
 	resolveEffectiveProfile,
-	toSrtFilesystemConfig,
+	toSrtConfig,
 	type HallpassConfig,
 	type Profile,
 	type ProfilePatch,
@@ -486,7 +486,7 @@ export default function hallpass(pi: ExtensionAPI) {
 			try {
 				wrapped = await wrapCommand(
 					params.command,
-					toSrtFilesystemConfig(profile, cwd),
+					toSrtConfig(profile, cwd),
 					profile.network,
 					signal,
 					id,
@@ -528,7 +528,7 @@ export default function hallpass(pi: ExtensionAPI) {
 				exec: async (command, commandCwd, options) => {
 					const wrapped = await wrapCommand(
 						command,
-						toSrtFilesystemConfig(profile, commandCwd),
+						toSrtConfig(profile, commandCwd),
 						profile.network,
 						options.signal,
 						`user-${crypto.randomUUID()}`,
