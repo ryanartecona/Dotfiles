@@ -5,8 +5,20 @@
 # Path entries support ~, $CWD (session cwd), and $ENV_VAR expansion;
 # subpath semantics (an entry covers everything under it).
 #
+# Top-level extras:
+#   cycleProfiles = ["dev", "offline", "audit"]  # optional alt+n/alt+p subset;
+#                  omitted means every profile, [] disables cycling.
+#
+# Profiles may use extends = "parent" (one parent, cycles rejected). Omitted
+# fields inherit. Raw lists replace inherited lists and [] clears them;
+# all-signed lists such as ["+/tmp", "-~/.cache"] add/remove exact entries.
+# Mixed signed/unsigned lists are invalid. Session-only overlays use the same
+# fields via /hp-session, hallpass_session_edit, and are never persisted.
+#
 # Per-profile extras:
+#   agentUsage   = agent-facing instructions reflected in-context and in status.
 #   tools        = signed tool-selection deltas, e.g. ["-write", "+grep"].
+#                  Across inheritance the last operation per tool wins; [] clears.
 #                  Disabled tools are hidden from the model (main session) and
 #                  blocked on call (every session, incl. subagents).
 #   tmuxProfile  = tmux-mcp policy profile name (or a list) to activate while this

@@ -1,8 +1,8 @@
 /**
- * hallpass profile schema: TOML config loading, validation, and compilation
- * to sandbox-runtime (srt) configs.
+ * hallpass profile schema: TOML config loading, inheritance, session overlays,
+ * validation, and compilation to sandbox-runtime (srt) configs.
  *
- * Config files (later files override profiles of the same name):
+ * Config files (later files replace same-named raw profile definitions):
  *   ~/.pi/agent/hallpass.toml   (user)
  *   .pi/hallpass.toml           (project, cwd-relative)
  */
@@ -12,13 +12,20 @@ import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import { parse as parseToml } from "smol-toml";
 import type { SandboxRuntimeConfig } from "@anthropic-ai/sandbox-runtime";
-import { parseToolDeltas } from "./tools.ts";
+import { mergeToolDeltas, parseToolDeltas } from "./tools.ts";
 
 export interface FilesystemProfile {
 	denyRead: string[];
 	allowRead: string[];
 	allowWrite: string[];
 	denyWrite: string[];
+}
+
+export interface FilesystemProfilePatch {
+	denyRead?: string[];
+	allowRead?: string[];
+	allowWrite?: string[];
+	denyWrite?: string[];
 }
 
 export type NetworkMode = "open" | "offline" | "allowlist";
@@ -28,16 +35,40 @@ export interface NetworkProfile {
 	allowedDomains: string[];
 }
 
+export interface NetworkProfilePatch {
+	mode?: NetworkMode;
+	allowedDomains?: string[];
+}
+
+/** A not-yet-resolved profile. Undefined fields inherit; empty lists replace/clear. */
+export interface ProfilePatch {
+	extends?: string;
+	description?: string;
+	agentUsage?: string;
+	sandbox?: boolean;
+	filesystem: FilesystemProfilePatch;
+	network: NetworkProfilePatch;
+	tools?: string[];
+	tmuxProfiles?: string[];
+	sandboxUserBash?: boolean;
+}
+
 export interface Profile {
 	name: string;
+	/** True for the built-in lockdown used when this profile's config is invalid. */
+	invalid?: boolean;
+	/** Root-to-leaf configured inheritance chain. Session overlays do not add an entry. */
+	inheritanceChain: string[];
 	description?: string;
+	/** Agent-facing instructions reflected into the system prompt and status tool. */
+	agentUsage?: string;
 	/** false = bash commands run unsandboxed (escape hatch). File-tool guard still applies. */
 	sandbox: boolean;
 	filesystem: FilesystemProfile;
 	network: NetworkProfile;
-	/** pi tool-selection deltas, e.g. ["-write", "+grep"]; see tools.ts. */
+	/** Resolved pi tool-selection operations, e.g. ["-write", "+grep"]. */
 	tools?: string[];
-	/** Reserved (chunk 4): tmux-mcp fine-grain policy profile name. */
+	/** tmux-mcp fine-grain policy profile names. */
 	tmuxProfiles?: string[];
 	/** Also wrap user-typed `!`/`!!` commands in this profile's sandbox. */
 	sandboxUserBash: boolean;
@@ -46,12 +77,11 @@ export interface Profile {
 export interface HallpassConfig {
 	defaultProfile: string;
 	profiles: Map<string, Profile>;
-	/** Reserved (chunk 3): subagent type -> profile name. */
+	/** Ordered hotkey cycle. Empty disables cycling; omitted config defaults to all profiles. */
+	cycleProfiles: string[];
+	/** Subagent type -> profile name. */
 	agentProfiles: Record<string, string>;
-	/**
-	 * Always-deny domains, applied to every profile (including "open"). srt's
-	 * deny list is process-global, so it cannot be per-profile; see sandbox.ts.
-	 */
+	/** Process-global always-deny domains, including in open mode. */
 	deniedDomains: string[];
 	warnings: string[];
 }
@@ -60,6 +90,10 @@ const CONFIG_FILE = "hallpass.toml";
 
 function configPaths(cwd: string): string[] {
 	return [join(homedir(), ".pi", "agent", CONFIG_FILE), join(cwd, ".pi", CONFIG_FILE)];
+}
+
+function isTable(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function asStringArray(value: unknown, label: string, warnings: string[]): string[] {
@@ -71,68 +105,300 @@ function asStringArray(value: unknown, label: string, warnings: string[]): strin
 	return value as string[];
 }
 
-/** `tmuxProfile` may be one name or a list of names (tmux-mcp activates a set). */
-function parseTmuxProfiles(value: unknown, label: string, warnings: string[]): string[] | undefined {
+/**
+ * Parse a composable list. Empty/raw lists replace the inherited value; a list
+ * whose entries are all +/- signed is a delta. Mixed forms are rejected.
+ */
+function parseComposableList(value: unknown, label: string, warnings: string[]): string[] | undefined {
 	if (value === undefined) return undefined;
-	if (typeof value === "string") return value ? [value] : undefined;
-	return asStringArray(value, label, warnings);
-}
-
-function parseProfile(name: string, raw: unknown, warnings: string[]): Profile | undefined {
-	if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
-		warnings.push(`profile "${name}": expected a table, ignoring`);
+	if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) {
+		warnings.push(`${label}: expected an array of strings`);
 		return undefined;
 	}
-	const table = raw as Record<string, unknown>;
-	const fs = (table.filesystem ?? {}) as Record<string, unknown>;
-	const net = (table.network ?? {}) as Record<string, unknown>;
-
-	const modeRaw = net.mode ?? "open";
-	if (modeRaw !== "open" && modeRaw !== "offline" && modeRaw !== "allowlist") {
-		warnings.push(`profile "${name}": network.mode must be open|offline|allowlist, defaulting to "open"`);
+	const entries = value as string[];
+	if (entries.some((entry) => entry.length === 0 || entry === "+" || entry === "-")) {
+		warnings.push(`${label}: entries and +/- operands must not be empty`);
+		return undefined;
 	}
-	const mode: NetworkMode =
-		modeRaw === "offline" || modeRaw === "allowlist" ? modeRaw : "open";
-
-	if (mode === "allowlist" && !Array.isArray(net.allowedDomains)) {
-		warnings.push(`profile "${name}": network.mode is "allowlist" but network.allowedDomains is missing/invalid`);
+	const signed = entries.filter((entry) => /^[+-]/.test(entry)).length;
+	if (signed > 0 && signed !== entries.length) {
+		warnings.push(`${label}: use either a raw replacement list or an all-signed +/- delta list, not both`);
+		return undefined;
 	}
-	if (net.deniedDomains !== undefined) {
-		warnings.push(
-			`profile "${name}": network.deniedDomains is not supported per profile (srt's deny list is process-global); ` +
-				`move it to the top-level [network] deniedDomains, which applies to every profile`,
-		);
+	return entries;
+}
+
+/** `tmuxProfile` may be one name or a composable list of names. */
+function parseTmuxProfiles(value: unknown, label: string, warnings: string[]): string[] | undefined {
+	if (value === undefined) return undefined;
+	if (typeof value === "string") return value ? [value] : [];
+	return parseComposableList(value, label, warnings);
+}
+
+const PROFILE_KEYS = new Set([
+	"extends",
+	"description",
+	"agentUsage",
+	"sandbox",
+	"filesystem",
+	"network",
+	"tools",
+	"tmuxProfile",
+	"sandboxUserBash",
+]);
+const FILESYSTEM_KEYS = new Set(["denyRead", "allowRead", "allowWrite", "denyWrite"]);
+const NETWORK_KEYS = new Set(["mode", "allowedDomains", "deniedDomains"]);
+
+function rejectUnknownKeys(
+	table: Record<string, unknown>,
+	allowed: Set<string>,
+	label: string,
+	warnings: string[],
+): void {
+	for (const key of Object.keys(table)) {
+		if (!allowed.has(key)) warnings.push(`${label}: unknown field "${key}"`);
+	}
+}
+
+/** Parse one raw profile or a session overlay. Any validation warning invalidates it. */
+function parseProfilePatch(
+	name: string,
+	raw: unknown,
+	warnings: string[],
+	session: boolean,
+): ProfilePatch | undefined {
+	const label = session ? "hallpass session config" : `profile "${name}"`;
+	if (!isTable(raw)) {
+		warnings.push(`${label}: expected a table`);
+		return undefined;
+	}
+	const warningStart = warnings.length;
+	if (session) rejectUnknownKeys(raw, PROFILE_KEYS, label, warnings);
+	if (session && raw.extends !== undefined) {
+		warnings.push(`${label}: extends is implicit (the active profile) and cannot be set`);
 	}
 
+	const patch: ProfilePatch = { filesystem: {}, network: {} };
+	if (typeof raw.extends === "string" && raw.extends) patch.extends = raw.extends;
+	else if (raw.extends !== undefined && !session) warnings.push(`${label}: extends must be a non-empty string`);
+	if (typeof raw.description === "string") patch.description = raw.description;
+	else if (raw.description !== undefined) warnings.push(`${label}: description must be a string`);
+	if (typeof raw.agentUsage === "string") patch.agentUsage = raw.agentUsage;
+	else if (raw.agentUsage !== undefined) warnings.push(`${label}: agentUsage must be a string`);
+	if (typeof raw.sandbox === "boolean") patch.sandbox = raw.sandbox;
+	else if (raw.sandbox !== undefined) warnings.push(`${label}: sandbox must be a boolean`);
+	if (typeof raw.sandboxUserBash === "boolean") patch.sandboxUserBash = raw.sandboxUserBash;
+	else if (raw.sandboxUserBash !== undefined) warnings.push(`${label}: sandboxUserBash must be a boolean`);
+
+	const fs = raw.filesystem ?? {};
+	if (!isTable(fs)) {
+		warnings.push(`${label}: filesystem must be a table`);
+	} else {
+		if (session) rejectUnknownKeys(fs, FILESYSTEM_KEYS, `${label}.filesystem`, warnings);
+		for (const key of FILESYSTEM_KEYS) {
+			const parsed = parseComposableList(fs[key], `${label}.filesystem.${key}`, warnings);
+			if (parsed !== undefined) patch.filesystem[key as keyof FilesystemProfilePatch] = parsed;
+		}
+	}
+
+	const net = raw.network ?? {};
+	if (!isTable(net)) {
+		warnings.push(`${label}: network must be a table`);
+	} else {
+		if (session) rejectUnknownKeys(net, NETWORK_KEYS, `${label}.network`, warnings);
+		if (net.deniedDomains !== undefined) {
+			warnings.push(
+				`${label}: network.deniedDomains is not supported per profile or session; ` +
+					`move it to the top-level [network] deniedDomains in hallpass.toml`,
+			);
+		}
+		if (net.mode !== undefined && net.mode !== "open" && net.mode !== "offline" && net.mode !== "allowlist") {
+			warnings.push(`${label}: network.mode must be open|offline|allowlist`);
+		} else if (net.mode !== undefined) {
+			patch.network.mode = net.mode;
+		}
+		const allowedDomains = parseComposableList(net.allowedDomains, `${label}.network.allowedDomains`, warnings);
+		if (allowedDomains !== undefined) patch.network.allowedDomains = allowedDomains;
+	}
+
+	patch.tools = parseToolDeltas(raw.tools, `${label} tools`, warnings);
+	patch.tmuxProfiles = parseTmuxProfiles(raw.tmuxProfile, `${label} tmuxProfile`, warnings);
+	return warnings.length === warningStart ? patch : undefined;
+}
+
+/** Parse and validate a complete desired in-memory session overlay. Throws on invalid input. */
+export function parseSessionPatch(toml: string): ProfilePatch {
+	let doc: unknown;
+	try {
+		doc = parseToml(toml);
+	} catch (err) {
+		throw new Error(`TOML parse error: ${err instanceof Error ? err.message : String(err)}`);
+	}
+	const warnings: string[] = [];
+	const patch = parseProfilePatch("session", doc, warnings, true);
+	if (!patch) throw new Error(warnings.join("\n") || "invalid session config");
+	return patch;
+}
+
+export function isEmptyProfilePatch(patch: ProfilePatch): boolean {
+	return (
+		patch.extends === undefined &&
+		patch.description === undefined &&
+		patch.agentUsage === undefined &&
+		patch.sandbox === undefined &&
+		patch.sandboxUserBash === undefined &&
+		patch.tools === undefined &&
+		patch.tmuxProfiles === undefined &&
+		Object.values(patch.filesystem).every((value) => value === undefined) &&
+		Object.values(patch.network).every((value) => value === undefined)
+	);
+}
+
+/** Apply a generic list replacement/delta without mutating either input. */
+function mergeList(parent: string[] | undefined, child: string[] | undefined): string[] | undefined {
+	if (child === undefined) return parent === undefined ? undefined : [...parent];
+	if (child.length === 0 || !/^[+-]/.test(child[0] ?? "")) return [...child];
+	const result = [...(parent ?? [])];
+	for (const delta of child) {
+		const value = delta.slice(1);
+		if (delta.startsWith("+")) {
+			if (!result.includes(value)) result.push(value);
+		} else {
+			for (let i = result.length - 1; i >= 0; i--) {
+				if (result[i] === value) result.splice(i, 1);
+			}
+		}
+	}
+	return result;
+}
+
+function defaultProfile(name: string): Profile {
 	return {
 		name,
-		description: typeof table.description === "string" ? table.description : undefined,
-		sandbox: table.sandbox !== false,
-		filesystem: {
-			denyRead: asStringArray(fs.denyRead, `profile "${name}" filesystem.denyRead`, warnings),
-			allowRead: asStringArray(fs.allowRead, `profile "${name}" filesystem.allowRead`, warnings),
-			allowWrite: asStringArray(fs.allowWrite, `profile "${name}" filesystem.allowWrite`, warnings),
-			denyWrite: asStringArray(fs.denyWrite, `profile "${name}" filesystem.denyWrite`, warnings),
-		},
-		network: {
-			mode,
-			allowedDomains: asStringArray(net.allowedDomains, `profile "${name}" network.allowedDomains`, warnings),
-		},
-		tools: parseToolDeltas(table.tools, `profile "${name}" tools`, warnings),
-		tmuxProfiles: parseTmuxProfiles(table.tmuxProfile, `profile "${name}" tmuxProfile`, warnings),
-		sandboxUserBash: table.sandboxUserBash === true,
+		inheritanceChain: [name],
+		sandbox: true,
+		filesystem: { denyRead: [], allowRead: [], allowWrite: [], denyWrite: [] },
+		network: { mode: "open", allowedDomains: [] },
+		sandboxUserBash: false,
 	};
 }
 
-/** Load and merge user + project hallpass.toml. Never throws; problems become warnings. */
-export function loadConfig(cwd: string): HallpassConfig {
+/** Keep an invalid selected/default/assigned profile present, but make it unusable for work. */
+function failClosedProfile(name: string): Profile {
+	return {
+		name,
+		invalid: true,
+		inheritanceChain: [name],
+		description: "invalid configuration; fail-closed lockdown",
+		agentUsage:
+			"This hallpass profile is invalid and has been replaced by a fail-closed lockdown. " +
+			"Do not attempt workarounds. Ask the user to fix hallpass.toml and run /hp-reload.",
+		sandbox: true,
+		filesystem: { denyRead: ["/"], allowRead: [], allowWrite: [], denyWrite: ["/"] },
+		network: { mode: "offline", allowedDomains: [] },
+		tools: ["-bash", "-write", "-edit", "-Agent"],
+		sandboxUserBash: true,
+	};
+}
+
+function applyPatch(base: Profile, patch: ProfilePatch, name: string): Profile {
+	return {
+		name,
+		invalid: base.invalid,
+		inheritanceChain: [...base.inheritanceChain],
+		description: patch.description !== undefined ? patch.description : base.description,
+		agentUsage: patch.agentUsage !== undefined ? patch.agentUsage : base.agentUsage,
+		sandbox: patch.sandbox !== undefined ? patch.sandbox : base.sandbox,
+		filesystem: {
+			denyRead: mergeList(base.filesystem.denyRead, patch.filesystem.denyRead) ?? [],
+			allowRead: mergeList(base.filesystem.allowRead, patch.filesystem.allowRead) ?? [],
+			allowWrite: mergeList(base.filesystem.allowWrite, patch.filesystem.allowWrite) ?? [],
+			denyWrite: mergeList(base.filesystem.denyWrite, patch.filesystem.denyWrite) ?? [],
+		},
+		network: {
+			mode: patch.network.mode ?? base.network.mode,
+			allowedDomains: mergeList(base.network.allowedDomains, patch.network.allowedDomains) ?? [],
+		},
+		tools: mergeToolDeltas(base.tools, patch.tools),
+		tmuxProfiles: mergeList(base.tmuxProfiles, patch.tmuxProfiles),
+		sandboxUserBash: patch.sandboxUserBash !== undefined ? patch.sandboxUserBash : base.sandboxUserBash,
+	};
+}
+
+/** Layer the ephemeral overlay over a valid profile. Invalid lockdowns cannot be relaxed by overlays. */
+export function resolveEffectiveProfile(base: Profile, session: ProfilePatch): Profile {
+	if (base.invalid) return base;
+	return applyPatch(base, session, base.name);
+}
+
+/** Resolve a raw profile map, recording unknown parents, cycles, and invalid descendants. */
+function resolveProfiles(
+	raw: Map<string, ProfilePatch>,
+	warnings: string[],
+	invalidNames: Set<string>,
+): Map<string, Profile> {
+	const resolved = new Map<string, Profile>();
+	const failed = new Set<string>();
+	const visiting: string[] = [];
+
+	function resolveOne(name: string): Profile | undefined {
+		const cached = resolved.get(name);
+		if (cached) return cached;
+		if (failed.has(name)) return undefined;
+		const patch = raw.get(name);
+		if (!patch) return undefined;
+		const cycleStart = visiting.indexOf(name);
+		if (cycleStart >= 0) {
+			warnings.push(`profile inheritance cycle: ${[...visiting.slice(cycleStart), name].join(" -> ")}`);
+			failed.add(name);
+			return undefined;
+		}
+
+		visiting.push(name);
+		let base: Profile | undefined;
+		if (patch.extends) {
+			if (!raw.has(patch.extends)) {
+				warnings.push(`profile "${name}": unknown parent profile "${patch.extends}"`);
+				failed.add(name);
+			} else {
+				base = resolveOne(patch.extends);
+				if (!base) {
+					warnings.push(`profile "${name}": parent profile "${patch.extends}" is invalid`);
+					failed.add(name);
+				}
+			}
+		} else {
+			base = defaultProfile(name);
+		}
+		visiting.pop();
+		if (!base) return undefined;
+
+		const profile = applyPatch(base, patch, name);
+		profile.inheritanceChain = patch.extends ? [...base.inheritanceChain, name] : [name];
+		resolved.set(name, profile);
+		return profile;
+	}
+
+	for (const name of raw.keys()) resolveOne(name);
+	for (const name of failed) invalidNames.add(name);
+	// DFS resolves parents first, but profile/cycle order remains declaration order.
+	return new Map([...raw.keys()].flatMap((name) => {
+		const profile = resolved.get(name);
+		return profile ? [[name, profile] as const] : [];
+	}));
+}
+
+/** Load and resolve user + project hallpass.toml. Never throws; problems become warnings. */
+export function loadConfig(cwd: string, paths = configPaths(cwd)): HallpassConfig {
 	const warnings: string[] = [];
-	const profiles = new Map<string, Profile>();
-	let defaultProfile = "";
+	const rawProfiles = new Map<string, ProfilePatch>();
+	const invalidNames = new Set<string>();
+	let defaultProfileName = "";
+	let configuredCycle: string[] | undefined;
 	const agentProfiles: Record<string, string> = {};
 	const deniedDomains = new Set<string>();
 
-	for (const path of configPaths(cwd)) {
+	for (const path of paths) {
 		if (!existsSync(path)) continue;
 		let doc: Record<string, unknown>;
 		try {
@@ -141,40 +407,85 @@ export function loadConfig(cwd: string): HallpassConfig {
 			warnings.push(`${path}: TOML parse error: ${err instanceof Error ? err.message : String(err)}`);
 			continue;
 		}
-		if (typeof doc.default === "string") defaultProfile = doc.default;
+		if (typeof doc.default === "string") defaultProfileName = doc.default;
+		if (doc.cycleProfiles !== undefined) {
+			if (Array.isArray(doc.cycleProfiles) && doc.cycleProfiles.every((name) => typeof name === "string")) {
+				configuredCycle = doc.cycleProfiles as string[];
+			} else {
+				warnings.push(`${path} cycleProfiles: expected an array of profile names; cycling disabled`);
+				configuredCycle = [];
+			}
+		}
 		const rawNetwork = doc.network;
-		if (typeof rawNetwork === "object" && rawNetwork !== null) {
+		if (isTable(rawNetwork)) {
 			// Union across user + project files: a project can add denies, never remove the user's.
 			for (const entry of asStringArray(
-				(rawNetwork as Record<string, unknown>).deniedDomains,
+				rawNetwork.deniedDomains,
 				`${path} [network] deniedDomains`,
 				warnings,
 			)) {
 				deniedDomains.add(entry);
 			}
 		}
-		const rawProfiles = doc.profiles;
-		if (typeof rawProfiles === "object" && rawProfiles !== null) {
-			for (const [name, raw] of Object.entries(rawProfiles as Record<string, unknown>)) {
-				const profile = parseProfile(name, raw, warnings);
-				if (profile) profiles.set(name, profile);
+		const rawProfileTable = doc.profiles;
+		if (isTable(rawProfileTable)) {
+			for (const [name, raw] of Object.entries(rawProfileTable)) {
+				const profile = parseProfilePatch(name, raw, warnings, false);
+				if (profile) {
+					rawProfiles.set(name, profile);
+					invalidNames.delete(name);
+				} else {
+					// A later invalid definition replaces an earlier valid one; never silently use the looser old policy.
+					rawProfiles.delete(name);
+					invalidNames.add(name);
+				}
 			}
 		}
 		const rawAgentProfiles = doc.agentProfiles;
-		if (typeof rawAgentProfiles === "object" && rawAgentProfiles !== null) {
-			for (const [agent, profileName] of Object.entries(rawAgentProfiles as Record<string, unknown>)) {
+		if (isTable(rawAgentProfiles)) {
+			for (const [agent, profileName] of Object.entries(rawAgentProfiles)) {
 				if (typeof profileName === "string") agentProfiles[agent] = profileName;
 			}
 		}
 	}
 
+	const profiles = resolveProfiles(rawProfiles, warnings, invalidNames);
+	for (const name of invalidNames) {
+		if (!profiles.has(name)) profiles.set(name, failClosedProfile(name));
+	}
 	if (profiles.size === 0) {
 		warnings.push("no profiles defined; hallpass is inactive (bash runs unsandboxed)");
 	}
-	if (defaultProfile && !profiles.has(defaultProfile)) {
-		warnings.push(`default profile "${defaultProfile}" is not defined`);
+	if (defaultProfileName && !profiles.has(defaultProfileName)) {
+		warnings.push(`default profile "${defaultProfileName}" is not defined or is invalid`);
 	}
-	return { defaultProfile, profiles, agentProfiles, deniedDomains: [...deniedDomains], warnings };
+	for (const [agent, profileName] of Object.entries(agentProfiles)) {
+		if (!profiles.has(profileName)) warnings.push(`agentProfiles["${agent}"] references unknown profile "${profileName}"`);
+	}
+
+	let cycleProfiles: string[];
+	if (configuredCycle === undefined) {
+		cycleProfiles = [...profiles.values()].filter((profile) => !profile.invalid).map((profile) => profile.name);
+	} else {
+		const seen = new Set<string>();
+		cycleProfiles = [];
+		for (const name of configuredCycle) {
+			if (seen.has(name)) continue;
+			seen.add(name);
+			const profile = profiles.get(name);
+			if (profile && !profile.invalid) cycleProfiles.push(name);
+			else warnings.push(`cycleProfiles references unknown or invalid profile "${name}"`);
+		}
+	}
+
+	return {
+		defaultProfile: defaultProfileName,
+		profiles,
+		cycleProfiles,
+		agentProfiles,
+		deniedDomains: [...deniedDomains],
+		warnings,
+	};
 }
 
 // ---------------------------------------------------------------------------
@@ -187,13 +498,7 @@ export function hasGlobChars(p: string): boolean {
 	return GLOB_CHARS.test(p);
 }
 
-/**
- * Resolve symlinks in the longest existing ancestor of `p`, re-appending the
- * non-existent tail. Needed because srt 0.0.80 keeps a bare symlinked entry
- * like "/tmp" unresolved while seatbelt evaluates the real path
- * ("/private/tmp"), so the rule never matches. Resolving here lets profiles
- * say "/tmp" portably (Linux has no /private/tmp).
- */
+/** Resolve symlinks in the longest existing ancestor, re-appending the non-existent tail. */
 function realpathBestEffort(p: string): string {
 	let current = p;
 	const tail: string[] = [];
@@ -210,10 +515,7 @@ function realpathBestEffort(p: string): string {
 	}
 }
 
-/**
- * Expand $CWD, ~, and $ENV_VARS; resolve relative paths against cwd and
- * symlinks (see realpathBestEffort). Glob entries are kept as-is.
- */
+/** Expand $CWD, ~, and $ENV_VARS; resolve relative paths and symlinks. Globs stay as-is. */
 export function expandPath(entry: string, cwd: string): string {
 	let p = entry;
 	if (p === "~" || p.startsWith("~/")) p = homedir() + p.slice(1);
@@ -228,22 +530,7 @@ function expandAll(entries: string[], cwd: string): string[] {
 	return entries.map((e) => expandPath(e, cwd));
 }
 
-// ---------------------------------------------------------------------------
-// Compilation to srt config
-// ---------------------------------------------------------------------------
-
-/**
- * Compile a profile's filesystem policy to a per-call srt config (the
- * `customConfig` argument of wrapWithSandbox). srt merges per-field with the
- * base config given at initialize(); hallpass's base fs config is empty, so
- * every fs restriction must be present here. Fs policy is baked at wrap time,
- * so it is always exactly per-call.
- *
- * Network is deliberately NOT included: in srt 0.0.80, customConfig.network
- * never reaches the proxy filter — per-call network policy goes through
- * registerCommandNetworkLists + the ask callback instead (see sandbox.ts).
- * Denies are the process-global top-level `[network] deniedDomains`.
- */
+/** Compile the effective profile's filesystem policy to a per-call srt config. */
 export function toSrtFilesystemConfig(profile: Profile, cwd: string): Partial<SandboxRuntimeConfig> {
 	return {
 		filesystem: {
@@ -255,17 +542,20 @@ export function toSrtFilesystemConfig(profile: Profile, cwd: string): Partial<Sa
 	};
 }
 
-/** Short human-readable summary for /hallpass status. */
+/** Short human-readable summary shared by status UIs, tools, and approval diffs. */
 export function summarizeProfile(profile: Profile): string {
 	const lines = [
-		`profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}`,
+		`profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}${profile.invalid ? " [INVALID; FAIL-CLOSED]" : ""}`,
 		`sandbox: ${profile.sandbox ? "on" : "OFF (bash unsandboxed)"}`,
 		`network: ${profile.network.mode}${profile.network.mode === "allowlist" ? ` (${profile.network.allowedDomains.join(", ") || "none"})` : ""}`,
 		`write: ${profile.filesystem.allowWrite.length ? profile.filesystem.allowWrite.join(", ") : "(nothing writable outside srt defaults)"}`,
 	];
+	if (profile.filesystem.allowRead.length) lines.push(`allow-read: ${profile.filesystem.allowRead.join(", ")}`);
 	if (profile.filesystem.denyWrite.length) lines.push(`deny-write: ${profile.filesystem.denyWrite.join(", ")}`);
 	if (profile.filesystem.denyRead.length) lines.push(`deny-read: ${profile.filesystem.denyRead.join(", ")}`);
 	if (profile.tmuxProfiles?.length) lines.push(`tmux-mcp profile: ${profile.tmuxProfiles.join(", ")}`);
 	if (profile.tools?.length) lines.push(`tools: ${profile.tools.join(" ")}`);
+	lines.push(`sandbox user bash: ${profile.sandboxUserBash ? "on" : "off"}`);
+	if (profile.agentUsage) lines.push(`agentUsage:\n${profile.agentUsage}`);
 	return lines.join("\n");
 }

@@ -550,13 +550,61 @@ important.
 
 ## 10. UX improvements
 
-Related to sections 9.1, 9.2, 9.3 above.
+**Implemented (2026-10-27).** Related to sections 9.1, 9.2, 9.3 above.
 
-1. hallpass config tweaks. there should be a top-level optional field `cycleProfiles` which defaults to all defined profiles, but if present defines which fields are seen by the cycle hotkeys. this will allow more situational profiles to be added without cluttering the commonly used ones. also add a per-profile `agentUsage` field which can contain agent-facing instructions when reflected in-context.
-2. make hallpass profiles composable. this means a hallpass profile should be able to inherit from a parent profile and only add/remove the specific rules it wants to be different. profile config schema might need to change to allow this. I kinda like the pi model used by tools for this, where a raw list means full override, but `+tool` or `-tool` means just add or remove this tool, respectively. a possible alternative is to organize the schema to be dictionary structured rather than list structured, so a simple deep merge achieves a semantic delta.
-3. support ephemeral per-session hallpass settings. once profiles are composable as above, this should allow for ephemeral settings to live in memory. semantically, session config can be treated as an initially-empty profile which is always layered at the end of the inheritance chain. user cycling picks a profile, which is itself possibly the child of an inherited parent profile, and the session config can be logically another child profile, but one that is not defined in config and whose settings never persist. session config should be viewable in hp-status, and there should also be a slash command for making manual edits. 
-4. add reflection tools. a `hallpass_status` tool should return to the agent the same info that `/hp-status` shows the user, notably including agentUsage, and should be default enabled. a `hallpass_session_edit` tool should allow the agent to request session level changes subject to user approval (auto reject if not in an interactive session). with this, e.g. a plan-before-implement flow could have an agent start in a restrictive sandbox for planning, the agent then requesting session edits sufficient to carry out its plan, and the user can approve those edits with an approved plan for the agent to do its main work in a minimally destructive environment.
-5. add agent-facing hallpass docs/skills. some plugins ship skills or other docs to allow end users' agents to understand their config and make edits for them by just prompting. hallpass should also make that possible. the guidance for what hallpass supports, how profiles work, and how to use which parts of the sandbox config surface should have lots of overlap between a plugin-shipped skill as well as the hallpass_session_edit tool instructions, so make sure the tool instructions reference the skill without duplicating it.
+1. **Config/cycling/awareness.** Top-level `cycleProfiles` defaults to every
+   valid profile in declaration order; a present list limits only alt+n/alt+p,
+   and `[]` disables cycling. `/hp-profile`, defaults, and agent assignments can
+   still use unlisted profiles. Per-profile `agentUsage` is included in status
+   and a `before_agent_start` prompt section with the effective profile and
+   non-bypass/reflection guidance.
+2. **Composition.** `extends = "parent"` provides single-parent, multi-level
+   inheritance. Omitted fields inherit; scalars replace; raw lists replace and
+   `[]` clears; all-signed lists apply exact-string add/remove deltas. Mixed
+   lists, unknown parents, and cycles replace the affected profile with a
+   visible fail-closed lockdown rather than falling back to a looser profile.
+   Defaults apply only at the inheritance root.
+   `tools` remains a list of operations on pi's active tools: the last operation
+   per tool wins across inheritance, and `tools = []` clears inherited policy.
+   Same-named project profiles retain their previous raw-replacement behavior.
+3. **Ephemeral session overlay.** An initially-empty `ProfilePatch` is resolved
+   as the final child of the active base profile. Bash, file guards, tool
+   blocking/visibility, network-floor changes, tmux sync, diagnostics, status,
+   and prompt guidance all read this effective profile. `/hp-session` edits a
+   TOML fragment (`clear` resets); its empty-state placeholder includes
+   commented filesystem, tool, network, list-delta, and `agentUsage` examples.
+   `/hp-status` shows raw and resolved state,
+   and `/hp-reload`/profile switches retain the overlay. Invalid lockdown bases
+   ignore retained overlays and reject session edits until config is fixed. The
+   overlay is never appended to session state or written to config and resets
+   with a fresh runtime.
+4. **Reflection tools.** `hallpass_status` is direct/default-enabled and shares
+   one status representation with `/hp-status`. `hallpass_session_edit` accepts
+   the complete desired overlay plus a status-issued revision, previews an
+   effective-policy diff, and requires `ctx.hasUI` plus explicit confirmation.
+   In the TUI, Enter approves/rejects immediately while typing on either option
+   opens a bordered optional multiline note editor; the decision note is
+   returned to the agent. Outer borders, padded sections, and colored diff rows
+   follow the built-in `/bug` dialog conventions.
+   RPC retains the standard boolean confirmation. Rejection, abort, invalid
+   input, noninteractive mode, and stale revisions leave state unchanged.
+   Side effects run through the same apply path as
+   switches; a secondary synchronization failure is reported as committed-with-
+   errors rather than falsely claiming the overlay was not applied.
+5. **Agent docs.** `skills/hallpass/SKILL.md` owns schema, inheritance, list,
+   enforcement, and session-edit guidance. The edit tool references that skill
+   rather than duplicating it. The extension returns its skill directory from
+   `resources_discover`, covering package and direct-extension installs without
+   also declaring `pi.skills` and causing duplicate discovery.
+
+Verification: pure resolver/session/status tests live in `tests/profiles.test.ts`
+and run with Node's built-in TypeScript support (`npm test`; Node 26 in the
+current environment). `npm run typecheck` uses the pi 1.4.0 type declarations.
+A pi 1.4.0 startup/resource smoke test with an isolated agent directory verified
+that both reflection tools activate by default and the skill is discovered. The
+model-driven status/edit flow remains unverified in that nested environment
+because no provider API key/model catalog was available; interactive approval
+still needs a live TUI check.
 
 ## References
 

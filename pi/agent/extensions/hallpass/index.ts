@@ -1,18 +1,10 @@
 /**
- * hallpass — profile-driven sandboxing for pi's bash tool.
+ * hallpass — composable profile-driven sandboxing for pi's bash and file tools.
  *
- * Chunk 1 (this file): profile schema + state, bash replacement with per-call
- * srt wrapping, file-tool path guard, /hallpass command, status indicator.
- * See DESIGN.md for the full plan (network allowlists, subagents, tmux-mcp).
- *
- * State model:
- * - Current profile is per-session closure state (never module-level: module
- *   state may be shared across in-process sessions).
- * - Switches are persisted via pi.appendEntry("hallpass:profile", …) and
- *   restored from the active branch on session_start, so profile state
- *   survives resume and follows tree navigation.
- * - The bash override reads the current profile at call time, so a switch
- *   takes effect on the very next tool call.
+ * Configured profiles are resolved through their inheritance chain, then an
+ * initially-empty, in-memory session overlay is applied as the final child.
+ * Every enforcement surface reads that effective profile at call time. Base
+ * profile switches remain branch-persistent; session overrides never persist.
  */
 
 import process from "node:process";
@@ -25,15 +17,17 @@ import {
 import { assignedProfileName, discoverAgents, subagentTypeFromSessionName } from "./agents.ts";
 import { explainFailure, looksLikeFsDenial, OutputTail } from "./diagnose.ts";
 import { installFileToolGuard } from "./guard.ts";
-import { createTmuxProfileSync } from "./tmux.ts";
-import { createToolSelection, installToolBlocker } from "./tools.ts";
 import {
+	isEmptyProfilePatch,
 	loadConfig,
-	summarizeProfile,
+	parseSessionPatch,
+	resolveEffectiveProfile,
 	toSrtFilesystemConfig,
 	type HallpassConfig,
 	type Profile,
+	type ProfilePatch,
 } from "./profiles.ts";
+import { registerReflectionTools } from "./reflection.ts";
 import {
 	ensureNetworkFloor,
 	LOG_MONITOR_ENABLED,
@@ -41,32 +35,64 @@ import {
 	setNetworkFloor,
 	wrapCommand,
 } from "./sandbox.ts";
+import { formatHallpassStatus, formatSessionEditPreview, type HallpassStatus } from "./status.ts";
+import { createTmuxProfileSync } from "./tmux.ts";
+import { createToolSelection, installToolBlocker } from "./tools.ts";
 
 const ENTRY_TYPE = "hallpass:profile";
 
+function emptySessionPatch(): ProfilePatch {
+	return { filesystem: {}, network: {} };
+}
+
 export default function hallpass(pi: ExtensionAPI) {
-	// The session's cwd, refreshed at session_start: subagents with worktree isolation run
-	// in a different directory than the process was started in.
+	// Session cwd is refreshed at session_start: worktree-isolated children differ from process.cwd().
 	let cwd = process.cwd();
 	let config: HallpassConfig = {
 		defaultProfile: "",
 		profiles: new Map(),
+		cycleProfiles: [],
 		agentProfiles: {},
 		deniedDomains: [],
 		warnings: ["hallpass config not loaded yet"],
 	};
 	let currentName: string | undefined;
 	let isChild = false;
+	let sessionPatch = emptySessionPatch();
+	let sessionToml = "";
+	let sessionRevision = 0;
 	const toolSelection = createToolSelection(pi);
 	const tmuxSync = createTmuxProfileSync(pi);
 
-	function currentProfile(): Profile | undefined {
+	function currentBaseProfile(): Profile | undefined {
 		if (currentName) {
-			const p = config.profiles.get(currentName);
-			if (p) return p;
+			const profile = config.profiles.get(currentName);
+			if (profile) return profile;
 		}
 		if (config.defaultProfile) return config.profiles.get(config.defaultProfile);
 		return undefined;
+	}
+
+	/** The single policy source used by bash, file guards, tools, tmux, UI, and reflection. */
+	function currentProfile(): Profile | undefined {
+		const base = currentBaseProfile();
+		return base ? resolveEffectiveProfile(base, sessionPatch) : undefined;
+	}
+
+	function getStatus(): HallpassStatus {
+		const base = currentBaseProfile();
+		return {
+			revision: sessionRevision,
+			baseProfile: base?.name,
+			activeProfile: base?.name,
+			inheritanceChain: base?.inheritanceChain ?? [],
+			sessionOverrides: sessionToml,
+			sessionOverridesIgnored: Boolean(base?.invalid && sessionToml),
+			deniedDomains: [...config.deniedDomains],
+			warnings: [...config.warnings],
+			isChild,
+			effectiveProfile: base ? resolveEffectiveProfile(base, sessionPatch) : undefined,
+		};
 	}
 
 	function updateStatus(ctx: ExtensionContext): void {
@@ -75,12 +101,25 @@ export default function hallpass(pi: ExtensionAPI) {
 		let text: string;
 		if (!profile) {
 			text = ctx.ui.theme.fg("muted", "hallpass: inactive");
-		} else if (profile.sandbox) {
-			text = ctx.ui.theme.fg("accent", `hallpass: ${profile.name}`);
 		} else {
-			text = ctx.ui.theme.fg("warning", `hallpass: ${profile.name} (off)`);
+			const suffix = profile.invalid || isEmptyProfilePatch(sessionPatch) ? "" : "+session";
+			text = profile.sandbox
+				? ctx.ui.theme.fg("accent", `hallpass: ${profile.name}${suffix}`)
+				: ctx.ui.theme.fg("warning", `hallpass: ${profile.name}${suffix} (off)`);
 		}
 		ctx.ui.setStatus("hallpass", text);
+	}
+
+	/** Apply all side effects after a base switch, config reload, or session edit. */
+	function applyEffectiveProfile(ctx: ExtensionContext): void {
+		const profile = currentProfile();
+		if (!isChild) {
+			if (profile) setNetworkFloor(profile.network.mode);
+			// Children's tool scope belongs to pi-subagents; tool_call remains the backstop.
+			toolSelection.apply(profile);
+		}
+		tmuxSync.sync(profile);
+		updateStatus(ctx);
 	}
 
 	function switchProfile(name: string, ctx: ExtensionContext): string {
@@ -90,31 +129,26 @@ export default function hallpass(pi: ExtensionAPI) {
 		}
 		currentName = name;
 		pi.appendEntry(ENTRY_TYPE, { profile: name });
-		// Network "open" is a process-wide floor in chunk 1 (see sandbox.ts);
-		// explicit switches move it. Fs policy stays exactly per-call.
-		setNetworkFloor(profile.network.mode);
-		toolSelection.apply(profile);
-		tmuxSync.sync(profile);
-		updateStatus(ctx);
-		return `switched to profile "${name}" — effective on the next tool call`;
+		sessionRevision++;
+		applyEffectiveProfile(ctx);
+		const overlay = isEmptyProfilePatch(sessionPatch) ? "" : " (session overrides retained)";
+		return `switched to profile "${name}"${overlay} — effective on the next tool call`;
 	}
 
-	// Cycle through every defined profile in config order, wrapping at the ends.
-	// Forward/backward are bound to alt+n / alt+p below.
 	function cycleProfile(step: 1 | -1, ctx: ExtensionContext): void {
-		const names = [...config.profiles.keys()];
-		const first = names[0];
-		if (first === undefined) {
-			ctx.ui.notify("hallpass: no profiles defined", "warning");
+		const names = config.cycleProfiles;
+		if (names.length === 0) {
+			ctx.ui.notify("hallpass: cycleProfiles is empty or has no valid profiles", "warning");
 			return;
 		}
-		let current = first;
-		if (currentName && config.profiles.has(currentName)) {
-			current = currentName;
-		} else if (config.profiles.has(config.defaultProfile)) {
-			current = config.defaultProfile;
-		}
-		const next = names[(names.indexOf(current) + step + names.length) % names.length];
+		let current = names[0];
+		if (currentName && config.profiles.has(currentName)) current = currentName;
+		else if (config.profiles.has(config.defaultProfile)) current = config.defaultProfile;
+		const index = names.indexOf(current ?? "");
+		const nextIndex = index < 0
+			? (step === 1 ? 0 : names.length - 1)
+			: (index + step + names.length) % names.length;
+		const next = names[nextIndex];
 		if (next === undefined) return;
 		ctx.ui.notify(`hallpass: ${switchProfile(next, ctx)}`, "info");
 	}
@@ -123,14 +157,13 @@ export default function hallpass(pi: ExtensionAPI) {
 		description: "Cycle hallpass profile forward",
 		handler: (ctx) => cycleProfile(1, ctx),
 	});
-
 	pi.registerShortcut("alt+p", {
 		description: "Cycle hallpass profile backward",
 		handler: (ctx) => cycleProfile(-1, ctx),
 	});
 
 	// -----------------------------------------------------------------------
-	// Session lifecycle: load config, restore profile from the active branch
+	// Session lifecycle: load config, restore base profile, reset ephemeral state
 	// -----------------------------------------------------------------------
 
 	pi.on("session_start", async (_event, ctx) => {
@@ -139,6 +172,10 @@ export default function hallpass(pi: ExtensionAPI) {
 			localBash = createBashTool(cwd);
 		}
 		config = loadConfig(cwd);
+		sessionPatch = emptySessionPatch();
+		sessionToml = "";
+		sessionRevision++;
+		isChild = false;
 
 		let restored: string | undefined;
 		for (const entry of ctx.sessionManager.getBranch()) {
@@ -148,7 +185,6 @@ export default function hallpass(pi: ExtensionAPI) {
 			}
 		}
 
-		// Subagent child session? Its profile comes from agent frontmatter / [agentProfiles].
 		const childType = subagentTypeFromSessionName(pi.getSessionName());
 		const assigned = childType
 			? assignedProfileName(childType, discoverAgents(cwd), config.agentProfiles)
@@ -159,36 +195,36 @@ export default function hallpass(pi: ExtensionAPI) {
 			}
 			isChild = true;
 		}
-		if (assigned && config.profiles.has(assigned)) {
-			currentName = assigned;
-		} else if (restored && config.profiles.has(restored)) {
-			currentName = restored;
-		} else if (config.profiles.has(config.defaultProfile)) {
-			currentName = config.defaultProfile;
-		} else {
-			currentName = [...config.profiles.keys()][0];
-		}
+		if (assigned && config.profiles.has(assigned)) currentName = assigned;
+		else if (restored && config.profiles.has(restored)) currentName = restored;
+		else if (config.profiles.has(config.defaultProfile)) currentName = config.defaultProfile;
+		else currentName = [...config.profiles.keys()][0];
 
 		setDeniedDomains(config.deniedDomains);
-		// A child must not move the process-wide network floor (it would change the parent's network).
 		if (!isChild) {
 			ensureNetworkFloor(currentProfile()?.network.mode);
-			// Children's tool scope belongs to pi-subagents; the tool_call blocker covers them.
 			toolSelection.apply(currentProfile());
 		}
-		// Children have their own event bus and tmux-mcp instance, so they sync too.
 		tmuxSync.syncAtStart(currentProfile());
 		updateStatus(ctx);
-		for (const warning of config.warnings) {
-			ctx.ui.notify(`hallpass: ${warning}`, "warning");
-		}
+		for (const warning of config.warnings) ctx.ui.notify(`hallpass: ${warning}`, "warning");
 	});
 
-	// tmux-mcp's own session restore can run after ours (extension load order); re-sync once at the
-	// first prompt after session start so the hallpass profile's tmux selection wins. Explicit
-	// selections (/hp-profile, reload) don't arm this, so a shift+tab cycle afterwards sticks.
-	pi.on("before_agent_start", () => {
+	// Keep tmux selection and model-facing profile guidance current at each run.
+	pi.on("before_agent_start", (event) => {
 		tmuxSync.syncIfPending(currentProfile());
+		const profile = currentProfile();
+		if (!profile) {
+			delete event.systemPromptOptions.sections.hallpass;
+			return undefined;
+		}
+		const lines = [
+			`Active hallpass profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}`,
+			"Hallpass filesystem, network, and tool restrictions are enforced policy. Do not retry denials or attempt to bypass them.",
+			"Use hallpass_status to inspect the effective policy and session revision. If access is needed, explain why and use hallpass_session_edit to request user-approved session-only changes, or ask the user to switch profiles.",
+		];
+		if (profile.agentUsage) lines.push(`Profile agentUsage instructions:\n${profile.agentUsage}`);
+		event.systemPromptOptions.sections.hallpass = lines.join("\n");
 		return undefined;
 	});
 
@@ -200,9 +236,13 @@ export default function hallpass(pi: ExtensionAPI) {
 		if (event.toolName !== "Agent") return undefined;
 		const profile = currentProfile();
 		if (!profile?.sandbox) return undefined;
+		if (profile.invalid) {
+			return {
+				block: true,
+				reason: `hallpass profile "${profile.name}" is invalid and fail-closed. Fix hallpass.toml and run /hp-reload before spawning agents.`,
+			};
+		}
 		const input = event.input as { subagent_type?: unknown; isolated?: unknown };
-		// The Agent tool's per-call `isolated: true` strips extensions (hallpass included) from the
-		// child regardless of the agent file, so it must be refused under a sandboxed profile too.
 		if (input.isolated === true) {
 			return {
 				block: true,
@@ -226,6 +266,61 @@ export default function hallpass(pi: ExtensionAPI) {
 		}
 		return undefined;
 	});
+
+	// -----------------------------------------------------------------------
+	// Ephemeral session overlays and reflection tools
+	// -----------------------------------------------------------------------
+
+	function normalizeSessionToml(patch: ProfilePatch, toml: string): string {
+		return isEmptyProfilePatch(patch) ? "" : toml.trim();
+	}
+
+	function assertRevision(expectedRevision: number): void {
+		if (expectedRevision !== sessionRevision) {
+			throw new Error(`stale session revision ${expectedRevision}; current revision is ${sessionRevision}. Call hallpass_status again.`);
+		}
+	}
+
+	function previewSessionEdit(toml: string, expectedRevision: number): string {
+		assertRevision(expectedRevision);
+		const base = currentBaseProfile();
+		if (!base) throw new Error("no active configured profile to extend");
+		if (base.invalid) throw new Error(`profile "${base.name}" is invalid and fail-closed; fix hallpass.toml and /hp-reload first`);
+		const patch = parseSessionPatch(toml);
+		return formatSessionEditPreview(
+			resolveEffectiveProfile(base, sessionPatch),
+			resolveEffectiveProfile(base, patch),
+			normalizeSessionToml(patch, toml),
+		);
+	}
+
+	function setSessionConfig(toml: string, ctx: ExtensionContext): string {
+		const base = currentBaseProfile();
+		if (!base) throw new Error("no active configured profile to extend");
+		if (base.invalid) throw new Error(`profile "${base.name}" is invalid and fail-closed; fix hallpass.toml and /hp-reload first`);
+		const patch = parseSessionPatch(toml);
+		sessionPatch = patch;
+		sessionToml = normalizeSessionToml(patch, toml);
+		sessionRevision++;
+		const action = sessionToml
+			? `updated session overrides for profile "${base.name}"`
+			: `cleared session overrides for profile "${base.name}"`;
+		try {
+			applyEffectiveProfile(ctx);
+			return `${action} — effective on the next tool call`;
+		} catch (err) {
+			// The closure-backed policy is already committed even if a secondary integration fails.
+			return `${action}, but tool/tmux/UI synchronization failed: ${err instanceof Error ? err.message : String(err)}. ` +
+				`The new filesystem/network/tool policy is still in memory; fix the integration or restart hallpass.`;
+		}
+	}
+
+	function applySessionEdit(toml: string, expectedRevision: number, ctx: ExtensionContext): string {
+		assertRevision(expectedRevision);
+		return setSessionConfig(toml, ctx);
+	}
+
+	registerReflectionTools(pi, { getStatus, previewSessionEdit, applySessionEdit });
 
 	// -----------------------------------------------------------------------
 	// Interactive /hp command family
@@ -256,16 +351,11 @@ export default function hallpass(pi: ExtensionAPI) {
 		if (!selected) return;
 		const item = items.find((candidate) => candidate.label === selected);
 		if (!item) return;
-		const message = switchProfile(item.profile.name, ctx);
-		ctx.ui.notify(`hallpass: ${message}`, "info");
+		ctx.ui.notify(`hallpass: ${switchProfile(item.profile.name, ctx)}`, "info");
 	}
 
-	async function showProfileDetails(ctx: ExtensionContext, profile = currentProfile()): Promise<void> {
-		if (!profile) {
-			ctx.ui.notify("hallpass: no active profile (bash unsandboxed)", "warning");
-			return;
-		}
-		ctx.ui.notify(summarizeProfile(profile), "info");
+	function showProfileDetails(ctx: ExtensionContext): void {
+		ctx.ui.notify(formatHallpassStatus(getStatus()), "info");
 	}
 
 	pi.registerCommand("hp", {
@@ -275,24 +365,20 @@ export default function hallpass(pi: ExtensionAPI) {
 			const selected = await ctx.ui.select("Hallpass", [
 				`Status${currentName ? ` — ${currentName}` : " — inactive"}`,
 				"Switch profile…",
+				"Session overrides…",
 				"Reload configuration",
 			]);
 			if (!selected) return;
-			if (selected.startsWith("Status")) {
-				await showProfileDetails(ctx);
-			} else if (selected === "Switch profile…") {
-				await chooseProfile(ctx);
-			} else if (selected === "Reload configuration") {
-				reloadConfiguration(ctx);
-			}
+			if (selected.startsWith("Status")) showProfileDetails(ctx);
+			else if (selected === "Switch profile…") await chooseProfile(ctx);
+			else if (selected === "Session overrides…") await editSessionOverrides(ctx);
+			else if (selected === "Reload configuration") reloadConfiguration(ctx);
 		},
 	});
 
 	pi.registerCommand("hp-status", {
-		description: "Show the active hallpass profile",
-		handler: async (_args, ctx) => {
-			await showProfileDetails(ctx);
-		},
+		description: "Show the effective hallpass profile and session overrides",
+		handler: async (_args, ctx) => showProfileDetails(ctx),
 	});
 
 	pi.registerCommand("hp-profile", {
@@ -301,24 +387,69 @@ export default function hallpass(pi: ExtensionAPI) {
 			if (!requireInteractiveUI(ctx)) return;
 			const requested = args.trim();
 			if (requested) {
-				const profile = config.profiles.get(requested);
-				if (!profile) {
+				if (!config.profiles.has(requested)) {
 					ctx.ui.notify(`Unknown profile "${requested}". Run /hp-profile to pick one.`, "error");
 					return;
 				}
-				const message = switchProfile(requested, ctx);
-				ctx.ui.notify(`hallpass: ${message}`, "info");
+				ctx.ui.notify(`hallpass: ${switchProfile(requested, ctx)}`, "info");
 				return;
 			}
 			await chooseProfile(ctx);
 		},
 	});
 
-	pi.registerCommand("hp-reload", {
-		description: "Reload hallpass.toml configuration",
-		handler: async (_args, ctx) => {
-			reloadConfiguration(ctx);
+	async function editSessionOverrides(ctx: ExtensionContext): Promise<void> {
+		if (!requireInteractiveUI(ctx)) return;
+		const prefill = sessionToml || [
+			"# Ephemeral overrides layered over the active profile; never written to hallpass.toml.",
+			"# This is the COMPLETE session overlay. Uncomment/edit examples and combine fields as needed.",
+			"# Raw lists replace inherited lists; all-signed lists add/remove exact entries; [] clears.",
+			"#",
+			"# Example: allow implementation writes in the project and restore editing tools",
+			"# filesystem.allowWrite = [\"+$CWD\"]",
+			"# tools = [\"+write\", \"+edit\"]",
+			"#",
+			"# Example: permit only GitHub network access (setting the mode is required)",
+			"# network.mode = \"allowlist\"",
+			"# network.allowedDomains = [\"+github.com\", \"+*.githubusercontent.com\"]",
+			"#",
+			"# Example: remove an inherited write root (or use raw [] to clear all inherited roots)",
+			"# filesystem.allowWrite = [\"-/tmp\"]",
+			"#",
+			"# Example: replace agent-facing instructions for this session",
+			"# agentUsage = \"Implement the approved plan; keep changes inside $CWD.\"",
+			"#",
+			"# Save comments-only/empty input to clear. See /skill:hallpass for the full schema.",
+			"",
+		].join("\n");
+		const edited = await ctx.ui.editor("Hallpass session overrides (TOML)", prefill);
+		if (edited === undefined) return;
+		try {
+			ctx.ui.notify(`hallpass: ${setSessionConfig(edited, ctx)}`, "info");
+		} catch (err) {
+			ctx.ui.notify(`hallpass session config not applied: ${err instanceof Error ? err.message : String(err)}`, "error");
+		}
+	}
+
+	pi.registerCommand("hp-session", {
+		description: "Edit ephemeral session overrides (TOML), or /hp-session clear",
+		handler: async (args, ctx) => {
+			const requested = args.trim();
+			if (!requested) {
+				await editSessionOverrides(ctx);
+				return;
+			}
+			try {
+				ctx.ui.notify(`hallpass: ${setSessionConfig(requested.toLowerCase() === "clear" ? "" : args, ctx)}`, "info");
+			} catch (err) {
+				ctx.ui.notify(`hallpass session config not applied: ${err instanceof Error ? err.message : String(err)}`, "error");
+			}
 		},
+	});
+
+	pi.registerCommand("hp-reload", {
+		description: "Reload hallpass.toml configuration (session overrides are retained)",
+		handler: async (_args, ctx) => reloadConfiguration(ctx),
 	});
 
 	function reloadConfiguration(ctx: ExtensionContext): void {
@@ -329,17 +460,12 @@ export default function hallpass(pi: ExtensionAPI) {
 				? config.defaultProfile
 				: [...config.profiles.keys()][0];
 		}
+		sessionRevision++;
 		setDeniedDomains(config.deniedDomains);
-		const profile = currentProfile();
-		if (profile) {
-			setNetworkFloor(profile.network.mode);
-			if (!isChild) toolSelection.apply(profile);
-			tmuxSync.sync(profile);
-			if (currentName !== previousName) pi.appendEntry(ENTRY_TYPE, { profile: currentName });
-		}
-		updateStatus(ctx);
+		applyEffectiveProfile(ctx);
+		if (currentName && currentName !== previousName) pi.appendEntry(ENTRY_TYPE, { profile: currentName });
 		ctx.ui.notify(
-			`Reloaded ${config.profiles.size} profile(s)${currentName ? `; active: ${currentName}` : "; no active profile"}`,
+			`Reloaded ${config.profiles.size} profile(s)${currentName ? `; active: ${currentName}` : "; no active profile"}; session overrides retained`,
 			config.warnings.length ? "warning" : "info",
 		);
 		for (const warning of config.warnings) ctx.ui.notify(`hallpass: ${warning}`, "warning");
@@ -355,9 +481,7 @@ export default function hallpass(pi: ExtensionAPI) {
 		...localBash,
 		async execute(id, params, signal, onUpdate) {
 			const profile = currentProfile();
-			if (!profile || !profile.sandbox) {
-				return localBash.execute(id, params, signal, onUpdate);
-			}
+			if (!profile || !profile.sandbox) return localBash.execute(id, params, signal, onUpdate);
 			let wrapped: Awaited<ReturnType<typeof wrapCommand>>;
 			try {
 				wrapped = await wrapCommand(
@@ -379,12 +503,9 @@ export default function hallpass(pi: ExtensionAPI) {
 				if (result.isError) {
 					const first = result.content[0];
 					const output = first?.type === "text" ? first.text : "";
-					// Only the optional log monitor delivers fs denials, asynchronously; wait briefly for it.
 					const violations = await wrapped.violations(LOG_MONITOR_ENABLED && looksLikeFsDenial(output) ? 300 : 0);
 					const extra = explainFailure(profile, output, violations);
-					if (extra && first?.type === "text") {
-						result.content[0] = { ...first, text: `${first.text}\n\n${extra}` };
-					}
+					if (extra && first?.type === "text") result.content[0] = { ...first, text: `${first.text}\n\n${extra}` };
 				}
 				return result;
 			} finally {
@@ -393,17 +514,11 @@ export default function hallpass(pi: ExtensionAPI) {
 		},
 	});
 
-	// -----------------------------------------------------------------------
-	// File-tool path guard
-	// -----------------------------------------------------------------------
-
+	// File-tool path guard and tool-call backstop both read the effective profile.
 	installFileToolGuard(pi, currentProfile, () => cwd);
 	installToolBlocker(pi, currentProfile);
 
-	// -----------------------------------------------------------------------
-	// User `!` / `!!` shell (opt-in per profile)
-	// -----------------------------------------------------------------------
-
+	// User `!` / `!!` shell (opt-in per effective profile).
 	pi.on("user_bash", async () => {
 		const profile = currentProfile();
 		if (!profile?.sandbox || !profile.sandboxUserBash) return undefined;

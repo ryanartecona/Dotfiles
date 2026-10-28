@@ -73,7 +73,8 @@ export function explainFailure(profile: Profile, output: string, srtViolations: 
 		parts.push(
 			`<hallpass>\n${hints.join("\n")}\n` +
 				`This is an enforced policy, not a transient error: do not retry or try to bypass it. ` +
-				`If the access is needed, tell the user which path or host and ask them to switch profiles (/hp-profile).\n</hallpass>`,
+				`Use hallpass_status to inspect the effective policy. If the access is needed, explain which path or host ` +
+				`and request a user-approved session change with hallpass_session_edit, or ask the user to switch profiles (/hp-profile).\n</hallpass>`,
 		);
 	}
 	return parts.join("\n");

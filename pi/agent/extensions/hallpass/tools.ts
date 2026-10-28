@@ -37,6 +37,24 @@ export function parseToolDeltas(value: unknown, label: string, warnings: string[
 	return valid;
 }
 
+/**
+ * Compose tool operations across profile inheritance. Tool entries are operations
+ * on pi's active set (not literal list members), so the last operation for each
+ * tool wins. An explicit empty list clears all inherited tool policy.
+ */
+export function mergeToolDeltas(parent: string[] | undefined, child: string[] | undefined): string[] | undefined {
+	if (child === undefined) return parent === undefined ? undefined : [...parent];
+	if (child.length === 0) return [];
+	const result = [...(parent ?? [])];
+	for (const delta of child) {
+		const name = delta.slice(1);
+		const previous = result.findIndex((entry) => entry.slice(1) === name);
+		if (previous >= 0) result[previous] = delta;
+		else result.push(delta);
+	}
+	return result;
+}
+
 export function createToolSelection(pi: ExtensionAPI): { apply: (profile: Profile | undefined) => void } {
 	let removed = new Set<string>();
 	let added = new Set<string>();

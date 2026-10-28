@@ -13,9 +13,15 @@
     "baseUrl": ".",
     "paths": {
       "@earendil-works/pi-coding-agent": [
-        "/nix/store/1dk928k0qh903lhi3806a94j2kci7018-pi-1.3.0/lib/pi/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
+        "/nix/store/qmradqpzvmk1697yzp1dny70gb9rqp2g-pi-1.4.0/lib/pi/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
+      ],
+      "@earendil-works/pi-ai": [
+        "/nix/store/qmradqpzvmk1697yzp1dny70gb9rqp2g-pi-1.4.0/lib/pi/node_modules/@earendil-works/pi-ai/dist/index.d.ts"
+      ],
+      "@earendil-works/pi-tui": [
+        "/nix/store/qmradqpzvmk1697yzp1dny70gb9rqp2g-pi-1.4.0/lib/pi/node_modules/@earendil-works/pi-tui/dist/index.d.ts"
       ]
     }
   },
-  "include": ["*.ts"]
+  "include": ["*.ts", "tests/**/*.ts"]
 }
