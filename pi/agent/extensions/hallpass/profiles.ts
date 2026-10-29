@@ -505,7 +505,7 @@ export function hasGlobChars(p: string): boolean {
 }
 
 /** Resolve symlinks in the longest existing ancestor, re-appending the non-existent tail. */
-function realpathBestEffort(p: string): string {
+export function realpathBestEffort(p: string): string {
 	let current = p;
 	const tail: string[] = [];
 	for (;;) {

@@ -7,8 +7,8 @@
  * tool_call hook.
  *
  * Limitations (documented in DESIGN.md):
- * - Prefix matching in JS, not kernel enforcement: symlink escapes are not
- *   detected (srt's own enforcement for bash happens at the sandbox layer).
+ * - Prefix matching in JS, not kernel enforcement. Targets and rules resolve
+ *   symlinks in their longest existing ancestor, but filesystem races remain.
  * - Glob entries (containing * ? [ ] { }) are enforced for bash by srt but
  *   skipped here — matching them faithfully would duplicate srt's glob
  *   semantics. Keep profile paths literal where file-tool coverage matters.
@@ -16,7 +16,7 @@
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { isAbsolute, resolve } from "node:path";
-import { expandPath, hasGlobChars, type Profile } from "./profiles.ts";
+import { expandPath, hasGlobChars, realpathBestEffort, type Profile } from "./profiles.ts";
 
 const READ_TOOLS = new Set(["read", "grep", "find", "ls"]);
 const WRITE_TOOLS = new Set(["write", "edit"]);
@@ -60,7 +60,11 @@ export function installFileToolGuard(
 
 		const input = event.input as { path?: string };
 		const rawPath = typeof input.path === "string" && input.path ? input.path : ".";
-		const target = isAbsolute(rawPath) ? normalize(rawPath) : normalize(resolve(cwd, rawPath));
+		const absoluteTarget = isAbsolute(rawPath) ? rawPath : resolve(cwd, rawPath);
+		// Profile entries are canonicalized by expandPath. Canonicalize the tool
+		// target too, or an allowed symlink (e.g. ~/.pi/agent/settings.json) can
+		// never match its real path. Best-effort ancestors also cover new files.
+		const target = normalize(realpathBestEffort(normalize(absoluteTarget)));
 
 		if (isRead) {
 			const denied = literalEntries(profile.filesystem.denyRead, cwd);
