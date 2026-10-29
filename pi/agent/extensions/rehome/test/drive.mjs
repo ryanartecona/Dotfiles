@@ -3,6 +3,7 @@
 // Spawns `pi --mode rpc` against fixture sessions and asserts on disk state.
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
@@ -186,6 +187,13 @@ async function scenario2() {
     const fileB = stats.data?.sessionFile;
     check("2c: session now in dirB dir", fileB?.startsWith(sessionDirFor(dirB)), fileB);
     check("2c: dirC file deleted (move)", !existsSync(fileC));
+    // 2d: /rehome ~ expands the tilde to the home directory
+    await rpc.send({ type: "prompt", message: "/rehome ~ --fork" });
+    await rpc.expectNotify("Rehomed to");
+    await settle();
+    stats = await rpc.command("get_session_stats");
+    const fileHome = stats.data?.sessionFile;
+    check("2d: '~' expanded to home dir", fileHome?.startsWith(sessionDirFor(homedir())), fileHome);
   } finally { rpc.kill(); }
 }
 

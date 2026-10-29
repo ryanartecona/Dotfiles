@@ -42,6 +42,7 @@
 
 import { appendFileSync, closeSync, existsSync, openSync, readSync, realpathSync } from "node:fs";
 import { unlink } from "node:fs/promises";
+import { homedir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import {
 	ExtensionRunner,
@@ -175,6 +176,13 @@ function normalizeCwd(p: string): string {
 	} catch {
 		return r;
 	}
+}
+
+/** Expand a leading ~ like pi does (~ and ~/ only). */
+function expandTilde(p: string): string {
+	if (p === "~") return homedir();
+	if (p.startsWith("~/")) return join(homedir(), p.slice(2));
+	return p;
 }
 
 /** Read only the header line of a session file (bounded). */
@@ -393,7 +401,10 @@ export default function (pi: ExtensionAPI) {
 					return;
 				}
 			}
-			const targetCwd = normalizeCwd(pathArg ? (isAbsolute(pathArg) ? pathArg : resolve(process.cwd(), pathArg)) : process.cwd());
+			const expandedArg = pathArg ? expandTilde(pathArg) : undefined;
+			const targetCwd = normalizeCwd(
+				expandedArg ? (isAbsolute(expandedArg) ? expandedArg : resolve(process.cwd(), expandedArg)) : process.cwd(),
+			);
 			const currentCwd = normalizeCwd(ctx.sessionManager.getCwd());
 			if (targetCwd === currentCwd) {
 				ctx.ui.notify("rehome: session already lives in that directory", "info");
