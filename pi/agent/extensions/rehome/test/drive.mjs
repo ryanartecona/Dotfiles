@@ -171,9 +171,9 @@ async function scenario2() {
     check("2a: original file kept (fork)", existsSync(sA));
     const entriesC = readJsonl(fileC);
     check("2a: header cwd is dirC", norm(entriesC[0].cwd) === norm(dirC));
-    check("2a: marker copied into new file", entriesC.some((e) => e.customType === "rehome"));
+    check("2a: marker appended to new file", entriesC.some((e) => e.customType === "rehome"));
     const entriesA = readJsonl(sA);
-    check("2a: marker also in old file", entriesA.some((e) => e.customType === "rehome"));
+    check("2a: original file left untouched (no marker)", !entriesA.some((e) => e.customType === "rehome"));
     // 2b: /rehome with no args -> already in process.cwd() (dirC after chdir)
     await rpc.send({ type: "prompt", message: "/rehome" });
     await rpc.expectNotify("already lives");

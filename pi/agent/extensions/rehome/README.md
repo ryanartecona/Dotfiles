@@ -29,7 +29,9 @@ After a rehome to a new cwd:
   `pi --continue` / `/resume` from that directory find it,
 - **no history is rewritten**: the first system message keeps its original
   `cwd` prompt section, all entries are copied verbatim, and the header gets
-  a `parentSession` backlink to the source file.
+  a `parentSession` backlink to the source file,
+- **the original session file is left untouched** — it was never rehomed,
+  the fork was. Only the rehomed file gains a marker entry.
 
 ### History traceability
 
@@ -41,10 +43,10 @@ The cwd every tool call ran against stays derivable from the file alone:
   next model request after the rehome (its normal prompt-section diffing),
   so replaying system messages yields the exact boundary — no rehome-specific
   knowledge needed;
-- rehome additionally appends a visible marker (`custom_message`,
-  `customType: "rehome"`, with machine-readable `details: {from, to, mode,
-  sourceFile}`) so the boundary is explicit to the model, the transcript UI,
-  exports, and rehome-aware tooling.
+- rehome additionally appends a visible marker to the rehomed session
+  (`custom_message`, `customType: "rehome"`, with machine-readable
+  `details: {from, to, mode, sourceFile}`) so the boundary is explicit to
+  the model, the transcript UI, exports, and rehome-aware tooling.
 
 ## Usage
 
@@ -80,13 +82,14 @@ missing-cwd prompt in all cases.
 Session replacement rebuilds the whole runtime from the replacement file's
 header cwd — that is the door this extension walks through:
 
-1. append the marker message to the current session,
-2. `SessionManager.forkFrom(file, newCwd)` — writes a new session file in the
+1. `SessionManager.forkFrom(file, newCwd)` — writes a new session file in the
    new cwd's session dir with a rewritten header (`cwd`, new id,
    `parentSession` backlink) and all entries copied verbatim,
-3. `process.chdir(newCwd)` so anything reading the process cwd follows,
-4. `ctx.switchSession(forkedFile)` — the same in-place mechanism `/resume`
-   uses; no exit/re-enter.
+2. `process.chdir(newCwd)` so anything reading the process cwd follows,
+3. `ctx.switchSession(forkedFile)` — the same in-place mechanism `/resume`
+   uses; no exit/re-enter,
+4. append the marker message to the rehomed session. If the switch is
+   cancelled, the orphaned fork copy is removed again.
 
 The `/rehome` command gets `switchSession` from its command context. The
 startup prompt and `/resume` intercept run in *event* handlers, which pi

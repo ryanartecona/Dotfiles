@@ -7,13 +7,15 @@
  * entire runtime from the replacement session file's header cwd. rehome uses
  * that door:
  *
- *   1. append a marker message to the current session (it records the move),
- *   2. fork the session file into the target cwd's session directory with a
+ *   1. fork the session file into the target cwd's session directory with a
  *      rewritten header (SessionManager.forkFrom: entries copied verbatim,
  *      parentSession backlink to the source file),
- *   3. process.chdir(targetCwd) so anything reading the process cwd follows,
- *   4. switchSession() to the forked file — the same in-place mechanism
- *      /resume uses, so no exit/re-enter is needed.
+ *   2. process.chdir(targetCwd) so anything reading the process cwd follows,
+ *   3. switchSession() to the forked file — the same in-place mechanism
+ *      /resume uses, so no exit/re-enter is needed,
+ *   4. append a marker message to the NEW session (it records the move);
+ *      the original file is left byte-for-byte untouched — it was never
+ *      rehomed, the fork was.
  *
  * History stays intact: the copied first system message still carries the
  * original `cwd` prompt section, and pi's section diffing persists a system
@@ -236,8 +238,10 @@ function targetSessionDir(currentSessionDir: string | undefined, currentCwd: str
 
 export default function (pi: ExtensionAPI) {
 	/**
-	 * Rehome the *current* live session to targetCwd: mark history, fork the
-	 * file, chdir, and switch. Used by /rehome and the startup prompt.
+	 * Rehome the *current* live session to targetCwd: fork the file, chdir,
+	 * switch, then mark history in the NEW session. The original session file
+	 * is left byte-for-byte untouched — it was never rehomed, the fork was.
+	 * Used by /rehome and the startup prompt.
 	 */
 	async function rehomeCurrentSession(
 		ctx: ExtensionContext,
@@ -251,26 +255,12 @@ export default function (pi: ExtensionAPI) {
 			return;
 		}
 		const fromCwd = ctx.sessionManager.getCwd();
-		// Marker first so forkFrom copies it into the rehomed file (both files
-		// then record the rehome). details carries the machine-readable form.
-		pi.sendMessage({
-			customType: CUSTOM_TYPE,
-			content: markerContent(fromCwd, targetCwd, mode),
-			display: true,
-			details: { from: fromCwd, to: targetCwd, mode, sourceFile },
-		});
 		let forkedFile: string;
 		try {
 			const sessionDir = targetSessionDir(ctx.sessionManager.getSessionDir(), fromCwd, targetCwd);
 			const forked = SessionManager.forkFrom(sourceFile, targetCwd, sessionDir);
 			forkedFile = forked.getSessionFile()!;
 		} catch (err) {
-			pi.sendMessage({
-				customType: CUSTOM_TYPE,
-				content: `Rehome to ${targetCwd} failed: ${errMessage(err)}`,
-				display: true,
-				details: { from: fromCwd, to: targetCwd, mode, failed: true },
-			});
 			ctx.ui.notify(`rehome: failed to create the rehomed session: ${errMessage(err)}`, "error");
 			return;
 		}
@@ -284,6 +274,14 @@ export default function (pi: ExtensionAPI) {
 		try {
 			result = await switchSession(forkedFile, {
 				withSession: async (nctx) => {
+					// Marker only in the rehomed session; details carries the
+					// machine-readable form.
+					await nctx.sendMessage({
+						customType: CUSTOM_TYPE,
+						content: markerContent(fromCwd, targetCwd, mode),
+						display: true,
+						details: { from: fromCwd, to: targetCwd, mode, sourceFile },
+					});
 					nctx.ui.notify(`Rehomed to ${targetCwd} (${mode})`, "info");
 				},
 			});
@@ -299,6 +297,12 @@ export default function (pi: ExtensionAPI) {
 		if (result.cancelled) {
 			try {
 				process.chdir(previousProcessCwd);
+			} catch {
+				/* ignore */
+			}
+			// The switch never happened, so the fork is an orphan copy.
+			try {
+				await unlink(forkedFile);
 			} catch {
 				/* ignore */
 			}
