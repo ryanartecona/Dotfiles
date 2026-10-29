@@ -43,6 +43,7 @@ import { unlink } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import {
 	ExtensionRunner,
+	ExtensionSelectorComponent,
 	SessionManager,
 	type ExtensionAPI,
 	type ExtensionCommandContextActions,
@@ -77,6 +78,33 @@ type SwitchSessionFn = (
 	sessionPath: string,
 	options?: { withSession?: (ctx: ReplacedSessionContext) => Promise<void> },
 ) => Promise<{ cancelled: boolean }>;
+
+/**
+ * Show a choice prompt on a surface that survives startup-time UI churn.
+ *
+ * ctx.ui.select renders into the editor slot, which pi and other extensions
+ * clear or replace during startup (e.g. setCustomEditorComponent, called by
+ * editor-replacing extensions such as pi-open-tui, does
+ * editorContainer.clear()) — destroying the dialog *without resolving its
+ * promise*, so the prompt vanishes and the flow hangs forever. An overlay
+ * (ctx.ui.custom with overlay: true) lives outside the editor slot and is
+ * only dismissed by its own callbacks or a session switch.
+ */
+async function promptChoice(ctx: ExtensionContext, title: string, options: string[]): Promise<string | undefined> {
+	if (ctx.mode !== "tui") {
+		return ctx.ui.select(title, options);
+	}
+	try {
+		return await ctx.ui.custom<string | undefined>(
+			(tui, _theme, _keybindings, done) =>
+				new ExtensionSelectorComponent(title, options, (option) => done(option), () => done(undefined), { tui }),
+			{ overlay: true },
+		);
+	} catch (err) {
+		debug("promptChoice: overlay failed, falling back to select:", errMessage(err));
+		return ctx.ui.select(title, options);
+	}
+}
 
 // ---------------------------------------------------------------------------
 // Command-action capture (see header comment). The cell lives on globalThis
@@ -359,7 +387,7 @@ export default function (pi: ExtensionAPI) {
 				if (!ctx.hasUI) {
 					mode = "fork";
 				} else {
-					const choice = await ctx.ui.select(`Rehome session to ${targetCwd}?`, [FORK_LABEL, MOVE_LABEL, CANCEL_LABEL]);
+					const choice = await promptChoice(ctx, `Rehome session to ${targetCwd}?`, [FORK_LABEL, MOVE_LABEL, CANCEL_LABEL]);
 					if (choice === FORK_LABEL) mode = "fork";
 					else if (choice === MOVE_LABEL) mode = "move";
 					else {
@@ -391,7 +419,8 @@ export default function (pi: ExtensionAPI) {
 		setImmediate(() => {
 			void (async () => {
 				debug("startup: showing prompt");
-				const choice = await ctx.ui.select(
+				const choice = await promptChoice(
+					ctx,
 					`This session belongs to ${sessionCwd},\nbut pi was started in ${ambient}. Rehome it?`,
 					[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 				);
@@ -427,7 +456,8 @@ export default function (pi: ExtensionAPI) {
 		if (normTarget === ambient) return debug("intercept: skip, cwd matches", normTarget);
 		if (!existsSync(normTarget)) return debug("intercept: skip, target cwd missing (pi owns this)", normTarget);
 		debug("intercept: mismatch, showing prompt", { targetCwdRaw, ambient });
-		const choice = await ctx.ui.select(
+		const choice = await promptChoice(
+			ctx,
 			`That session belongs to ${targetCwdRaw},\ncurrent directory is ${ambient}. Rehome it?`,
 			[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 		);
