@@ -38,7 +38,7 @@
  * flows degrade to a notification plus a pre-filled `/rehome` in the editor.
  */
 
-import { closeSync, existsSync, openSync, readSync, realpathSync } from "node:fs";
+import { appendFileSync, closeSync, existsSync, openSync, readSync, realpathSync } from "node:fs";
 import { unlink } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import {
@@ -51,6 +51,20 @@ import {
 } from "@earendil-works/pi-coding-agent";
 
 const CUSTOM_TYPE = "rehome";
+
+/** Opt-in debug logging: set PI_REHOME_DEBUG to a writable file path. */
+const DEBUG_FILE = process.env.PI_REHOME_DEBUG;
+function debug(...parts: unknown[]): void {
+	if (!DEBUG_FILE) return;
+	try {
+		appendFileSync(
+			DEBUG_FILE,
+			`${new Date().toISOString()} ${parts.map((p) => (typeof p === "string" ? p : JSON.stringify(p))).join(" ")}\n`,
+		);
+	} catch {
+		/* never break the session over debug logging */
+	}
+}
 
 type RehomeMode = "fork" | "move";
 
@@ -100,6 +114,7 @@ function installActionsCapture(): void {
 }
 
 installActionsCapture();
+debug("rehome loaded; patched =", shared.patched);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -362,32 +377,37 @@ export default function (pi: ExtensionAPI) {
 	// -----------------------------------------------------------------------
 
 	pi.on("session_start", async (event, ctx) => {
+		debug("session_start", { reason: event.reason, mode: ctx.mode, hasUI: ctx.hasUI, file: ctx.sessionManager.getSessionFile() });
 		if (event.reason !== "startup") return;
-		if (!ctx.hasUI) return;
-		if (!ctx.sessionManager.getSessionFile()) return;
+		if (!ctx.hasUI) return debug("startup: skip, no UI");
+		if (!ctx.sessionManager.getSessionFile()) return debug("startup: skip, session not persisted");
 		const sessionCwd = ctx.sessionManager.getCwd();
 		const normSession = normalizeCwd(sessionCwd);
 		const ambient = normalizeCwd(process.cwd());
-		if (normSession === ambient) return;
-		if (!existsSync(normSession)) return; // pi's own missing-cwd prompt owns this case
+		if (normSession === ambient) return debug("startup: skip, cwd matches", normSession);
+		if (!existsSync(normSession)) return debug("startup: skip, session cwd missing (pi owns this)", normSession);
+		debug("startup: mismatch, scheduling prompt", { sessionCwd, ambient });
 		// Deferred: switching from inside the handler can deadlock the runtime.
 		setImmediate(() => {
 			void (async () => {
+				debug("startup: showing prompt");
 				const choice = await ctx.ui.select(
 					`This session belongs to ${sessionCwd},\nbut pi was started in ${ambient}. Rehome it?`,
 					[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 				);
+				debug("startup: choice =", choice);
 				const mode: RehomeMode | undefined = choice === FORK_LABEL ? "fork" : choice === MOVE_LABEL ? "move" : undefined;
 				if (!mode) return;
 				const switchSession = shared.actions?.switchSession as SwitchSessionFn | undefined;
+				debug("startup: captured switchSession available =", !!switchSession);
 				if (!switchSession) {
 					ctx.ui.setEditorText("/rehome");
 					ctx.ui.notify("rehome: press Enter to rehome this session here", "warning");
 					return;
 				}
 				await rehomeCurrentSession(ctx, ambient, mode, (p, o) => switchSession(p, o));
-			})().catch(() => {
-				/* prompt/switch errors surface through pi's own error handling */
+			})().catch((err) => {
+				debug("startup: ERROR", errMessage(err), (err as Error)?.stack);
 			});
 		});
 	});
@@ -397,18 +417,21 @@ export default function (pi: ExtensionAPI) {
 	// -----------------------------------------------------------------------
 
 	pi.on("session_before_switch", async (event, ctx) => {
+		debug("session_before_switch", { reason: event.reason, target: event.targetSessionFile, mode: ctx.mode, hasUI: ctx.hasUI });
 		if (event.reason !== "resume" || !event.targetSessionFile) return;
-		if (!ctx.hasUI) return;
+		if (!ctx.hasUI) return debug("intercept: skip, no UI");
 		const targetCwdRaw = readSessionFileCwd(event.targetSessionFile);
-		if (!targetCwdRaw) return;
+		if (!targetCwdRaw) return debug("intercept: skip, no header cwd in target");
 		const normTarget = normalizeCwd(targetCwdRaw);
 		const ambient = normalizeCwd(process.cwd());
-		if (normTarget === ambient) return;
-		if (!existsSync(normTarget)) return; // pi's missing-cwd prompt owns this case
+		if (normTarget === ambient) return debug("intercept: skip, cwd matches", normTarget);
+		if (!existsSync(normTarget)) return debug("intercept: skip, target cwd missing (pi owns this)", normTarget);
+		debug("intercept: mismatch, showing prompt", { targetCwdRaw, ambient });
 		const choice = await ctx.ui.select(
 			`That session belongs to ${targetCwdRaw},\ncurrent directory is ${ambient}. Rehome it?`,
 			[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 		);
+		debug("intercept: choice =", choice);
 		const mode: RehomeMode | undefined = choice === FORK_LABEL ? "fork" : choice === MOVE_LABEL ? "move" : undefined;
 		if (!mode) return; // undefined (dismissed) and KEEP both mean: pi's native behavior
 		return rehomeForeignSession(ctx, event.targetSessionFile, targetCwdRaw, ambient, mode);
