@@ -43,7 +43,6 @@ import { unlink } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import {
 	ExtensionRunner,
-	ExtensionSelectorComponent,
 	SessionManager,
 	type ExtensionAPI,
 	type ExtensionCommandContextActions,
@@ -80,30 +79,48 @@ type SwitchSessionFn = (
 ) => Promise<{ cancelled: boolean }>;
 
 /**
- * Show a choice prompt on a surface that survives startup-time UI churn.
+ * Wait until startup-time UI churn is over before showing a dialog.
  *
  * ctx.ui.select renders into the editor slot, which pi and other extensions
  * clear or replace during startup (e.g. setCustomEditorComponent, called by
  * editor-replacing extensions such as pi-open-tui, does
  * editorContainer.clear()) — destroying the dialog *without resolving its
- * promise*, so the prompt vanishes and the flow hangs forever. An overlay
- * (ctx.ui.custom with overlay: true) lives outside the editor slot and is
- * only dismissed by its own callbacks or a session switch.
+ * promise*, so the prompt vanishes and the flow hangs forever.
+ *
+ * Such extensions install a *new* editor factory closure on every re-apply,
+ * so an unchanged ctx.ui.getEditorComponent() reference across a full quiet
+ * window means the churn is over. There is no fixed base delay: when nothing
+ * is churning, the wait is just the quiet window itself. A hard cap
+ * guarantees the prompt is shown even if something churns indefinitely.
  */
-async function promptChoice(ctx: ExtensionContext, title: string, options: string[]): Promise<string | undefined> {
-	if (ctx.mode !== "tui") {
-		return ctx.ui.select(title, options);
+async function waitForUiToSettle(ctx: ExtensionContext): Promise<void> {
+	const QUIET_MS = 500;
+	const POLL_MS = 100;
+	const MAX_WAIT_MS = 8000;
+	type EditorFactory = () => unknown;
+	const getFactory = (): EditorFactory | undefined => {
+		try {
+			return ctx.ui.getEditorComponent?.() as EditorFactory | undefined;
+		} catch {
+			return undefined;
+		}
+	};
+	const start = Date.now();
+	let last = getFactory();
+	let quietSince = start;
+	let swaps = 0;
+	while (Date.now() - start < MAX_WAIT_MS) {
+		await new Promise((r) => setTimeout(r, POLL_MS));
+		const current = getFactory();
+		if (current !== last) {
+			last = current;
+			quietSince = Date.now();
+			swaps++;
+			continue;
+		}
+		if (Date.now() - quietSince >= QUIET_MS) break;
 	}
-	try {
-		return await ctx.ui.custom<string | undefined>(
-			(tui, _theme, _keybindings, done) =>
-				new ExtensionSelectorComponent(title, options, (option) => done(option), () => done(undefined), { tui }),
-			{ overlay: true },
-		);
-	} catch (err) {
-		debug("promptChoice: overlay failed, falling back to select:", errMessage(err));
-		return ctx.ui.select(title, options);
-	}
+	debug("startup: ui settled", { waitedMs: Date.now() - start, editorSwaps: swaps, capped: Date.now() - start >= MAX_WAIT_MS });
 }
 
 // ---------------------------------------------------------------------------
@@ -387,7 +404,7 @@ export default function (pi: ExtensionAPI) {
 				if (!ctx.hasUI) {
 					mode = "fork";
 				} else {
-					const choice = await promptChoice(ctx, `Rehome session to ${targetCwd}?`, [FORK_LABEL, MOVE_LABEL, CANCEL_LABEL]);
+					const choice = await ctx.ui.select(`Rehome session to ${targetCwd}?`, [FORK_LABEL, MOVE_LABEL, CANCEL_LABEL]);
 					if (choice === FORK_LABEL) mode = "fork";
 					else if (choice === MOVE_LABEL) mode = "move";
 					else {
@@ -418,9 +435,9 @@ export default function (pi: ExtensionAPI) {
 		// Deferred: switching from inside the handler can deadlock the runtime.
 		setImmediate(() => {
 			void (async () => {
+				await waitForUiToSettle(ctx);
 				debug("startup: showing prompt");
-				const choice = await promptChoice(
-					ctx,
+				const choice = await ctx.ui.select(
 					`This session belongs to ${sessionCwd},\nbut pi was started in ${ambient}. Rehome it?`,
 					[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 				);
@@ -456,8 +473,7 @@ export default function (pi: ExtensionAPI) {
 		if (normTarget === ambient) return debug("intercept: skip, cwd matches", normTarget);
 		if (!existsSync(normTarget)) return debug("intercept: skip, target cwd missing (pi owns this)", normTarget);
 		debug("intercept: mismatch, showing prompt", { targetCwdRaw, ambient });
-		const choice = await promptChoice(
-			ctx,
+		const choice = await ctx.ui.select(
 			`That session belongs to ${targetCwdRaw},\ncurrent directory is ${ambient}. Rehome it?`,
 			[KEEP_LABEL, FORK_LABEL, MOVE_LABEL],
 		);
