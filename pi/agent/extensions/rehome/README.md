@@ -53,9 +53,11 @@ The cwd every tool call ran against stays derivable from the file alone:
 ### `/rehome [path] [--fork|--move]`
 
 Rehome the current session. With no path argument, an interactive directory
-picker opens (type to fuzzy-filter, arrows to navigate, Enter/→ to descend,
-←/Backspace to go up, `./` to pick the shown directory, Esc to cancel);
-outside TUI mode it falls back to the process's current directory. Path
+picker opens: type to fuzzy-filter everything including the pinned entries
+(an exact subdirectory-name match is bumped to the top and preselected),
+↑/↓ to navigate, Enter/→ to descend, typing `/` after an exact name descends
+too, ←/Backspace to go up, `./` to pick the shown directory, Esc to cancel.
+Outside TUI mode it falls back to the process's current directory. Path
 arguments get native autocompletion for directories (and the flags), and a
 leading `~` is expanded. Without a mode flag you are prompted:
 
@@ -133,6 +135,7 @@ files. `test/cwd-probe-drive.mjs` verifies other extensions observe the new
 node test/drive.mjs
 node test/cwd-probe-drive.mjs
 node test/dir-picker.test.mjs
+node test/component.test.mjs
 ```
 
 Both use an isolated `PI_CODING_AGENT_DIR`/`PI_CODING_AGENT_SESSION_DIR`

@@ -1,139 +1,182 @@
 /**
- * TUI component for the /rehome directory picker. Rendered through
- * ctx.ui.custom(), which swaps it into the editor slot and focuses it.
- * Modeled on pi's SessionSelectorComponent: query line with type-to-filter,
- * navigable list, Enter to descend, Esc to cancel.
+ * Interactive directory-picker component for /rehome, rendered via
+ * ctx.ui.custom() in the editor slot. Key handling is modeled on pi's
+ * SessionSelectorComponent; the query line is a pi-tui Input component
+ * (full emacs-style editing: ^a/^e/^b/^f, word moves, kill ring).
  */
-
-import { dirname } from "node:path";
-import { fuzzyFilter, matchesKey, type Component, type Focusable, type TUI } from "@earendil-works/pi-tui";
-import type { Theme } from "@earendil-works/pi-coding-agent";
-import { buildPickerEntries, type PickerEntry } from "./dir-picker.ts";
+import {
+	fuzzyFilter,
+	Input,
+	matchesKey,
+	truncateToWidth,
+	type Component,
+	type Theme,
+	type TUI,
+} from "@earendil-works/pi-tui";
+import { buildPickerEntries, findExactDirEntry, type PickerEntry } from "./dir-picker.ts";
 
 const MAX_VISIBLE = 10;
 
-export class DirectoryPickerComponent implements Component, Focusable {
-	/** Focusable interface — set by the TUI when focus changes. */
-	focused = false;
-
+export class DirectoryPickerComponent implements Component {
+	private currentDir: string;
+	private readonly theme: Theme;
+	private readonly queryInput = new Input({ prompt: "> " });
 	private entries: PickerEntry[] = [];
-	private readError = false;
+	private error = false;
 	private selectedIndex = 0;
 	private scrollOffset = 0;
-	private query = "";
+	private readonly onDone: (dir: string | undefined) => void;
 
 	constructor(
-		private tui: TUI,
-		private theme: Theme,
-		private currentDir: string,
-		private done: (result: string | undefined) => void,
+		_tui: TUI,
+		theme: Theme,
+		currentDir: string,
+		onDone: (dir: string | undefined) => void,
 	) {
+		this.currentDir = currentDir;
+		this.theme = theme;
+		this.onDone = onDone;
+		this.queryInput.focused = true;
 		this.refresh();
+	}
+
+	private get query(): string {
+		return this.queryInput.getValue();
 	}
 
 	private refresh(): void {
 		const { entries, error } = buildPickerEntries(this.currentDir, this.query, fuzzyFilter);
 		this.entries = entries;
-		this.readError = error;
-		if (this.selectedIndex >= entries.length) {
-			this.selectedIndex = Math.max(0, entries.length - 1);
+		this.error = error;
+		if (this.selectedIndex >= this.entries.length) this.selectedIndex = Math.max(0, this.entries.length - 1);
+	}
+
+	handleInput(data: string): void {
+		if (matchesKey(data, "escape")) {
+			this.onDone(undefined);
+			return;
 		}
+		if (matchesKey(data, "up")) {
+			if (this.selectedIndex > 0) this.selectedIndex--;
+			else if (this.scrollOffset > 0) this.scrollOffset--;
+			return;
+		}
+		if (matchesKey(data, "down")) {
+			if (this.selectedIndex + 1 < this.entries.length) this.selectedIndex++;
+			return;
+		}
+		if (matchesKey(data, "tab")) {
+			// A single option: Tab activates it, like Enter.
+			if (this.entries.length === 1) {
+				this.activate(this.entries[0]);
+			} else if (this.selectedIndex + 1 < this.entries.length) {
+				this.selectedIndex++;
+			}
+			return;
+		}
+		if (matchesKey(data, "shift+tab")) {
+			if (this.selectedIndex > 0) this.selectedIndex--;
+			else if (this.scrollOffset > 0) this.scrollOffset--;
+			return;
+		}
+		if (matchesKey(data, "enter")) {
+			this.activate(this.entries[this.selectedIndex]);
+			return;
+		}
+		if (matchesKey(data, "right")) {
+			const entry = this.entries[this.selectedIndex];
+			if (entry && entry.action === "enter") this.activate(entry);
+			return;
+		}
+		if (matchesKey(data, "left")) {
+			this.goUp();
+			return;
+		}
+		if (matchesKey(data, "backspace")) {
+			if (this.query.length === 0) {
+				this.goUp();
+			} else {
+				this.delegateToInput(data);
+			}
+			return;
+		}
+		if (data === "/") {
+			// "ra/" descends into the exactly-matching directory, like Enter.
+			const match = findExactDirEntry(this.entries, this.query);
+			if (match) {
+				this.currentDir = match.path;
+				this.queryInput.setValue("");
+				this.selectedIndex = 0;
+				this.scrollOffset = 0;
+				this.refresh();
+				return;
+			}
+			// No exact match: treat the slash as ordinary query input.
+		}
+		// Everything else — printable characters, paste, and editing keys such
+		// as ^a/^e/^b/^f/^u/^k, home/end, word moves — goes to the Input.
+		this.delegateToInput(data);
 	}
 
-	private move(delta: number): void {
-		const n = this.entries.length;
-		if (n === 0) return;
-		this.selectedIndex = (this.selectedIndex + delta + n) % n;
+	/** Forward a key to the query Input; reset selection only when the text changed. */
+	private delegateToInput(data: string): void {
+		const before = this.query;
+		this.queryInput.handleInput(data);
+		if (this.query !== before) this.afterQueryEdit();
 	}
 
-	private activate(): void {
-		const entry = this.entries[this.selectedIndex];
+	private afterQueryEdit(): void {
+		this.selectedIndex = 0;
+		this.scrollOffset = 0;
+		this.refresh();
+	}
+
+	private activate(entry: PickerEntry | undefined): void {
 		if (!entry) return;
 		if (entry.action === "select") {
-			this.done(entry.path);
+			this.onDone(entry.path);
 			return;
 		}
 		this.currentDir = entry.path;
-		this.query = "";
+		this.queryInput.setValue("");
 		this.selectedIndex = 0;
 		this.scrollOffset = 0;
 		this.refresh();
 	}
 
 	private goUp(): void {
-		this.currentDir = dirname(this.currentDir);
-		this.query = "";
-		this.selectedIndex = 0;
-		this.scrollOffset = 0;
-		this.refresh();
+		const parent = buildPickerEntries(this.currentDir, "", (i) => i).entries[1];
+		if (parent) this.activate(parent);
 	}
 
-	handleInput(data: string): void {
-		if (matchesKey(data, "escape")) {
-			this.done(undefined);
-			return;
-		}
-		if (matchesKey(data, "up")) {
-			this.move(-1);
-		} else if (matchesKey(data, "down")) {
-			this.move(1);
-		} else if (matchesKey(data, "return")) {
-			this.activate();
-			return;
-		} else if (matchesKey(data, "left")) {
-			this.goUp();
-		} else if (matchesKey(data, "right")) {
-			const entry = this.entries[this.selectedIndex];
-			if (entry?.action === "enter") {
-				this.activate();
-				return;
-			}
-		} else if (matchesKey(data, "backspace")) {
-			if (this.query.length > 0) {
-				this.query = this.query.slice(0, -1);
-				this.selectedIndex = 0;
-				this.scrollOffset = 0;
-				this.refresh();
-			} else {
-				this.goUp();
-			}
-		} else if (data.length === 1 && data.charCodeAt(0) >= 32) {
-			this.query += data;
-			this.selectedIndex = 0;
-			this.scrollOffset = 0;
-			this.refresh();
-		}
-		this.tui.requestRender();
-	}
-
-	render(_width: number): string[] {
-		const t = this.theme;
+	render(width: number): string[] {
+		const t = this.theme.fg.bind(this.theme);
 		const lines: string[] = [];
-		lines.push(`${t.bold(t.fg("accent", "Rehome to directory"))}  ${t.fg("muted", this.currentDir)}`);
-		lines.push(t.fg("muted", "type to filter · ↑/↓ navigate · enter/→ open · ←/backspace up · ./ rehome here · esc cancel"));
-		lines.push(`> ${this.query}${this.focused ? "█" : ""}`);
-		if (this.readError) {
-			lines.push(t.fg("error", "(directory not readable)"));
+		lines.push(`${t("accent", "Rehome to directory")}  ${t("muted", this.currentDir)}`);
+		lines.push(
+			t("muted", 'type to filter · ↑/↓/⇥ navigate · enter/→/"/" open · ←/backspace up · ./ rehome here · esc cancel'),
+		);
+		lines.push(...this.queryInput.render(width));
+		if (this.error) {
+			lines.push(t("error", "  (cannot read directory)"));
 		}
-		// Keep the selection inside the visible window.
-		if (this.selectedIndex < this.scrollOffset) this.scrollOffset = this.selectedIndex;
-		if (this.selectedIndex >= this.scrollOffset + MAX_VISIBLE) {
-			this.scrollOffset = this.selectedIndex - MAX_VISIBLE + 1;
+		if (this.entries.length === 0) {
+			if (!this.error) lines.push(t("muted", "  (no subdirectories)"));
+		} else {
+			if (this.selectedIndex < this.scrollOffset) this.scrollOffset = this.selectedIndex;
+			if (this.selectedIndex >= this.scrollOffset + MAX_VISIBLE) this.scrollOffset = this.selectedIndex - MAX_VISIBLE + 1;
+			const visible = this.entries.slice(this.scrollOffset, this.scrollOffset + MAX_VISIBLE);
+			visible.forEach((entry, i) => {
+				const selected = this.scrollOffset + i === this.selectedIndex;
+				const styled = entry.pinned ? t("dim", entry.label) : entry.label;
+				const marker = selected ? t("accent", "> ") : "  ";
+				lines.push(marker + (selected ? this.theme.bold(styled) : styled));
+			});
 		}
-		const visible = this.entries.slice(this.scrollOffset, this.scrollOffset + MAX_VISIBLE);
-		for (let i = 0; i < visible.length; i++) {
-			const idx = this.scrollOffset + i;
-			const entry = visible[i]!;
-			const selected = idx === this.selectedIndex;
-			const marker = selected ? t.fg("accent", "> ") : "  ";
-			let label = entry.label;
-			if (entry.action === "select") label = `${label} (rehome here)`;
-			const styled = entry.action === "select" ? t.fg("accent", label) : entry.pinned ? t.fg("muted", label) : label;
-			lines.push(marker + (selected ? t.bold(styled) : styled));
-		}
-		if (!this.readError && this.entries.every((e) => e.pinned)) {
-			lines.push(t.fg("muted", "  (no subdirectories)"));
-		}
-		return lines;
+		return lines.map((line) => truncateToWidth(line, width));
+	}
+
+	invalidate(): void {
+		this.queryInput.invalidate();
 	}
 }

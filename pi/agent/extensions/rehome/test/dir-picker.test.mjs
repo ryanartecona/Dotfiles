@@ -8,6 +8,7 @@ import {
 	buildPickerEntries,
 	completeDirectories,
 	expandTilde,
+	findExactDirEntry,
 	listSubdirs,
 	resolveDirPart,
 	splitPathPrefix,
@@ -34,8 +35,9 @@ function eq(name, actual, expected) {
 	}
 }
 
-/** Simple substring filter standing in for pi-tui's fuzzyFilter. */
-const contains = (items, query, getText) => items.filter((i) => getText(i).includes(query));
+/** Simple substring filter standing in for pi-tui's fuzzyFilter (which is case-insensitive). */
+const contains = (items, query, getText) =>
+	items.filter((i) => getText(i).toLowerCase().includes(query.toLowerCase()));
 
 // Fixture tree
 const ROOT = join("/tmp", "rehome-picker-test");
@@ -81,12 +83,18 @@ console.log("== buildPickerEntries ==");
 	eq("select action on ./ only", entries.map((e) => e.action), ["select", "enter", "enter", "enter", "enter", "enter", "enter"]);
 	eq("subdirs", entries.slice(3).map((e) => e.label), ["alpha/", "alpha-link/", "beta/", "home/"]);
 	const { entries: filtered } = buildPickerEntries(ROOT, "lph", contains);
-	eq("query filters subdirs", filtered.map((e) => e.label), ["./", "../", "~/", "alpha/", "alpha-link/"]);
+	eq("non-matching query filters pinned out too", filtered.map((e) => e.label), ["alpha/", "alpha-link/"]);
+	const { entries: exact } = buildPickerEntries(ROOT, "alpha", contains);
+	eq("exact match bumped to top", exact.map((e) => e.label), ["alpha/", "alpha-link/"]);
+	const { entries: exactCase } = buildPickerEntries(ROOT, "BETA", contains);
+	eq("exact match is case-insensitive", exactCase.map((e) => e.label), ["beta/"]);
 	const { entries: hidden } = buildPickerEntries(ROOT, ".", contains);
-	eq("dot query reveals hidden", hidden.map((e) => e.label), ["./", "../", "~/", ".hidden/"]);
+	eq("matching pinned survive filtering", hidden.map((e) => e.label), ["./", "../", ".hidden/"]);
 	const { entries: missing, error: missingErr } = buildPickerEntries(join(ROOT, "nope"), "", contains);
 	eq("unreadable keeps pinned", missing.map((e) => e.label), ["./", "../", "~/"]);
 	eq("unreadable flags error", missingErr, true);
+	const { entries: missingFiltered } = buildPickerEntries(join(ROOT, "nope"), "zz", contains);
+	eq("unreadable + query filters pinned", missingFiltered.map((e) => e.label), []);
 }
 
 console.log("== completeDirectories ==");
@@ -100,6 +108,19 @@ console.log("== completeDirectories ==");
 	eq("file not offered", completeDirectories("a-file", ROOT, contains), []);
 	eq("tilde completion", completeDirectories("~/co", ROOT, contains).map((c) => c.value), ["~/code/"]);
 	eq("symlinked dir offered", completeDirectories("alpha-l", ROOT, contains).map((c) => c.value), ["alpha-link/"]);
+}
+
+console.log("== findExactDirEntry ==");
+{
+	const { entries } = buildPickerEntries(ROOT, "alpha", contains);
+	eq("exact subdir found", findExactDirEntry(entries, "alpha")?.path, join(ROOT, "alpha"));
+	eq("exact is case-insensitive", findExactDirEntry(entries, "ALPHA")?.path, join(ROOT, "alpha"));
+	const { entries: tildeEntries } = buildPickerEntries(ROOT, "~", contains);
+	eq("pinned ~/ found", findExactDirEntry(tildeEntries, "~")?.label, "~/");
+	const { entries: dotEntries } = buildPickerEntries(ROOT, ".", contains);
+	eq("./ is not descendable", findExactDirEntry(dotEntries, "."), undefined);
+	eq("empty query", findExactDirEntry(entries, ""), undefined);
+	eq("no match", findExactDirEntry(entries, "zzz"), undefined);
 }
 
 console.log(failures === 0 ? "\nALL PASS" : `\n${failures} FAILURES`);

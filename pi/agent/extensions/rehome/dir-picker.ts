@@ -79,7 +79,12 @@ export function listSubdirs(absDir: string, includeHidden: boolean): string[] | 
 
 /**
  * Build the picker's entry list: pinned [./ (select), ../, ~/] followed by
- * the current directory's subdirectories, filtered by the query if given.
+ * the current directory's subdirectories.
+ *
+ * With an empty query, all pinned entries and all subdirectories are shown.
+ * With a non-empty query, everything — pinned entries included — is filtered
+ * through `filter`, and an exact subdirectory-name match is bumped to the
+ * top (so Enter or "/" descends into it immediately).
  * `filter` is injected so the pure logic stays testable without pi-tui.
  */
 export function buildPickerEntries(
@@ -94,18 +99,37 @@ export function buildPickerEntries(
 	];
 	const names = listSubdirs(currentDir, query.startsWith("."));
 	if (names === undefined) {
-		return { entries: pinned, error: true };
+		return { entries: query ? filter(pinned, query, (e) => e.label) : pinned, error: true };
 	}
-	let subs: PickerEntry[] = names.map((name) => ({
+	const subs: PickerEntry[] = names.map((name) => ({
 		label: `${name}/`,
 		path: join(currentDir, name),
-		action: "enter",
+		action: "enter" as const,
 		pinned: false,
 	}));
-	if (query) {
-		subs = filter(subs, query, (e) => e.label);
+	if (!query) {
+		return { entries: [...pinned, ...subs], error: false };
 	}
-	return { entries: [...pinned, ...subs], error: false };
+	const filteredPinned = filter(pinned, query, (e) => e.label);
+	const filteredSubs = filter(subs, query, (e) => e.label);
+	// Exact name match first, so it is selected by default.
+	const q = query.toLowerCase();
+	filteredSubs.sort((a, b) => Number(isExactDirMatch(b, q)) - Number(isExactDirMatch(a, q)));
+	return { entries: [...filteredPinned, ...filteredSubs], error: false };
+}
+
+function isExactDirMatch(entry: PickerEntry, lowerQuery: string): boolean {
+	return entry.label.slice(0, -1).toLowerCase() === lowerQuery;
+}
+
+/**
+ * Find the descendable entry whose directory name exactly matches the query.
+ * Backs the "/" keystroke: typing "ra/" descends into "ra" like Enter would.
+ */
+export function findExactDirEntry(entries: PickerEntry[], query: string): PickerEntry | undefined {
+	if (!query) return undefined;
+	const q = query.toLowerCase();
+	return entries.find((e) => e.action === "enter" && isExactDirMatch(e, q));
 }
 
 /**
