@@ -52,8 +52,12 @@ The cwd every tool call ran against stays derivable from the file alone:
 
 ### `/rehome [path] [--fork|--move]`
 
-Rehome the current session. Defaults to the process's current directory.
-Without a mode flag you are prompted:
+Rehome the current session. With no path argument, an interactive directory
+picker opens (type to fuzzy-filter, arrows to navigate, Enter/→ to descend,
+←/Backspace to go up, `./` to pick the shown directory, Esc to cancel);
+outside TUI mode it falls back to the process's current directory. Path
+arguments get native autocompletion for directories (and the flags), and a
+leading `~` is expanded. Without a mode flag you are prompted:
 
 - **Fork**: copy the session to the new cwd, keep the old file (it stays
   listed under the old workdir as an archive),
@@ -128,6 +132,7 @@ files. `test/cwd-probe-drive.mjs` verifies other extensions observe the new
 ```sh
 node test/drive.mjs
 node test/cwd-probe-drive.mjs
+node test/dir-picker.test.mjs
 ```
 
 Both use an isolated `PI_CODING_AGENT_DIR`/`PI_CODING_AGENT_SESSION_DIR`

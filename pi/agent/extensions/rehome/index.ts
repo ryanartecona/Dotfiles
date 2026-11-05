@@ -42,8 +42,10 @@
 
 import { appendFileSync, closeSync, existsSync, openSync, readSync, realpathSync } from "node:fs";
 import { unlink } from "node:fs/promises";
-import { homedir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
+import { fuzzyFilter } from "@earendil-works/pi-tui";
+import { completeDirectories, expandTilde } from "./dir-picker.ts";
+import { DirectoryPickerComponent } from "./dir-picker-component.ts";
 import {
 	ExtensionRunner,
 	SessionManager,
@@ -178,12 +180,7 @@ function normalizeCwd(p: string): string {
 	}
 }
 
-/** Expand a leading ~ like pi does (~ and ~/ only). */
-function expandTilde(p: string): string {
-	if (p === "~") return homedir();
-	if (p.startsWith("~/")) return join(homedir(), p.slice(2));
-	return p;
-}
+
 
 /** Read only the header line of a session file (bounded). */
 function readSessionFileCwd(sessionFile: string): string | undefined {
@@ -387,7 +384,8 @@ export default function (pi: ExtensionAPI) {
 	pi.registerCommand("rehome", {
 		description:
 			"Rehome this session to a new working directory. Usage: /rehome [path] [--fork|--move] " +
-			"(default path: current directory; prompts for fork/move when no flag is given)",
+			"(no path: opens an interactive directory picker; prompts for fork/move when no flag is given)",
+		getArgumentCompletions: (prefix) => completeDirectories(prefix, process.cwd(), fuzzyFilter),
 		handler: async (args, ctx) => {
 			const words = args.split(/\s+/).filter((w) => w.length > 0);
 			let modeFlag: RehomeMode | undefined;
@@ -401,10 +399,23 @@ export default function (pi: ExtensionAPI) {
 					return;
 				}
 			}
-			const expandedArg = pathArg ? expandTilde(pathArg) : undefined;
-			const targetCwd = normalizeCwd(
-				expandedArg ? (isAbsolute(expandedArg) ? expandedArg : resolve(process.cwd(), expandedArg)) : process.cwd(),
-			);
+			let targetCwd: string;
+			if (pathArg) {
+				const expandedArg = expandTilde(pathArg);
+				targetCwd = normalizeCwd(isAbsolute(expandedArg) ? expandedArg : resolve(process.cwd(), expandedArg));
+			} else if (ctx.mode === "tui") {
+				// No path: interactive directory picker, starting at the process cwd.
+				const picked = await ctx.ui.custom<string | undefined>(
+					(tui, theme, _keybindings, done) => new DirectoryPickerComponent(tui, theme, normalizeCwd(process.cwd()), done),
+				);
+				if (!picked) {
+					ctx.ui.notify("rehome cancelled", "info");
+					return;
+				}
+				targetCwd = normalizeCwd(picked);
+			} else {
+				targetCwd = normalizeCwd(process.cwd());
+			}
 			const currentCwd = normalizeCwd(ctx.sessionManager.getCwd());
 			if (targetCwd === currentCwd) {
 				ctx.ui.notify("rehome: session already lives in that directory", "info");
