@@ -2,8 +2,10 @@
 #
 # Each profile compiles to a per-bash-call sandbox (srt) config and a
 # path guard for pi's file tools. Switch with /hp-profile (or /hp).
-# Path entries support ~, $CWD (session cwd), and $ENV_VAR expansion;
-# subpath semantics (an entry covers everything under it).
+# Path entries support ~, $CWD (session cwd), $GIT_COMMON_DIR (the repo's
+# shared git dir — outside $CWD in a linked worktree, so git commits/objects
+# writes land there), and $ENV_VAR expansion; subpath semantics (an entry
+# covers everything under it).
 #
 # Top-level extras:
 #   cycleProfiles = ["dev", "offline", "audit"]  # optional alt+n/alt+p subset;
@@ -47,7 +49,7 @@ deniedDomains = ["169.254.169.254", "metadata.google.internal"]
 # macOS (where it is /private/tmp) and on Linux.
 [profiles.dev]
 description = "cwd + caches writable, credential stores unreadable, open network"
-filesystem.allowWrite = ["$CWD", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.allowWrite = ["$CWD", "$GIT_COMMON_DIR", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
 filesystem.denyWrite = []
 filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.config/gh/hosts.yml"]
 network.mode = "open"
@@ -57,7 +59,7 @@ tmuxProfile = "default"
 # No network at all; cwd writable.
 [profiles.offline]
 description = "fully offline, cwd writable"
-filesystem.allowWrite = ["$CWD", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
+filesystem.allowWrite = ["$CWD", "$GIT_COMMON_DIR", "/tmp", "~/.npm", "~/.cache", "~/Library/Caches"]
 filesystem.denyRead = ["~/.aws", "~/.gnupg", "~/.ssh", "~/.config/gh/hosts.yml"]
 network.mode = "offline"
 sandboxUserBash = true

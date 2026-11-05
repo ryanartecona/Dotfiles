@@ -7,6 +7,7 @@
  *   .pi/hallpass.toml           (project, cwd-relative)
  */
 
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
@@ -521,11 +522,43 @@ export function realpathBestEffort(p: string): string {
 	}
 }
 
-/** Expand $CWD, ~, and $ENV_VARS; resolve relative paths and symlinks. Globs stay as-is. */
+/**
+ * `git rev-parse --path-format=absolute --git-common-dir` for cwd, cached per
+ * cwd. In a linked worktree, .git is a file and git metadata (objects, refs,
+ * index) lives in the main worktree's .git, outside $CWD — hence the
+ * $GIT_COMMON_DIR builtin for path rules. When cwd is not inside a git repo,
+ * returns a sentinel path that matches nothing: an empty expansion would
+ * resolve against cwd and silently widen allowWrite to the session cwd.
+ */
+const GIT_COMMON_DIR_SENTINEL = "/dev/null/.hallpass-no-git-common-dir";
+const gitCommonDirCache = new Map<string, string>();
+
+export function gitCommonDir(cwd: string): string {
+	const cached = gitCommonDirCache.get(cwd);
+	if (cached !== undefined) return cached;
+	let dir = GIT_COMMON_DIR_SENTINEL;
+	try {
+		const out = execFileSync("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], {
+			cwd,
+			encoding: "utf8",
+			stdio: ["ignore", "pipe", "ignore"],
+		}).trim();
+		if (out) dir = out;
+	} catch {
+		// Not a git repo (or git missing): keep the sentinel.
+	}
+	gitCommonDirCache.set(cwd, dir);
+	return dir;
+}
+
+/** Expand $CWD, $GIT_COMMON_DIR, ~, and $ENV_VARS; resolve relative paths and symlinks. Globs stay as-is. */
 export function expandPath(entry: string, cwd: string): string {
 	let p = entry;
 	if (p === "~" || p.startsWith("~/")) p = homedir() + p.slice(1);
 	p = p.replaceAll("$CWD", cwd);
+	// Builtin, not an env var: expand before the generic $VAR pass consumes it.
+	if (p.includes("${GIT_COMMON_DIR}")) p = p.replaceAll("${GIT_COMMON_DIR}", gitCommonDir(cwd));
+	if (p.includes("$GIT_COMMON_DIR")) p = p.replaceAll("$GIT_COMMON_DIR", gitCommonDir(cwd));
 	p = p.replace(/\$\{(\w+)\}|\$(\w+)/g, (_m, braced, bare) => process.env[braced ?? bare] ?? "");
 	if (hasGlobChars(p)) return p;
 	if (!isAbsolute(p)) p = resolve(cwd, p);

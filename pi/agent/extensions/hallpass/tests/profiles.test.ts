@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import test from "node:test";
 import {
+	expandPath,
 	isEmptyProfilePatch,
 	loadConfig,
 	parseSessionPatch,
+	realpathBestEffort,
 	resolveEffectiveProfile,
 	toSrtConfig,
 	type HallpassConfig,
@@ -280,4 +283,18 @@ test("shared status includes session state and agentUsage; approval preview cont
 	assert.match(preview, /- network: offline/);
 	assert.match(preview, /\+ network: open/);
 	assert.match(preview, /does not edit hallpass\.toml/);
+});
+
+test("$GIT_COMMON_DIR expands to the repo's common git dir; sentinel outside repos", () => {
+	// The extension dir lives inside the Dotfiles repo (possibly a worktree).
+	const repoDir = dirname(import.meta.dirname);
+	const expected = execFileSync("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], {
+		cwd: repoDir,
+		encoding: "utf8",
+	}).trim();
+	assert.equal(expandPath("$GIT_COMMON_DIR", repoDir), realpathBestEffort(expected));
+	assert.equal(expandPath("$GIT_COMMON_DIR/hooks", repoDir), join(realpathBestEffort(expected), "hooks"));
+
+	const nonRepo = mkdtempSync(join(tmpdir(), "hallpass-nogit-"));
+	assert.match(expandPath("$GIT_COMMON_DIR", nonRepo), /hallpass-no-git-common-dir/);
 });

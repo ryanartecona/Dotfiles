@@ -297,7 +297,9 @@ also gets an `agentProfiles` map for subagent assignment fallback
 "*"       = "dev"        # default for any subagent
 ```
 
-Variable expansion: `$CWD` (session cwd), `~`, env vars. Profile configs
+Variable expansion: `$CWD` (session cwd), `$GIT_COMMON_DIR` (absolute
+`git rev-parse --git-common-dir`, covering linked-worktree metadata outside
+`$CWD`; a never-matching sentinel outside repos), `~`, env vars. Profile configs
 compile to srt `SandboxRuntimeConfig` at wrap time (cheap; no caching
 needed initially).
 

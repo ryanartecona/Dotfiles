@@ -95,7 +95,7 @@ network.allowedDomains = ["github.com", "*.githubusercontent.com"]
 - `tools`: signed pi tool operations described above.
 - `tmuxProfile`: one tmux-mcp profile name or a composable list of names. Omit to inherit; `[]` clears an inherited selection.
 
-Paths support `~`, `$CWD`, and other `$ENV_VAR` references. Relative paths resolve against session cwd. Existing path ancestors have symlinks resolved. Glob paths are enforced for bash by srt but skipped by the JS file-tool guard, so prefer literal paths where both surfaces matter.
+Paths support `~`, `$CWD`, `$GIT_COMMON_DIR` (absolute `git rev-parse --git-common-dir` — in a linked worktree this is the main worktree's `.git`, outside `$CWD`; matches nothing when cwd is not a repo), and other `$ENV_VAR` references. Relative paths resolve against session cwd. Existing path ancestors have symlinks resolved. Glob paths are enforced for bash by srt but skipped by the JS file-tool guard, so prefer literal paths where both surfaces matter.
 
 Per-profile/session `network.deniedDomains` is unsupported. Use only the top-level `[network]` list, which also applies in open mode.
 
