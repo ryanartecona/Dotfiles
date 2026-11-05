@@ -48,12 +48,17 @@ const FG_TOKENS = new Set([
 	"syntaxNumber", "syntaxType", "syntaxOperator", "syntaxPunctuation", "thinkingOff", "thinkingMinimal",
 	"thinkingLow", "thinkingMedium", "thinkingHigh", "thinkingXhigh", "thinkingMax", "bashMode",
 ]);
+const bgCalls = [];
 const theme = {
 	fg: (color, text) => {
 		if (!FG_TOKENS.has(color)) throw new Error(`Unknown theme color: ${color}`);
 		return text;
 	},
-	bg: (_color, text) => text,
+	bg: (color, text) => {
+		if (color !== "selectedBg") throw new Error(`Unknown theme background: ${color}`);
+		bgCalls.push({ color, text });
+		return text;
+	},
 	bold: (t) => t,
 	italic: (t) => t,
 	underline: (t) => t,
@@ -78,9 +83,11 @@ const KEYS = {
 	backspace: "\x7f", tab: "\t", shiftTab: "\x1b[Z", ctrlA: "\x01", ctrlE: "\x05",
 };
 
-/** Label of the currently selected entry line (entries start after title/hint/query). */
+/** Label of the currently selected entry line (the first "> " line is the query). */
 function selectedLabel(picker) {
-	const line = picker.render(80).slice(3).find((l) => l.startsWith("> "));
+	const lines = picker.render(80);
+	const queryIndex = lines.findIndex((l) => l.startsWith("> "));
+	const line = lines.slice(queryIndex + 1).find((l) => l.startsWith("> "));
 	return line?.slice(2);
 }
 
@@ -96,8 +103,12 @@ console.log("== render ==");
 {
 	const { picker } = makePicker();
 	const lines = picker.render(80);
-	ok("renders title", lines[0].includes("Rehome to directory"));
+	ok("renders full-width top and bottom borders", lines[0] === "─".repeat(80) && lines.at(-1) === "─".repeat(80));
+	ok("renders title", lines.some((l) => l.includes("Rehome to directory")));
+	const helpIndex = lines.findIndex((l) => l.includes("type to filter"));
+	ok("pads help text", lines[helpIndex - 1] === "" && lines[helpIndex + 1] === "");
 	ok("renders query line", lines.some((l) => l.includes("> ")));
+	ok("contrasts query background", bgCalls.some((c) => c.color === "selectedBg" && c.text.includes("> ")));
 	ok("lists fixture subdirs", lines.some((l) => l.includes("alpha/")) && lines.some((l) => l.includes("beta/")));
 	ok("pinned entries on empty query", lines.some((l) => l.includes("./")) && lines.some((l) => l.includes("~/")));
 	const errPicker = new DirectoryPickerComponent(fakeTui, theme, join(ROOT, "nope"), () => {});
@@ -117,7 +128,7 @@ console.log("== input handling ==");
 	picker.handleInput("t");
 	picker.handleInput("a"); // query "beta"
 	picker.handleInput("/");
-	ok('"/" descends into exact match', picker.render(80)[0].includes(join(ROOT, "beta")));
+	ok('"/" descends into exact match', picker.render(80).some((l) => l.includes(join(ROOT, "beta"))));
 	picker.handleInput("x");
 	picker.handleInput(KEYS.backspace);
 	ok("backspace edits query", picker.render(80).every((l) => !l.includes("cannot read")));
@@ -142,11 +153,11 @@ console.log("== selection and done ==");
 	const { picker: p3 } = makePicker();
 	p3.handleInput(KEYS.down);
 	p3.handleInput(KEYS.right); // descend into ../
-	ok("right descends", p3.render(80)[0].includes(dirname(ROOT)));
+	ok("right descends", p3.render(80).some((l) => l.includes(dirname(ROOT))));
 
 	const { picker: p4 } = makePicker();
 	p4.handleInput(KEYS.backspace); // empty query: go up
-	ok("backspace on empty query ascends", p4.render(80)[0].includes(dirname(ROOT)));
+	ok("backspace on empty query ascends", p4.render(80).some((l) => l.includes(dirname(ROOT))));
 }
 
 console.log("== tab / shift+tab ==");
@@ -164,7 +175,7 @@ console.log("== tab / shift+tab ==");
 	for (const ch of "beta") single.handleInput(ch);
 	ok("filtering to one option", selectedLabel(single) === "beta/");
 	single.handleInput(KEYS.tab);
-	ok("tab activates a single option", single.render(80)[0].includes(join(ROOT, "beta")));
+	ok("tab activates a single option", single.render(80).some((l) => l.includes(join(ROOT, "beta"))));
 }
 
 console.log(failures === 0 ? "\nALL PASS" : `\n${failures} FAILURES`);
