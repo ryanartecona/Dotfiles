@@ -24,7 +24,6 @@
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-web-access",
-    // "npm:pi-lens",
     "npm:pi-compact-tools",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-open-tui",
@@ -71,5 +70,6 @@
       "builtin:code-from-text",
       "builtin:allowed"
     ]
-  }
+  },
+  "hideThinkingBlock": true
 }
