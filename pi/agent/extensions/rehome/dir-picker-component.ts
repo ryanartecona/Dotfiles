@@ -155,11 +155,6 @@ export class DirectoryPickerComponent implements Component {
 		lines.push(t("accent", "─".repeat(width)));
 		lines.push("");
 		lines.push(`${t("accent", "Rehome to directory")}  ${t("muted", this.currentDir)}`);
-		lines.push("");
-		lines.push(
-			t("muted", 'type to filter · ↑/↓/⇥ navigate · enter/→/"/" open · ←/backspace up · ./ rehome here · esc cancel'),
-		);
-		lines.push("");
 		lines.push(...this.queryInput.render(width).map((line) => this.theme.bg("selectedBg", line)));
 		if (this.error) {
 			lines.push(t("error", "  (cannot read directory)"));
@@ -178,6 +173,9 @@ export class DirectoryPickerComponent implements Component {
 			});
 		}
 		lines.push("");
+		lines.push(
+			t("muted", 'type to filter · ↑/↓/⇥ navigate · enter/→/"/" open · ←/backspace up · ./ rehome here · esc cancel'),
+		);
 		lines.push(t("accent", "─".repeat(width)));
 		return lines.map((line) => truncateToWidth(line, width));
 	}
