@@ -17,27 +17,27 @@ window-inherit-working-directory = false
 
 # BEGIN CORGI GHOSTTY INTEGRATION
 # Applies throughout Ghostty. Reload with Cmd+Shift+comma.
-keybind = cmd+t=text:\x01c
-keybind = cmd+w=text:\x01\x1b[120;2u
-keybind = cmd+shift+t=text:\x01u
-keybind = ctrl+tab=text:\x01n
-keybind = ctrl+shift+tab=text:\x01p
-keybind = cmd+1=text:\x011
-keybind = cmd+2=text:\x012
-keybind = cmd+3=text:\x013
-keybind = cmd+4=text:\x014
-keybind = cmd+5=text:\x015
-keybind = cmd+6=text:\x016
-keybind = cmd+7=text:\x017
-keybind = cmd+8=text:\x018
-keybind = cmd+9=text:\x019
-keybind = cmd+digit_1=text:\x011
-keybind = cmd+digit_2=text:\x012
-keybind = cmd+digit_3=text:\x013
-keybind = cmd+digit_4=text:\x014
-keybind = cmd+digit_5=text:\x015
-keybind = cmd+digit_6=text:\x016
-keybind = cmd+digit_7=text:\x017
-keybind = cmd+digit_8=text:\x018
-keybind = cmd+digit_9=text:\x019
+keybind = cmd+t=text:\x02c
+keybind = cmd+w=text:\x02\x1b[120;2u
+keybind = cmd+shift+t=text:\x02u
+keybind = ctrl+tab=text:\x02n
+keybind = ctrl+shift+tab=text:\x02p
+keybind = cmd+1=text:\x021
+keybind = cmd+2=text:\x022
+keybind = cmd+3=text:\x023
+keybind = cmd+4=text:\x024
+keybind = cmd+5=text:\x025
+keybind = cmd+6=text:\x026
+keybind = cmd+7=text:\x027
+keybind = cmd+8=text:\x028
+keybind = cmd+9=text:\x029
+keybind = cmd+digit_1=text:\x021
+keybind = cmd+digit_2=text:\x022
+keybind = cmd+digit_3=text:\x023
+keybind = cmd+digit_4=text:\x024
+keybind = cmd+digit_5=text:\x025
+keybind = cmd+digit_6=text:\x026
+keybind = cmd+digit_7=text:\x027
+keybind = cmd+digit_8=text:\x028
+keybind = cmd+digit_9=text:\x029
 # END CORGI GHOSTTY INTEGRATION
