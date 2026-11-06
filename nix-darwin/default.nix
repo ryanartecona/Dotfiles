@@ -77,8 +77,22 @@ in
       modules = [
         ./common.nix
         home-manager.darwinModules.home-manager
-        ({ lib, ... }: {
+        ({ lib, pkgs, ... }: {
           # use mise, which conflicts with direnv
+          environment.systemPackages = with pkgs; [
+            # TEMP: pull newer mise from upstream master until nixpkgs-unstable
+            # catches up past 2026.10.17
+            (mise.overrideAttrs (old: rec {
+              version = "2026.11.3";
+              src = pkgs.fetchFromGitHub {
+                owner = "jdx";
+                repo = "mise";
+                tag = "v${version}";
+                hash = "sha256-rH9yZQIxpTqG0qSJhX0BtZ61qoQPf0vo/hCMmFXTZPM=";
+              };
+              cargoHash = "sha256-lrzYiAQwBru6BilEgaNBGUyb8giVAoFqmHDboPSHhvs=";
+            }))
+          ];
           programs.direnv.enable = lib.mkForce false;
         })
       ];
