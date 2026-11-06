@@ -10,3 +10,5 @@ emacs.d/persps-layouts
 
 # Other junk
 emacs.d/rake.cache
+
+alfred/Alfred.alfredpreferences/workflows/user.workflow.*/icons/
