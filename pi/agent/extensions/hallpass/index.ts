@@ -281,7 +281,7 @@ export default function hallpass(pi: ExtensionAPI) {
 		}
 	}
 
-	function previewSessionEdit(toml: string, expectedRevision: number): string {
+	function previewSessionEdit(toml: string, expectedRevision: number, rationale: string): string {
 		assertRevision(expectedRevision);
 		const base = currentBaseProfile();
 		if (!base) throw new Error("no active configured profile to extend");
@@ -291,6 +291,7 @@ export default function hallpass(pi: ExtensionAPI) {
 			resolveEffectiveProfile(base, sessionPatch),
 			resolveEffectiveProfile(base, patch),
 			normalizeSessionToml(patch, toml),
+			rationale,
 		);
 	}
 
@@ -412,6 +413,9 @@ export default function hallpass(pi: ExtensionAPI) {
 			"# Example: permit only GitHub network access (setting the mode is required)",
 			"# network.mode = \"allowlist\"",
 			"# network.allowedDomains = [\"+github.com\", \"+*.githubusercontent.com\"]",
+			"#",
+			"# Example: permit pseudo-terminal allocation for interactive/TUI tests (macOS only)",
+			"# allowPty = true",
 			"#",
 			"# Example: remove an inherited write root (or use raw [] to clear all inherited roots)",
 			"# filesystem.allowWrite = [\"-/tmp\"]",

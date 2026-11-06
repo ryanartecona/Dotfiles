@@ -128,7 +128,11 @@ export async function requestSessionEditApproval(
 						padded(theme.fg("error", line));
 					} else if (line.startsWith("  ")) {
 						padded(theme.fg("muted", line));
-					} else if (line === "Effective policy diff (- current, + proposed):" || line === "Complete session overlay:") {
+					} else if (
+						line === "Agent rationale:" ||
+						line === "Effective policy diff (- current, + proposed):" ||
+						line === "Complete session overlay:"
+					) {
 						padded(theme.fg("accent", theme.bold(line)));
 					} else if (line.startsWith("This changes only the current in-memory session.")) {
 						padded(theme.fg("muted", line));

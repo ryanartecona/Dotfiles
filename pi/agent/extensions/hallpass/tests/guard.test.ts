@@ -18,6 +18,7 @@ function makeProfile(filesystem: Partial<Profile["filesystem"]>): Profile {
 		name: "test",
 		inheritanceChain: ["test"],
 		sandbox: true,
+		allowPty: false,
 		filesystem: {
 			denyRead: [],
 			allowRead: [],

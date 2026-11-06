@@ -50,6 +50,7 @@ export interface ProfilePatch {
 	description?: string;
 	agentUsage?: string;
 	sandbox?: boolean;
+	allowPty?: boolean;
 	filesystem: FilesystemProfilePatch;
 	network: NetworkProfilePatch;
 	tools?: string[];
@@ -68,6 +69,8 @@ export interface Profile {
 	agentUsage?: string;
 	/** false = bash commands run unsandboxed (escape hatch). File-tool guard still applies. */
 	sandbox: boolean;
+	/** macOS only: permit allocation and use of pseudo-terminals inside the sandbox. */
+	allowPty: boolean;
 	filesystem: FilesystemProfile;
 	network: NetworkProfile;
 	/** Resolved pi tool-selection operations, e.g. ["-write", "+grep"]. */
@@ -144,6 +147,7 @@ const PROFILE_KEYS = new Set([
 	"description",
 	"agentUsage",
 	"sandbox",
+	"allowPty",
 	"filesystem",
 	"network",
 	"tools",
@@ -191,6 +195,8 @@ function parseProfilePatch(
 	else if (raw.agentUsage !== undefined) warnings.push(`${label}: agentUsage must be a string`);
 	if (typeof raw.sandbox === "boolean") patch.sandbox = raw.sandbox;
 	else if (raw.sandbox !== undefined) warnings.push(`${label}: sandbox must be a boolean`);
+	if (typeof raw.allowPty === "boolean") patch.allowPty = raw.allowPty;
+	else if (raw.allowPty !== undefined) warnings.push(`${label}: allowPty must be a boolean`);
 	if (typeof raw.sandboxUserBash === "boolean") patch.sandboxUserBash = raw.sandboxUserBash;
 	else if (raw.sandboxUserBash !== undefined) warnings.push(`${label}: sandboxUserBash must be a boolean`);
 
@@ -252,6 +258,7 @@ export function isEmptyProfilePatch(patch: ProfilePatch): boolean {
 		patch.description === undefined &&
 		patch.agentUsage === undefined &&
 		patch.sandbox === undefined &&
+		patch.allowPty === undefined &&
 		patch.sandboxUserBash === undefined &&
 		patch.tools === undefined &&
 		patch.tmuxProfiles === undefined &&
@@ -283,6 +290,7 @@ function defaultProfile(name: string): Profile {
 		name,
 		inheritanceChain: [name],
 		sandbox: true,
+		allowPty: false,
 		filesystem: { denyRead: [], allowRead: [], allowWrite: [], denyWrite: [] },
 		network: { mode: "open", allowedDomains: [], allowUnixSockets: [] },
 		sandboxUserBash: false,
@@ -300,6 +308,7 @@ function failClosedProfile(name: string): Profile {
 			"This hallpass profile is invalid and has been replaced by a fail-closed lockdown. " +
 			"Do not attempt workarounds. Ask the user to fix hallpass.toml and run /hp-reload.",
 		sandbox: true,
+		allowPty: false,
 		filesystem: { denyRead: ["/"], allowRead: [], allowWrite: [], denyWrite: ["/"] },
 		network: { mode: "offline", allowedDomains: [], allowUnixSockets: [] },
 		tools: ["-bash", "-write", "-edit", "-Agent"],
@@ -315,6 +324,7 @@ function applyPatch(base: Profile, patch: ProfilePatch, name: string): Profile {
 		description: patch.description !== undefined ? patch.description : base.description,
 		agentUsage: patch.agentUsage !== undefined ? patch.agentUsage : base.agentUsage,
 		sandbox: patch.sandbox !== undefined ? patch.sandbox : base.sandbox,
+		allowPty: patch.allowPty !== undefined ? patch.allowPty : base.allowPty,
 		filesystem: {
 			denyRead: mergeList(base.filesystem.denyRead, patch.filesystem.denyRead) ?? [],
 			allowRead: mergeList(base.filesystem.allowRead, patch.filesystem.allowRead) ?? [],
@@ -570,12 +580,14 @@ function expandAll(entries: string[], cwd: string): string[] {
 }
 
 /**
- * Compile per-call srt config. Domain policy remains in sandbox.ts because srt's
- * proxy ignores customConfig.network.allowedDomains. allowUnixSockets is also
- * handled there: srt 0.0.80 reads it from global config at wrap time.
+ * Compile per-call srt config, including the macOS allowPty grant. Domain policy
+ * remains in sandbox.ts because srt's proxy ignores customConfig.network.allowedDomains.
+ * allowUnixSockets is also handled there: srt 0.0.80 reads it from global config
+ * at wrap time.
  */
 export function toSrtConfig(profile: Profile, cwd: string): Partial<SandboxRuntimeConfig> {
 	return {
+		allowPty: profile.allowPty,
 		filesystem: {
 			denyRead: expandAll(profile.filesystem.denyRead, cwd),
 			allowRead: expandAll(profile.filesystem.allowRead, cwd),
@@ -595,6 +607,7 @@ export function summarizeProfile(profile: Profile): string {
 	const lines = [
 		`profile: ${profile.name}${profile.description ? ` — ${profile.description}` : ""}${profile.invalid ? " [INVALID; FAIL-CLOSED]" : ""}`,
 		`sandbox: ${profile.sandbox ? "on" : "OFF (bash unsandboxed)"}`,
+		`allow pty: ${profile.allowPty ? "on (macOS only)" : "off"}`,
 		`network: ${profile.network.mode}${profile.network.mode === "allowlist" ? ` (${profile.network.allowedDomains.join(", ") || "none"})` : ""}`,
 		`unix sockets: ${profile.network.allowUnixSockets.length ? profile.network.allowUnixSockets.join(", ") : "(none allowed)"}`,
 		`write: ${profile.filesystem.allowWrite.length ? profile.filesystem.allowWrite.join(", ") : "(nothing writable outside srt defaults)"}`,

@@ -67,9 +67,13 @@ function diffLines(before: string[], after: string[]): string[] {
 	return output;
 }
 
-export function formatSessionEditPreview(current: Profile, proposed: Profile, toml: string): string {
+export function formatSessionEditPreview(current: Profile, proposed: Profile, toml: string, rationale: string): string {
 	const diff = diffLines(summarizeProfile(current).split("\n"), summarizeProfile(proposed).split("\n"));
 	return [
+		"Agent rationale:",
+		"",
+		rationale,
+		"",
 		"Effective policy diff (- current, + proposed):",
 		"",
 		...diff,

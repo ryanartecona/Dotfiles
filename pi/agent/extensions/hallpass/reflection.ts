@@ -7,7 +7,7 @@ import { formatHallpassStatus, type HallpassStatus } from "./status.ts";
 export interface ReflectionHooks {
 	getStatus: () => HallpassStatus;
 	/** Validate revision + TOML and build an approval diff without changing state. */
-	previewSessionEdit: (toml: string, expectedRevision: number) => string;
+	previewSessionEdit: (toml: string, expectedRevision: number, rationale: string) => string;
 	/** Revalidate revision + TOML, then apply the overlay and its side effects. */
 	applySessionEdit: (toml: string, expectedRevision: number, ctx: ExtensionContext) => string;
 }
@@ -38,12 +38,16 @@ export function registerReflectionTools(pi: ExtensionAPI, hooks: ReflectionHooks
 			"Request user approval for a complete replacement of the ephemeral per-session hallpass overlay. " +
 			"First call hallpass_status and pass its current session revision. Send the complete desired overlay " +
 			"as TOML profile fields (without a [profiles.name] table); an empty string clears all overrides. " +
-			"Every request requires interactive user approval. Load the hallpass skill for schema, inheritance, " +
-			"signed-list delta syntax, and examples rather than guessing field semantics.",
+			"Every request requires interactive user approval and a brief rationale explaining why the access is needed. " +
+			"Load the hallpass skill for schema, inheritance, signed-list delta syntax, and examples rather than guessing field semantics.",
 		promptGuidelines: [
 			"Use hallpass_session_edit when a task needs a session-only policy change; the user must approve every request.",
 		],
 		parameters: Type.Object({
+			rationale: Type.String({
+				minLength: 1,
+				description: "Brief explanation of the blocked task and why this specific policy change is needed",
+			}),
 			toml: Type.String({ description: "Complete desired session overlay as TOML, or an empty string to clear it" }),
 			expectedRevision: Type.Integer({
 				minimum: 0,
@@ -63,9 +67,18 @@ export function registerReflectionTools(pi: ExtensionAPI, hooks: ReflectionHooks
 				};
 			}
 
+			const rationale = params.rationale.trim();
+			if (!rationale) {
+				return {
+					content: [{ type: "text", text: "hallpass session edit requires a non-empty rationale; no changes were made." }],
+					details: { applied: false, reason: "missing rationale" },
+					isError: true,
+				};
+			}
+
 			let preview: string;
 			try {
-				preview = hooks.previewSessionEdit(params.toml, params.expectedRevision);
+				preview = hooks.previewSessionEdit(params.toml, params.expectedRevision, rationale);
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
 				return {

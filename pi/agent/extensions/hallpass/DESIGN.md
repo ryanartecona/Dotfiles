@@ -175,6 +175,9 @@ Chosen over raw SBPL codegen and over Microsoft MXC.
 - **Dynamic updates**: `updateConfig()` is atomic and live-swaps network
   allowlists on the running proxy (per-request re-read, no restart).
   Filesystem config is baked at wrap time — fine, because we wrap per call.
+- **Per-call PTY grants**: top-level `allowPty` (macOS only, default false) is
+  read from `customConfig` on every wrap. It adds `(allow pseudo-tty)` plus
+  read/write/ioctl rules for `/dev/ptmx` and `/dev/ttys*`; Linux ignores it.
 - **Per-invocation network grants**:
   `registerCommandNetworkLists(commandId, {allowedDomains})` /
   `unregisterCommandNetworkLists(commandId)` — allowlists keyed by an
@@ -272,6 +275,7 @@ network.mode = "open"               # open | offline | allowlist
 network.allowUnixSockets = []        # macOS socket-path grants; Linux ignores
 tools = ["+grep", "+find", "+ls"]   # pi tool-selection delta (chunk: tools)
 sandboxUserBash = false             # wrap `!`/`!!` too?
+allowPty = false                    # macOS pseudo-terminal allocation
 tmuxProfile = "default"             # fine-grain ref (chunk 4)
 
 [profiles.audit]
@@ -375,8 +379,8 @@ callback support — chunk 2 decision).
 
 1. Model calls `bash`; pi dispatches hallpass's replacement `execute(id,
    params, signal, onUpdate)`.
-2. Hallpass reads current profile ref → compiles per-call fs + expanded Unix
-   socket config.
+2. Hallpass reads current profile ref → compiles per-call fs, `allowPty`, and
+   expanded Unix socket config.
 3. allowlist profile: `registerCommandNetworkLists(randomId, …)`.
 4. Under the wrap queue, temporarily install any socket list and call
    `wrapWithSandbox(command, undefined, srtConfig, signal, {commandId:
@@ -591,8 +595,9 @@ important.
    with a fresh runtime.
 4. **Reflection tools.** `hallpass_status` is direct/default-enabled and shares
    one status representation with `/hp-status`. `hallpass_session_edit` accepts
-   the complete desired overlay plus a status-issued revision, previews an
-   effective-policy diff, and requires `ctx.hasUI` plus explicit confirmation.
+   the complete desired overlay, a status-issued revision, and a required brief
+   rationale; previews that rationale alongside an effective-policy diff; and
+   requires `ctx.hasUI` plus explicit confirmation.
    In the TUI, Enter approves/rejects immediately while typing on either option
    opens a bordered optional multiline note editor; the decision note is
    returned to the agent. Outer borders, padded sections, and colored diff rows
@@ -602,7 +607,11 @@ important.
    Side effects run through the same apply path as
    switches; a secondary synchronization failure is reported as committed-with-
    errors rather than falsely claiming the overlay was not applied.
-5. **Agent docs.** `skills/hallpass/SKILL.md` owns schema, inheritance, list,
+5. **PTY allocation.** `allowPty` is a default-off, inheritable scalar available
+   to configured profiles and session overlays. It compiles to srt's per-call
+   top-level `allowPty`; status and approval diffs show the effective value.
+   srt applies it on macOS only and ignores it on Linux.
+6. **Agent docs.** `skills/hallpass/SKILL.md` owns schema, inheritance, list,
    enforcement, and session-edit guidance. The edit tool references that skill
    rather than duplicating it. The extension returns its skill directory from
    `resources_discover`, covering package and direct-extension installs without

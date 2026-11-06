@@ -43,6 +43,7 @@ default = "child"
 description = "base"
 agentUsage = "base instructions"
 sandboxUserBash = true
+allowPty = true
 filesystem.allowWrite = ["/a", "/b"]
 filesystem.denyRead = ["/secret"]
 network.mode = "offline"
@@ -64,6 +65,7 @@ tools = ["+write"]
 	assert.deepEqual(child.inheritanceChain, ["base", "child"]);
 	assert.equal(child.agentUsage, "base instructions");
 	assert.equal(child.sandboxUserBash, true);
+	assert.equal(child.allowPty, true);
 	assert.deepEqual(child.filesystem.allowWrite, ["/b", "/c"]);
 	assert.deepEqual(child.filesystem.denyRead, []);
 	assert.equal(child.network.mode, "offline");
@@ -178,6 +180,7 @@ filesystem.allowWrite = ["+/project"]
 test("session parser accepts profile fragments and rejects persistent/global fields", () => {
 	const patch = parseSessionPatch(`
 agentUsage = "session only"
+allowPty = true
 filesystem.allowWrite = ["+$CWD"]
 network.mode = "allowlist"
 network.allowedDomains = ["+github.com"]
@@ -185,10 +188,12 @@ network.allowUnixSockets = ["+$CWD/session.sock"]
 tools = ["+write"]
 `);
 	assert.equal(patch.agentUsage, "session only");
+	assert.equal(patch.allowPty, true);
 	assert.deepEqual(patch.filesystem.allowWrite, ["+$CWD"]);
 	assert.equal(patch.network.mode, "allowlist");
 	assert.deepEqual(patch.network.allowUnixSockets, ["+$CWD/session.sock"]);
 	assert.deepEqual(patch.tools, ["+write"]);
+	assert.throws(() => parseSessionPatch(`allowPty = "yes"`), /allowPty must be a boolean/);
 	assert.throws(() => parseSessionPatch(`extends = "dev"`), /extends is implicit|unknown field/);
 	assert.throws(() => parseSessionPatch(`cycleProfiles = ["dev"]`), /unknown field/);
 	assert.throws(() => parseSessionPatch(`[network]\ndeniedDomains = ["example.com"]`), /deniedDomains/);
@@ -216,6 +221,7 @@ filesystem.allowWrite = ["+"]
 	assert.deepEqual(dev.filesystem.denyRead, ["/"]);
 	const attemptedUnlock = resolveEffectiveProfile(dev, parseSessionPatch(`
 sandbox = false
+allowPty = true
 tools = ["+bash", "+write", "+edit", "+Agent"]
 filesystem.denyRead = []
 filesystem.denyWrite = []
@@ -223,6 +229,7 @@ network.mode = "open"
 `));
 	assert.equal(attemptedUnlock.invalid, true);
 	assert.equal(attemptedUnlock.sandbox, true);
+	assert.equal(attemptedUnlock.allowPty, false);
 	assert.equal(attemptedUnlock.network.mode, "offline");
 	assert.deepEqual(attemptedUnlock.tools, ["-bash", "-write", "-edit", "-Agent"]);
 	assert.deepEqual(attemptedUnlock.filesystem.denyRead, ["/"]);
@@ -239,6 +246,7 @@ agentUsage = "plan first"
 `);
 	const base = getProfile(config, "audit");
 	const patch = parseSessionPatch(`
+allowPty = true
 filesystem.allowWrite = ["+$CWD"]
 network.mode = "allowlist"
 network.allowedDomains = ["+github.com"]
@@ -247,6 +255,8 @@ tools = ["+write", "+edit"]
 `);
 	const effective = resolveEffectiveProfile(base, patch);
 	assert.deepEqual(effective.filesystem.allowWrite, ["$CWD"]);
+	assert.equal(effective.allowPty, true);
+	assert.equal(base.allowPty, false);
 	assert.equal(effective.network.mode, "allowlist");
 	assert.deepEqual(effective.network.allowedDomains, ["github.com"]);
 	assert.deepEqual(effective.network.allowUnixSockets, ["$CWD/session.sock"]);
@@ -257,6 +267,7 @@ tools = ["+write", "+edit"]
 	assert.equal(base.network.mode, "offline");
 	assert.deepEqual(base.tools, ["-write", "-edit"]);
 	const srtConfig = toSrtConfig(effective, "/work");
+	assert.equal(srtConfig.allowPty, true);
 	assert.deepEqual(srtConfig.network?.allowUnixSockets, ["/work/session.sock"]);
 	assert.equal(srtConfig.network?.allowedDomains, undefined, "proxy domains must remain outside customConfig");
 });
@@ -279,9 +290,16 @@ test("shared status includes session state and agentUsage; approval preview cont
 	assert.match(status, /network\.mode = "open"/);
 	assert.match(status, /agentUsage:\nreview only/);
 	assert.match(status, /169\.254\.169\.254/);
-	const preview = formatSessionEditPreview(base, proposed, `network.mode = "open"`);
+	const preview = formatSessionEditPreview(
+		base,
+		proposed,
+		`network.mode = "open"`,
+		"The test suite needs to fetch its fixture from the configured package registry.",
+	);
+	assert.match(preview, /Agent rationale:\n\nThe test suite needs to fetch its fixture/);
 	assert.match(preview, /- network: offline/);
 	assert.match(preview, /\+ network: open/);
+	assert.match(preview, /allow pty: off/);
 	assert.match(preview, /does not edit hallpass\.toml/);
 });
 

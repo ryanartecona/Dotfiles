@@ -28,6 +28,7 @@ filesystem.allowWrite = ["$CWD", "/tmp"]
 filesystem.denyRead = ["~/.aws", "~/.gnupg"]
 network.mode = "open"
 sandboxUserBash = false
+allowPty = false
 tmuxProfile = "default"
 
 [profiles.offline]
@@ -87,6 +88,7 @@ network.allowedDomains = ["github.com", "*.githubusercontent.com"]
 - `description`: human/model-facing summary.
 - `agentUsage`: agent-facing usage instructions.
 - `sandbox`: defaults to true. False leaves bash unsandboxed; the file-tool guard still applies.
+- `allowPty`: defaults to false. On macOS, true permits pseudo-terminal allocation and access to `/dev/ptmx` and `/dev/ttys*` for TUI tests and interactive programs. Ignored by srt on Linux. Enable only when needed.
 - `sandboxUserBash`: defaults to false. When true, also sandbox user-typed `!`/`!!` commands.
 - `filesystem.denyRead`, `allowRead`, `allowWrite`, `denyWrite`: string lists passed to srt and used by the file-tool guard. An `allowRead` entry can reallow a subpath of a `denyRead` root.
 - `network.mode`: `"open"`, `"offline"`, or `"allowlist"`; root default is `"open"`.
@@ -111,8 +113,8 @@ For agent-requested edits:
 
 1. Call `hallpass_status`; preserve any existing overrides that should remain and note its session revision.
 2. Build the **complete desired overlay**, not merely an incremental fragment.
-3. Call `hallpass_session_edit` with that TOML and `expectedRevision`.
-4. The user sees the effective-policy diff and must approve. In the TUI they can attach an optional note to either decision by typing while that option is selected; any approval note or rejection reason is returned in the tool result. Rejection, cancellation/abort, stale revisions, invalid TOML, and noninteractive sessions leave policy unchanged.
+3. Call `hallpass_session_edit` with that TOML, `expectedRevision`, and a brief `rationale` naming the blocked task and why the specific change is needed.
+4. The user sees your rationale and the effective-policy diff and must approve. In the TUI they can attach an optional note to either decision by typing while that option is selected; any approval note or rejection reason is returned in the tool result. Rejection, cancellation/abort, stale revisions, invalid TOML, and noninteractive sessions leave policy unchanged.
 5. An empty TOML string clears the overlay, subject to the same approval.
 
 Example overlay that adds implementation capabilities to a restrictive base:
