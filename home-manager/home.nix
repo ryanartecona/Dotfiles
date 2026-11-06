@@ -118,11 +118,24 @@
   # into the nix store, so edits take effect immediately without a rebuild.
   # Secrets (auth.json, mcp-auth.json) and pi-managed state (install/, npm/,
   # sessions/) are deliberately not managed here.
+  #
+  # ~/.pi/agent/extensions is a real directory with one live symlink per entry
+  # (not a symlink to the whole repo dir) so tools like Corgi can drop their own
+  # extension in it: `corgi integration install pi` refuses a symlinked
+  # extensions dir (SharedExtensionsDirectory), which left Pi status in Corgi's
+  # sidebar stuck on "Starting session". Entries are enumerated from the flake
+  # source, so a *new* extension needs `git add` + a rebuild; edits to existing
+  # ones (and anything inside an extension directory) stay live.
   home.file =
     let
       live = rel: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${rel}";
+      piExtensions = lib.mapAttrs' (
+        name: _:
+        lib.nameValuePair ".pi/agent/extensions/${name}" { source = live "pi/agent/extensions/${name}"; }
+      ) (builtins.readDir ../pi/agent/extensions);
     in
-    {
+    piExtensions
+    // {
       ".pi/agent/settings.json".source = live "pi/agent/settings.json";
       ".pi/agent/mcp.json".source = live "pi/agent/mcp.json";
       ".pi/agent/keybindings.json".source = live "pi/agent/keybindings.json";
@@ -132,9 +145,17 @@
       ".pi/agent/subagents.json".source = live "pi/agent/subagents.json";
       ".pi/agent/tmux-mcp.toml".source = live "pi/agent/tmux-mcp.toml";
       ".pi/agent/zentui.json".source = live "pi/agent/zentui.json";
-      ".pi/agent/extensions".source = live "pi/agent/extensions";
       ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";
       ".pi/agent/npm/package-lock.json".source = live "pi/agent/npm/package-lock.json";
       ".pi/mcp-adapter.json".source = live "pi/mcp-adapter.json";
     };
+
+  # One-time migration: the old whole-directory symlink would make the new
+  # per-file links collide with the repo files it points at. Remove it (only if
+  # it is a symlink) before Home Manager checks link targets.
+  home.activation.piExtensionsRealDir = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -L "$HOME/.pi/agent/extensions" ]; then
+      run rm "$HOME/.pi/agent/extensions"
+    fi
+  '';
 }
