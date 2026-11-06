@@ -213,7 +213,10 @@ if status is-interactive; and type -q _autoenvstack
   _autoenvstack
 end
 
-if type -q direnv
+if type -q mise
+  # use mise over direnv if installed
+  source (mise activate fish | psub)
+else if type -q direnv
   source (direnv hook fish | psub)
   if status is-interactive; and type -q __direnv_export_eval
     __direnv_export_eval

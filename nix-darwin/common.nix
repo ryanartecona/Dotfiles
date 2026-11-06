@@ -28,7 +28,6 @@
   # List packages installed in system profile. To search by name, run:
   environment.systemPackages = with pkgs; [
     vim
-    direnv
     nixd
     nixfmt
     nix-output-monitor

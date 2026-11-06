@@ -64,19 +64,23 @@ in
       ];
     };
 
-  work = 
+  work =
     let
       config = systemConfig "aarch64-darwin";
     in
     with config;
     nix-darwin.lib.darwinSystem {
       inherit system;
-      specialArgs = config // { 
-        primaryUser = "ra"; 
+      specialArgs = config // {
+        primaryUser = "ra";
       };
       modules = [
         ./common.nix
         home-manager.darwinModules.home-manager
+        ({ lib, ... }: {
+          # use mise, which conflicts with direnv
+          programs.direnv.enable = lib.mkForce false;
+        })
       ];
     };
 }

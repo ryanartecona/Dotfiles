@@ -51,7 +51,6 @@
     cmake
     coreutils
     ctags
-    direnv
     dune_2
     # elixir
     entr
