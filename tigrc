@@ -2,3 +2,7 @@ set split-view-height = 62%
 set split-view-width = 62%
 set line-graphics = utf-8
 set mouse = yes
+
+# Commit from the status view with nvim instead of $VISUAL (code --wait).
+# tig runs ! bindings via exec (no shell), so set the env var with env(1).
+bind status C !env GIT_EDITOR=nvim git commit

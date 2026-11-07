@@ -9,7 +9,7 @@
     "pi-lens": "^4.4.5",
     "pi-mcp-adapter": "^7.0.1",
     "pi-observational-memory": "^3.1.4",
-    "pi-open-tui": "^0.4.2",
-    "pi-web-access": "^0.46.0"
+    "pi-open-tui": "^0.4.4",
+    "pi-web-access": "^0.47.0"
   }
 }

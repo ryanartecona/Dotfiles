@@ -148,6 +148,7 @@
       ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";
       ".pi/agent/npm/package-lock.json".source = live "pi/agent/npm/package-lock.json";
       ".pi/mcp-adapter.json".source = live "pi/mcp-adapter.json";
+      ".tigrc".source = live "tigrc";
     };
 
   # One-time migration: the old whole-directory symlink would make the new
