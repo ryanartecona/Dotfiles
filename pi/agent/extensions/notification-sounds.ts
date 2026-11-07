@@ -13,6 +13,16 @@
  * streaming (extension commands execute immediately, outside any tool call).
  * Blow plays when the agent run has fully settled (Claude's Stop).
  *
+ * Subagents: pi-subagents loads user extensions into each child AgentSession,
+ * so without a guard every subagent turn/settle would play sounds and fight
+ * over the tab title. Child sessions never get a TUI attached, so their
+ * `ctx.mode` stays "print" while the interactive session is "tui". Sounds and
+ * badges are therefore gated on `ctx.mode === "tui"`, which makes subagents
+ * silent by default. Opt in to a quieter subagent cue with:
+ *
+ *   PI_NOTIFY_SUBAGENT_SOUND=/System/Library/Sounds/Pop.aiff
+ *   PI_NOTIFY_SUBAGENT_VOLUME=0.3        (default when sound is set)
+ *
  * The terminal tab title also shows which tab needs your attention:
  *
  *   (no input yet)           -> "π - <cwd>" (no badge)
@@ -33,6 +43,12 @@ const STOP_SOUND = "/System/Library/Sounds/Blow.aiff";
 // afplay volume: 1.0 is full, so 0.7 is 70%.
 const VOLUME = "0.7";
 
+// Subagent (pi-subagents child session) cue. Unset = subagents stay silent.
+// Child sessions report ctx.mode "print"; only a "tui" session gets sounds
+// and badges unless a sound is configured here.
+const SUBAGENT_SOUND = process.env.PI_NOTIFY_SUBAGENT_SOUND ?? "";
+const SUBAGENT_VOLUME = process.env.PI_NOTIFY_SUBAGENT_VOLUME ?? "0.3";
+
 // Tab-title badges. Override with env vars if these emoji do not render well
 // in your terminal.
 const IN_PROGRESS_MARKER = process.env.PI_NOTIFY_IN_PROGRESS_MARKER ?? "⏳ ";
@@ -45,12 +61,12 @@ const APP_TITLE = process.env.PI_APP_TITLE ?? "π";
 
 type BadgeKind = "in-progress" | "attention" | "completion";
 
-function play(path: string): void {
+function play(path: string, volume: string): void {
 	if (process.platform !== "darwin") return;
 	if (process.env.PI_NOTIFY_SOUNDS === "0") return;
 	try {
 		// Fire-and-forget: never block the agent or keep Pi alive on exit.
-		spawn("afplay", ["-v", VOLUME, path], { stdio: "ignore", detached: true }).unref();
+		spawn("afplay", ["-v", volume, path], { stdio: "ignore", detached: true }).unref();
 	} catch {
 		// Ignore a missing player or sound file.
 	}
@@ -114,8 +130,9 @@ export default function (pi: ExtensionAPI) {
 	// Elevate to attention badge. `ctx.isIdle()` guards against a stale tool
 	// entry after an abort.
 	pi.on("ui_prompt_start", (_event, ctx) => {
+		if (ctx.mode !== "tui") return; // subagent/headless session: no user here to alert
 		if (ctx.isIdle() || activeToolCalls.size === 0) return;
-		play(PERMISSION_SOUND);
+		play(PERMISSION_SOUND, VOLUME);
 		applyBadge(ctx, "attention");
 	});
 
@@ -129,8 +146,13 @@ export default function (pi: ExtensionAPI) {
 	// Claude `Stop` analog: the full run settled. Show completion badge.
 	pi.on("agent_settled", (_event, ctx) => {
 		activeToolCalls.clear();
-		play(STOP_SOUND);
-		applyBadge(ctx, "completion");
+		if (ctx.mode === "tui") {
+			play(STOP_SOUND, VOLUME);
+			applyBadge(ctx, "completion");
+		} else if (SUBAGENT_SOUND) {
+			// Subagent run settled: quieter opt-in cue, no badge (no tab of its own).
+			play(SUBAGENT_SOUND, SUBAGENT_VOLUME);
+		}
 	});
 
 	// Session exit: reset title to badgeless so it doesn't outlast Pi.
