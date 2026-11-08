@@ -161,6 +161,7 @@
       ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";
       ".pi/agent/npm/package-lock.json".source = live "pi/agent/npm/package-lock.json";
       ".pi/mcp-adapter.json".source = live "pi/mcp-adapter.json";
+      ".pi-lens/config.json".source = live "pi/pi-lens/config.json";
       ".tigrc".source = live "tigrc";
     };
 
@@ -170,6 +171,15 @@
   home.activation.piExtensionsRealDir = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     if [ -L "$HOME/.pi/agent/extensions" ]; then
       run rm "$HOME/.pi/agent/extensions"
+    fi
+  '';
+
+  # ~/.pi-lens/config.json predates Home Manager management as a real file;
+  # move it aside (once) so the live symlink above can take its place. The rest
+  # of ~/.pi-lens is pi-lens-managed state and stays untouched.
+  home.activation.piLensConfigRealFile = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -f "$HOME/.pi-lens/config.json" ] && [ ! -L "$HOME/.pi-lens/config.json" ]; then
+      run mv "$HOME/.pi-lens/config.json" "$HOME/.pi-lens/config.json.bak"
     fi
   '';
 }
