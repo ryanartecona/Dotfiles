@@ -125,7 +125,9 @@
   # extensions dir (SharedExtensionsDirectory), which left Pi status in Corgi's
   # sidebar stuck on "Starting session". Entries are enumerated from the flake
   # source, so a *new* extension needs `git add` + a rebuild; edits to existing
-  # ones (and anything inside an extension directory) stay live.
+  # ones (and anything inside an extension directory) stay live. ~/.pi/agent/skills
+  # and ~/.pi/agent/agents are deployed the same way (no third-party writer, but
+  # enumeration keeps one pattern).
   home.file =
     let
       live = rel: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${rel}";
@@ -133,9 +135,20 @@
         name: _:
         lib.nameValuePair ".pi/agent/extensions/${name}" { source = live "pi/agent/extensions/${name}"; }
       ) (builtins.readDir ../pi/agent/extensions);
+      piSkills = lib.mapAttrs' (
+        name: _:
+        lib.nameValuePair ".pi/agent/skills/${name}" { source = live "pi/agent/skills/${name}"; }
+      ) (builtins.readDir ../pi/agent/skills);
+      piAgents = lib.mapAttrs' (
+        name: _:
+        lib.nameValuePair ".pi/agent/agents/${name}" { source = live "pi/agent/agents/${name}"; }
+      ) (builtins.readDir ../pi/agent/agents);
     in
     piExtensions
+    // piSkills
+    // piAgents
     // {
+      "bin/roadmap-lint".source = live "pi/bin/roadmap-lint";
       ".pi/agent/settings.json".source = live "pi/agent/settings.json";
       ".pi/agent/mcp.json".source = live "pi/agent/mcp.json";
       ".pi/agent/keybindings.json".source = live "pi/agent/keybindings.json";

@@ -1,0 +1,411 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# shellcheck shell=bash
+# roadmap-lint — measure a roadmap in ai/roadmaps/ against the resolution
+# bars in roadmap-conventions.md (bundled with the roadmap skills), and
+# say which rule it broke.
+#
+# One implementation, two callers: a human (or an agent) running
+# `roadmap-lint` in a checkout, and the `roadmap-resolution` PostToolUse
+# hook, which passes the line ranges of the write it just observed and
+# asks for `--json` (a Claude Code block decision). The hook owes nothing
+# but the ranges; every bar, message, and remedy lives here.
+#
+# What it measures, per rung — the rung is inferred, never declared,
+# because a roadmap has no status field to lie in:
+#
+#   Shape     (no `---` in the plan): the plan is one bar, 100 lines, and
+#             holds no code blocks and no stage grammar.
+#   Contract  (a `---` in the plan): the bar goes per stage, and which bar
+#             follows the rung the stage declares in its own heading — 20
+#             lines for one resting at ` — shape` (there a stage is its
+#             numbered intent alone), 80 for anything past it, whether it
+#             is a ratification portion at ` — contract` or a fully
+#             written stage carrying its workspace. Each is hard-broken
+#             well past its bar (60 / 100 / 120), and the two 80s differ
+#             there: ratification material breaks sooner, because it is
+#             what the user reads line by line. Plus 70 for the material
+#             before stage 1, and every ratified stage names what it
+#             removes.
+#
+# Two scoping rules keep it from complaining about material its caller
+# did not write:
+#
+#   The Journal is outside every bar. It is append-only history rather
+#   than resolution; counting it would make a roadmap grow illegal by
+#   recording its own passes, against a bar its author is forbidden to
+#   cut back. Every measurement stops at `## Journal`.
+#
+#   A finding is reported only where the edit landed. By default that is
+#   the diff against HEAD; the hook narrows it to one write's hunks; `-a`
+#   widens it to the whole file. Findings outside the region are counted,
+#   not printed — you are told they exist without being blamed for them.
+#   A complaint you cannot act on is noise, and noise is what teaches a
+#   model to route around the gate.
+
+usage() {
+  cat <<'EOF'
+Usage: roadmap-lint [options] [file...]
+
+Check roadmaps against the Shape / Contract resolution bars. With no file
+arguments, checks every *.md under <repo root>/ai/roadmaps/.
+
+Scope — which findings get reported:
+      (default)      findings overlapping lines changed vs HEAD
+  -a, --all          the whole file, changed or not
+      --range "S E;S E"
+                     explicit line ranges (the PostToolUse hook's path)
+
+Options:
+      --json         emit a Claude Code hook block decision (one file only)
+      --fail-on LEVEL   exit 1 on 'warn' (default) or only on 'error'
+  -q, --quiet        say nothing about clean files
+  -h, --help         this text
+
+Exit: 0 nothing to report, 1 findings at or above --fail-on, 2 bad usage.
+EOF
+}
+
+WHOLE_FILE="1 2147483647"
+
+# ---------------------------------------------------------------- analysis
+# Emits, on stdout: `#rung <Shape|Contract>`, then one tab-separated
+# finding per line — severity, first line, last line, rule id, message.
+# Regions are what the scope filter intersects, so a finding about a
+# 118-line stage spans that stage and is raised by an edit anywhere in it.
+read -r -d '' ANALYZE <<'AWK' || true
+function emit(sev, a, b, rule, msg) {
+  printf "%s\t%d\t%d\t%s\t%s\n", sev, a, b, rule, msg
+}
+# A stage's rung is the marker it declares in its own heading — the
+# conventions make the heading authoritative, and it is the only claim a
+# linter can read. Unmarked means fully written, and so does ` — done`:
+# a stage that has landed was a workspace stage when it did.
+function stage_rung(name,   m) {
+  m = tolower(name)
+  if (m ~ /(—|-|--) *shape *$/)    return "shape"
+  if (m ~ /(—|-|--) *contract *$/) return "contract"
+  return "workspace"
+}
+/^## Plan/    { if (planstart == 0) { planstart = NR; next } }
+/^## Journal/ { if (jstart == 0) jstart = NR }
+/^## /        { if (endmark == 0 && (planstart > 0 || n > 0)) endmark = NR; next }
+/^### /       { n++; hline[n] = NR; hname[n] = substr($0, 5); next }
+/^---$/       { nsep++; sepline[nsep] = NR; next }
+/```/         { infence = !infence; if (infence) { nfence++; fence[nfence] = NR } next }
+/^\*{0,2}(Dies|Born|Named|Assumes)\*{0,2}:|^\*{0,2}Done when|^- \[ \]/ {
+  ngram++; gram[ngram] = NR
+  if ($0 ~ /^\*{0,2}Dies/) { ndies++; diesline[ndies] = NR }
+}
+END {
+  # Every bar stops at the Journal; stages stop at the next `## ` heading.
+  limit   = (jstart > 0) ? jstart - 1 : NR
+  planend = (endmark > 0) ? endmark : NR + 1
+  for (i = 1; i <= nsep; i++) if (sepline[i] <= limit) contract = 1
+
+  print "#rung\t" (contract ? "Contract" : "Shape")
+
+  if (contract) {
+    for (i = 1; i <= n; i++) {
+      if (hline[i] > limit) continue
+      last = ((i < n) ? hline[i+1] : planend) - 1
+      if (last > limit) last = limit
+      span = last - hline[i] + 1
+      rung = stage_rung(hname[i])
+
+      # The bar follows the rung: what each holds differs in kind. A
+      # stage at shape is a heading and one to three STE paragraphs of
+      # intent, and 20 is the room that takes. A
+      # contract stage carries Dies, Born and Named, and Born is
+      # exhaustive — every consumer-visible shape the stage adds — so it
+      # needs the room its ratification surface actually takes. An
+      # unmarked stage is that same portion plus its workspace, so its
+      # bars sit one workspace above the contract pair rather than below
+      # them: dropping the marker must never raise a complaint on text
+      # that did not change.
+      if      (rung == "shape")    { warnbar = 20;  hardbar = 60  }
+      else if (rung == "contract") { warnbar = 100; hardbar = 120 }
+      else                         { warnbar = 120; hardbar = 140 }
+
+      if (span > warnbar) {
+        lvl = (span > hardbar) ? "error" : "warn"
+        if (rung == "shape")
+          emit(lvl, hline[i], last, "stage-shape-bulk",
+               "Stage \"" hname[i] "\" declares itself at shape but runs " \
+               span " lines; the bar there is " warnbar ".")
+        else
+          emit(lvl, hline[i], last,
+               (lvl == "error") ? "stage-oversize" : "stage-length",
+               "Stage \"" hname[i] "\" is " span " lines; the bar for a " \
+               rung " stage is " warnbar ".")
+      }
+
+      # A stage with a workspace has been ratified, and a ratification
+      # portion always names what dies. Stages resting at " — shape"
+      # are exempt: their marker is the promise that they are unwritten.
+      sep = 0
+      for (j = 1; j <= nsep; j++)
+        if (sepline[j] >= hline[i] && sepline[j] <= last) { sep = sepline[j]; break }
+      if (sep > 0 && rung != "shape") {
+        found = 0
+        for (j = 1; j <= ndies; j++)
+          if (diesline[j] > hline[i] && diesline[j] < sep) found = 1
+        if (!found)
+          emit("warn", hline[i], sep, "stage-dies",
+               "Stage \"" hname[i] "\" has a ratification portion but names no Dies.")
+      }
+    }
+    if (planstart > 0) {
+      last = ((n > 0) ? hline[1] : planend) - 1
+      if (last > limit) last = limit
+      plen = last - planstart + 1
+      if (plen > 70)
+        emit("warn", planstart, last, "preamble-length",
+             "The material before stage 1 is " plen " lines; the bar is 70.")
+    }
+    if (n == 0)
+      emit("error", 1, limit, "no-stages",
+           "It carries a `---` separator but has no `### ` stage headings.")
+  } else {
+    if (limit > 100)
+      emit("error", 1, limit, "shape-length",
+           "The plan is " limit " lines (the Journal is not counted); the bar is 100.")
+    for (i = 1; i <= nfence; i++)
+      if (fence[i] <= limit)
+        emit("error", fence[i], fence[i], "shape-code-block",
+             "It contains a code block.")
+    for (i = 1; i <= ngram; i++)
+      if (gram[i] <= limit)
+        emit("error", gram[i], gram[i], "shape-grammar",
+             "It contains stage grammar (Dies/Born/Named/Assumes/tasks/Done when).")
+  }
+}
+AWK
+
+# ------------------------------------------------------------------ filter
+# Keeps findings whose region overlaps the scope, collapses repeats of one
+# rule to its first occurrence (+count), and reports how many it dropped.
+read -r -d '' FILTER <<'AWK' || true
+BEGIN {
+  FS = "\t"
+  nr = split(RANGES, part, ";")
+  for (i = 1; i <= nr; i++) {
+    split(part[i], se, " ")
+    rs[i] = se[1] + 0; re[i] = se[2] + 0
+  }
+}
+/^#/ { next }
+{
+  hit = 0
+  for (i = 1; i <= nr; i++) if (rs[i] <= $3 && re[i] >= $2) { hit = 1; break }
+  if (!hit) { dropped++; next }
+  if ($4 in seen) { extra[$4]++; next }
+  seen[$4] = 1; order[++k] = $4
+  sev[$4] = $1; ln[$4] = $2; msg[$4] = $5
+}
+END {
+  for (i = 1; i <= k; i++) {
+    r = order[i]
+    printf "%s\t%d\t%s\t%s\t%d\n", sev[r], ln[r], r, msg[r], extra[r] + 0
+  }
+  printf "#dropped\t%d\n", dropped + 0
+}
+AWK
+
+# The remedy for each rule, kept beside the rule rather than in the caller:
+# a bar the model cannot act on is the same as no bar.
+fix_for() {
+  case "$1" in
+    shape-length)
+      echo "Shape holds the goal, the findings that make it the right goal, a short STE intent per stage (one to three paragraphs), and Open questions. Nothing else. Cut it back to the bar. If the shape genuinely will not fit in 100 lines, it wants a child roadmap, not more lines."
+      ;;
+    shape-code-block)
+      echo "Interface shapes are named in Born, and Born is the Contract rung. At Shape a stage is its numbered intent alone."
+      ;;
+    shape-grammar)
+      echo "Dies / Born / Named / Assumes / tasks / Done-when belong to Contract and Workspace. Advancing a rung is the user's call, never a way to make an oversized file legal."
+      ;;
+    stage-oversize)
+      echo "A stage this far past its bar is several stages wearing one heading: split it along its own seams into stages in dependency order, each with its own Dies/Born. Reach for a child roadmap only when the stage is a sub-arc in its own right — an abstraction whose every user must be swept — never merely because it grew long."
+      ;;
+    stage-length)
+      echo "Past shape the bar is 100 lines for a ratification portion resting at \" — contract\" and 120 for a stage fully written and carrying tasks and Done-when. Past it, split the stage, or move detail that belongs to a later stage out of it. A stage that is not next should rest at \" — shape\" or \" — contract\" rather than carry speculative workspace detail."
+      ;;
+    stage-shape-bulk)
+      echo "A stage marked \" — shape\" is its numbered intent alone — one to three STE paragraphs of what changes conceptually, never how, naming the concepts and identifiers it changes so it reads cold. Cut it back to that. Deepening it is \`roadmap-stage\`'s job when the stage becomes next, against the code as it then is; taking the marker off to earn the bigger bar is a claim that the stage is fully written, and that claim is the user's to accept."
+      ;;
+    preamble-length)
+      echo "The material before stage 1 is goal, findings, constraints, and lineage. Survey detail belongs to the stage that consumes it."
+      ;;
+    no-stages)
+      echo "A roadmap past Shape is made of stages: give it \`### \` headings, or drop the \`---\` and keep it at Shape."
+      ;;
+    stage-dies)
+      echo "Deletion outranks addition, so Dies is always present. Add it, or argue the empty case in the form \`Dies: nothing — <why>\` — that claim is ratified and can be wrong. All-additive stages are a smell."
+      ;;
+    *)
+      echo "See roadmap-conventions.md, bundled with the roadmap skills."
+      ;;
+  esac
+}
+
+# Lines this file's working tree adds or changes relative to HEAD. An
+# untracked file, or a file outside a repo, is entirely new work.
+changed_ranges() {
+  local f=$1 dir abs
+  # Absolute, so the pathspec means the same thing as the -C directory it
+  # is resolved against — a relative path would silently match nothing.
+  dir=$(cd -- "$(dirname -- "$f")" && pwd)
+  abs="$dir/$(basename -- "$f")"
+  if ! git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "$WHOLE_FILE"; return
+  fi
+  if ! git -C "$dir" ls-files --error-unmatch -- "$abs" >/dev/null 2>&1; then
+    echo "$WHOLE_FILE"; return
+  fi
+  git -C "$dir" diff HEAD -U0 -- "$abs" 2>/dev/null | awk '
+    /^@@/ {
+      m = $3; sub(/^\+/, "", m)
+      split(m, p, ",")
+      s = p[1] + 0
+      l = (p[2] == "" ? 1 : p[2] + 0)
+      if (s < 1) s = 1
+      e = (l == 0) ? s : s + l - 1
+      out = out (out == "" ? "" : ";") s " " e
+    }
+    END { print out }'
+}
+
+# -------------------------------------------------------------------- main
+scope=changed
+ranges=""
+json=0
+fail_on=warn
+quiet=0
+files=()
+
+need_value() {
+  if [ "$2" -lt 2 ]; then
+    echo "roadmap-lint: $1 needs a value" >&2
+    exit 2
+  fi
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -a|--all)   scope=all ;;
+    --range)    need_value "$1" $#; scope=ranges; ranges=$2; shift ;;
+    --json)     json=1 ;;
+    --fail-on)  need_value "$1" $#; fail_on=$2; shift ;;
+    -q|--quiet) quiet=1 ;;
+    -h|--help)  usage; exit 0 ;;
+    --)         shift; while [ $# -gt 0 ]; do files+=("$1"); shift; done; break ;;
+    -*)         echo "roadmap-lint: unknown option: $1" >&2; usage >&2; exit 2 ;;
+    *)          files+=("$1") ;;
+  esac
+  shift
+done
+
+case "$fail_on" in
+  error|warn) ;;
+  *) echo "roadmap-lint: --fail-on takes 'error' or 'warn'" >&2; exit 2 ;;
+esac
+
+if [ ${#files[@]} -eq 0 ]; then
+  root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+  shopt -s nullglob
+  files=("$root"/ai/roadmaps/*.md)
+  shopt -u nullglob
+  if [ ${#files[@]} -eq 0 ]; then
+    if [ "$quiet" -eq 0 ]; then
+      echo "roadmap-lint: no roadmaps under $root/ai/roadmaps/"
+    fi
+    exit 0
+  fi
+fi
+
+if [ "$json" -eq 1 ] && [ ${#files[@]} -ne 1 ]; then
+  echo "roadmap-lint: --json takes exactly one file" >&2
+  exit 2
+fi
+
+status=0
+
+for f in "${files[@]}"; do
+  if [ ! -f "$f" ]; then
+    echo "roadmap-lint: no such file: $f" >&2
+    status=2
+    continue
+  fi
+
+  case "$scope" in
+    all)     region=$WHOLE_FILE; scope_note="whole file" ;;
+    ranges)  region=$ranges;     scope_note="the region this write touched" ;;
+    changed) region=$(changed_ranges "$f"); scope_note="lines changed vs HEAD" ;;
+    *)       region=$WHOLE_FILE; scope_note="whole file" ;;
+  esac
+  if [ -z "$region" ]; then
+    scope_note="no lines changed vs HEAD"
+  fi
+
+  raw=$(awk "$ANALYZE" < "$f")
+  rung=$(printf '%s\n' "$raw" | awk -F'\t' '$1 == "#rung" { print $2; exit }')
+  [ -n "$rung" ] || rung=Shape
+  report=$(printf '%s\n' "$raw" | awk -v RANGES="$region" "$FILTER")
+
+  dropped=0
+  findings=()
+  while IFS= read -r rec; do
+    case "$rec" in
+      "") continue ;;
+      "#dropped"*) dropped=${rec#*$'\t'}; continue ;;
+    esac
+    findings+=("$rec")
+  done <<< "$report"
+
+  if [ "$json" -eq 1 ]; then
+    if [ ${#findings[@]} -eq 0 ]; then
+      exit 0
+    fi
+    body=""
+    for rec in "${findings[@]}"; do
+      IFS=$'\t' read -r sev ln rule msg extra <<< "$rec"
+      body="$body $msg $(fix_for "$rule")"
+    done
+    jq -cn --arg r "What you just wrote to $f broke the $rung rung bar.$body Every rung has a bar — advancing a rung is the user's call and relaxes nothing. Only the region this write touched was checked, so this is yours to fix, not pre-existing material. Format: roadmap-conventions.md, bundled with the roadmap skills." \
+      '{decision: "block", reason: $r}'
+    exit 0
+  fi
+
+  if [ ${#findings[@]} -eq 0 ]; then
+    if [ "$quiet" -eq 0 ]; then
+      printf '%s — %s rung, clean (checked: %s)\n' "$f" "$rung" "$scope_note"
+      if [ "$dropped" -gt 0 ]; then
+        printf '  %d finding(s) outside the checked region; rerun with -a to see them\n' "$dropped"
+      fi
+    fi
+    continue
+  fi
+
+  printf '%s — %s rung (checked: %s)\n' "$f" "$rung" "$scope_note"
+  for rec in "${findings[@]}"; do
+    IFS=$'\t' read -r sev ln rule msg extra <<< "$rec"
+    more=""
+    if [ "$extra" -gt 0 ]; then
+      more=" (+$extra more)"
+    fi
+    printf '  %-5s L%-5s %s%s\n' "$sev" "$ln" "$msg" "$more"
+    printf '        fix: %s\n' "$(fix_for "$rule")"
+    if [ "$status" -eq 0 ] && { [ "$sev" = "error" ] || [ "$fail_on" = "warn" ]; }; then
+      status=1
+    fi
+  done
+  if [ "$dropped" -gt 0 ]; then
+    printf '  %d finding(s) outside the checked region; rerun with -a to see them\n' "$dropped"
+  fi
+done
+
+exit "$status"
