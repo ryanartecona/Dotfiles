@@ -50,6 +50,20 @@ lazy.setup({
     lazy = false,
     config = function()
       require('nvim-treesitter.configs').setup({
+        -- parsers to always keep installed (compiled for the local arch);
+        -- anything else installs on demand via auto_install below
+        ensure_installed = {
+          'bash', 'css', 'diff', 'fish', 'git_config', 'gitcommit', 'gitignore',
+          'go', 'html', 'javascript', 'json', 'jsonc', 'lua', 'markdown',
+          'markdown_inline', 'nix', 'ocaml', 'python', 'regex', 'toml', 'tsx',
+          'typescript', 'vim', 'vimdoc', 'yaml',
+        },
+        -- install ensure_installed parsers synchronously at startup, so
+        -- headless/bootstrap runs can't quit mid-compile and leave truncated
+        -- parser .so files behind
+        sync_install = true,
+        -- compile missing parsers on demand when opening a matching buffer
+        auto_install = true,
         -- https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#incremental-selection
         -- NOTE: this only works while we use the nvim-treesitter master branch,
         -- but will eventually need reconfiguring upon switching to main. See

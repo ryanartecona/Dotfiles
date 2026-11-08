@@ -136,7 +136,10 @@ ln -sf ~/Dotfiles/alfred/Alfred.alfredpreferences ~/Library/Application\ Support
 
 ## Neovim
 
-```
+On nix machines, home-manager installs neovim (`home.packages` in `home-manager/home.nix`) and live-symlinks this repo's `nvim/` to `~/.config/nvim` on the next `darwin-rebuild switch`, so config edits take effect immediately with no rebuild.
+
+On non-nix machines, symlink manually:
+```sh
 ln -s ~/Dotfiles/nvim ~/.config/nvim
 ```
 

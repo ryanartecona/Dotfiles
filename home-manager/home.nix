@@ -10,6 +10,19 @@
   ...
 }:
 
+let
+  # Live (out-of-store) symlink to a path in this repo, so edits take effect
+  # immediately without a rebuild.
+  live = rel: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${rel}";
+
+  # home.file entries for a list of $HOME-relative paths whose repo path is
+  # the same with the leading dot stripped: ".tigrc" -> "tigrc",
+  # ".pi/agent/settings.json" -> "pi/agent/settings.json".
+  dotfilesRelativeSymlinks = homePaths: lib.listToAttrs (map
+    (homePath: lib.nameValuePair homePath { source = live (lib.removePrefix "." homePath); })
+    homePaths);
+in
+
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -91,6 +104,9 @@
     terraform
     tig
     tree
+    # tree-sitter CLI: only needed for :TSInstallFromGrammar, but silences the
+    # last nvim-treesitter :checkhealth warning
+    tree-sitter
     wget
     # yarn
 
@@ -111,8 +127,12 @@
     package = null;
   };
 
-  xdg.configFile."ghostty/config".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/ghostty/config";
+  xdg.configFile."ghostty/config".source = live "ghostty/config";
+
+  # Neovim config: live-symlink the whole nvim/ dir from this repo (replaces
+  # the manual `ln -s ~/Dotfiles/nvim ~/.config/nvim` step from setup.md).
+  # neovim itself is in home.packages above.
+  xdg.configFile."nvim".source = live "nvim";
 
   # Pi (pi.dev) config: symlink live files from this repo instead of copying
   # into the nix store, so edits take effect immediately without a rebuild.
@@ -130,7 +150,6 @@
   # enumeration keeps one pattern).
   home.file =
     let
-      live = rel: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${rel}";
       piExtensions = lib.mapAttrs' (
         name: _:
         lib.nameValuePair ".pi/agent/extensions/${name}" { source = live "pi/agent/extensions/${name}"; }
@@ -147,22 +166,25 @@
     piExtensions
     // piSkills
     // piAgents
+    // dotfilesRelativeSymlinks [
+      ".pi/agent/settings.json"
+      ".pi/agent/mcp.json"
+      ".pi/agent/keybindings.json"
+      ".pi/agent/compact-tools.json"
+      ".pi/agent/pledit.json"
+      ".pi/agent/open-tui.json"
+      ".pi/agent/subagents.json"
+      ".pi/agent/tmux-mcp.toml"
+      ".pi/agent/zentui.json"
+      ".pi/agent/npm/package.json"
+      ".pi/agent/npm/package-lock.json"
+      ".pi/mcp-adapter.json"
+      ".tigrc"
+    ]
     // {
+      # repo path isn't just the home path minus the leading dot
       "bin/roadmap-lint".source = live "pi/bin/roadmap-lint";
-      ".pi/agent/settings.json".source = live "pi/agent/settings.json";
-      ".pi/agent/mcp.json".source = live "pi/agent/mcp.json";
-      ".pi/agent/keybindings.json".source = live "pi/agent/keybindings.json";
-      ".pi/agent/compact-tools.json".source = live "pi/agent/compact-tools.json";
-      ".pi/agent/pledit.json".source = live "pi/agent/pledit.json";
-      ".pi/agent/open-tui.json".source = live "pi/agent/open-tui.json";
-      ".pi/agent/subagents.json".source = live "pi/agent/subagents.json";
-      ".pi/agent/tmux-mcp.toml".source = live "pi/agent/tmux-mcp.toml";
-      ".pi/agent/zentui.json".source = live "pi/agent/zentui.json";
-      ".pi/agent/npm/package.json".source = live "pi/agent/npm/package.json";
-      ".pi/agent/npm/package-lock.json".source = live "pi/agent/npm/package-lock.json";
-      ".pi/mcp-adapter.json".source = live "pi/mcp-adapter.json";
       ".pi-lens/config.json".source = live "pi/pi-lens/config.json";
-      ".tigrc".source = live "tigrc";
     };
 
   # One-time migration: the old whole-directory symlink would make the new
@@ -171,6 +193,15 @@
   home.activation.piExtensionsRealDir = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     if [ -L "$HOME/.pi/agent/extensions" ]; then
       run rm "$HOME/.pi/agent/extensions"
+    fi
+  '';
+
+  # One-time migration: ~/.config/nvim used to be a manual symlink straight to
+  # ~/Dotfiles/nvim (per old setup.md). Remove it (only if it is a symlink) so
+  # Home Manager can install its own out-of-store link instead.
+  home.activation.nvimConfigSymlink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -L "$HOME/.config/nvim" ]; then
+      run rm "$HOME/.config/nvim"
     fi
   '';
 
