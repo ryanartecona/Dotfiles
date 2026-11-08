@@ -44,41 +44,66 @@ lazy.setup({
   {
     -- nvim-treesitter/nvim-treesitter-textobjects
     "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
     dependencies = {
-      { "nvim-treesitter/nvim-treesitter", branch = "master", lazy = false, build = ":TSUpdate" },
+      -- NOTE: the archived `master` branch of nvim-treesitter is
+      -- incompatible with Neovim >= 0.12 (its query predicates crash with
+      -- "attempt to call method 'range' (a nil value)"); `main` is required.
+      { "nvim-treesitter/nvim-treesitter", branch = "main", lazy = false, build = ":TSUpdate" },
     },
     lazy = false,
     config = function()
-      require('nvim-treesitter.configs').setup({
-        -- parsers to always keep installed (compiled for the local arch);
-        -- anything else installs on demand via auto_install below
-        ensure_installed = {
-          'bash', 'css', 'diff', 'fish', 'git_config', 'gitcommit', 'gitignore',
-          'go', 'html', 'javascript', 'json', 'jsonc', 'lua', 'markdown',
-          'markdown_inline', 'nix', 'ocaml', 'python', 'regex', 'toml', 'tsx',
-          'typescript', 'vim', 'vimdoc', 'yaml',
-        },
-        -- install ensure_installed parsers synchronously at startup, so
-        -- headless/bootstrap runs can't quit mid-compile and leave truncated
-        -- parser .so files behind
-        sync_install = true,
-        -- compile missing parsers on demand when opening a matching buffer
-        auto_install = true,
-        -- https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#incremental-selection
-        -- NOTE: this only works while we use the nvim-treesitter master branch,
-        -- but will eventually need reconfiguring upon switching to main. See
-        -- https://pawelgrzybek.com/nvim-incremental-selection/.
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            -- set to `false` to disable one of the mappings
-            init_selection = "<leader>n", 
-            node_incremental = "<leader>n",
-            scope_incremental = false,
-            node_decremental = "<leader>N",
-          },
-        },
+      local ts = require('nvim-treesitter')
+      ts.setup({})
+      -- parsers to always keep installed (compiled for the local arch);
+      -- anything else installs on demand via the FileType autocmd below.
+      -- install() is a no-op for already-installed parsers; :wait() keeps
+      -- headless/bootstrap runs from quitting mid-compile and leaving
+      -- truncated parser .so files behind.
+      ts.install({
+        'bash', 'css', 'diff', 'fish', 'git_config', 'gitcommit', 'gitignore',
+        'go', 'html', 'javascript', 'json', 'lua', 'markdown',
+        'markdown_inline', 'nix', 'ocaml', 'python', 'regex', 'toml', 'tsx',
+        'typescript', 'vim', 'vimdoc', 'yaml',
+      }):wait(300000)
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          -- compile a missing parser on demand when opening a matching buffer
+          local lang = vim.treesitter.language.get_lang(args.match)
+          if lang and require('nvim-treesitter.parsers')[lang] then
+            ts.install(lang)
+          end
+          -- highlighting; skipped in vscode-neovim, where VSCode does the
+          -- rendering (treesitter textobjects below still work there)
+          if not vim.g.vscode then
+            pcall(vim.treesitter.start)
+          end
+        end,
       })
+      -- incremental selection, via Neovim 0.12 core (replaces the old
+      -- nvim-treesitter master-branch module). See
+      -- https://pawelgrzybek.com/nvim-incremental-selection/.
+      local function init_selection()
+        if not vim.treesitter.get_parser(nil, nil, { error = false }) then return end
+        local node = vim.treesitter.get_node()
+        if not node then return end
+        local sr, sc, er, ec = node:range()
+        if ec == 0 and er > sr then -- range ends at the end of the previous line
+          er = er - 1
+          ec = #(vim.api.nvim_buf_get_lines(0, er, er + 1, false)[1] or '')
+        end
+        vim.api.nvim_buf_set_mark(0, '<', sr + 1, sc, {})
+        vim.api.nvim_buf_set_mark(0, '>', er + 1, math.max(ec - 1, 0), {})
+        vim.cmd('normal! gv')
+      end
+      vim.keymap.set('n', '<leader>n', init_selection,
+        { desc = 'Treesitter: select node under cursor' })
+      vim.keymap.set('x', '<leader>n', function()
+        require('vim.treesitter._select').select_parent(vim.v.count1)
+      end, { desc = 'Treesitter: expand selection to parent node' })
+      vim.keymap.set('x', '<leader>N', function()
+        require('vim.treesitter._select').select_child(vim.v.count1)
+      end, { desc = 'Treesitter: shrink selection to child node' })
       -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects?tab=readme-ov-file#text-objects-swap
       -- swap next/previous elements of various parameter lists
       vim.keymap.set({"n", "x"}, "<leader>el", function()
