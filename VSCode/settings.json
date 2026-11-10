@@ -322,4 +322,9 @@
   "terminal.integrated.tabs.enabled": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "claudeCode.hideOnboarding": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prolog.executablePath": "swipl",
+  "prolog.linter.run": "onSave",
 }
