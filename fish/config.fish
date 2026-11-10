@@ -9,8 +9,10 @@ if status --is-interactive
   if test "$INSIDE_EMACS"
     set -xg EDITOR "emacsclient"
   else
-    set -xg EDITOR "vim"
-    set -xg VISUAL "code --wait"
+    if test "$TERM_PROGRAM" = vscode
+      set -xg VISUAL "code --wait"
+    end
+    set -xg EDITOR "nvim"
   end
 
   set -g fish_prompt_git_prefix           ' ± '
