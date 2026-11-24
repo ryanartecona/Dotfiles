@@ -140,6 +140,10 @@ in
   # link of just karabiner.json.
   xdg.configFile."karabiner".source = live "karabiner";
 
+  # Global gitignore. Repo path is gitignore, not config/git/ignore, so it
+  # doesn't fit dotfilesRelativeSymlinks. ~/.gitconfig does, and is listed there.
+  xdg.configFile."git/ignore".source = live "gitignore";
+
   # Pi (pi.dev) config: symlink live files from this repo instead of copying
   # into the nix store, so edits take effect immediately without a rebuild.
   # Secrets (auth.json, mcp-auth.json) and pi-managed state (install/, npm/,
@@ -186,6 +190,7 @@ in
       ".pi/agent/npm/package-lock.json"
       ".pi/mcp-adapter.json"
       ".tigrc"
+      ".gitconfig"
     ]
     // {
       # repo path isn't just the home path minus the leading dot
@@ -217,6 +222,18 @@ in
   home.activation.karabinerConfigSymlink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     if [ -L "$HOME/.config/karabiner" ]; then
       run rm "$HOME/.config/karabiner"
+    fi
+  '';
+
+  # One-time migration: ~/.gitconfig and ~/.config/git/ignore used to be manual
+  # symlinks straight into this repo (per old setup.md). Remove them (only if
+  # they are symlinks) so Home Manager can install its own out-of-store links.
+  home.activation.gitConfigSymlinks = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -L "$HOME/.gitconfig" ]; then
+      run rm "$HOME/.gitconfig"
+    fi
+    if [ -L "$HOME/.config/git/ignore" ]; then
+      run rm "$HOME/.config/git/ignore"
     fi
   '';
 

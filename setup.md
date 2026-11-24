@@ -59,6 +59,9 @@ Functions are symlinked individually, so new ones must be synced when added.
 
 ## Git
 
+On nix machines, home-manager live-symlinks `gitconfig` to `~/.gitconfig` and `gitignore` to `~/.config/git/ignore` on the next `darwin-rebuild switch` (`home.file` and `xdg.configFile` in `home-manager/home.nix`). Edits take effect immediately with no rebuild.
+
+On non-nix machines:
 ```fish
 ln -s ~/Dotfiles/gitconfig ~/.gitconfig
 mkdir -p ~/.config/git
