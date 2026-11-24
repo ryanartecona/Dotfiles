@@ -64,7 +64,7 @@ in
       ];
     };
 
-  work =
+  work-retool-2026 =
     let
       config = systemConfig "aarch64-darwin";
     in
@@ -95,6 +95,23 @@ in
           ];
           programs.direnv.enable = lib.mkForce false;
         })
+      ];
+    };
+
+  work =
+    let
+      config = systemConfig "aarch64-darwin";
+    in
+    with config;
+    nix-darwin.lib.darwinSystem {
+      inherit system;
+      specialArgs = config // {
+        primaryUser = "ryanartecona";
+      };
+      modules = [
+        ./common.nix
+        ./homebrew.nix
+        home-manager.darwinModules.home-manager
       ];
     };
 }

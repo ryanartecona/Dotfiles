@@ -85,8 +85,12 @@ Then go into iTerm2 Preferences > Profiles > Mint Chocolate > Other Actions and 
 
 ## Karabiner
 
+The app (`karabiner-elements`) is installed by nix-darwin via Homebrew (`nix-darwin/homebrew.nix`).
+
+On nix machines, home-manager live-symlinks this repo's `karabiner/` to `~/.config/karabiner` on the next `darwin-rebuild switch` (`xdg.configFile` in `home-manager/home.nix`). The whole directory is linked — Karabiner writes into it, including `automatic_backups/`, which is gitignored — and edits take effect immediately with no rebuild.
+
+On non-nix machines, symlink the whole config dir manually, or else Karabiner won't play nice:
 ```
-# symlink the whole config dir, or else karabiner won't play nice.
 rm -rf ~/.config/karabiner
 ln -sf ~/Dotfiles/karabiner ~/.config/karabiner
 ```

@@ -134,6 +134,12 @@ in
   # neovim itself is in home.packages above.
   xdg.configFile."nvim".source = live "nvim";
 
+  # Karabiner-Elements config: live-symlink the whole karabiner/ dir. The app
+  # (installed via Homebrew in nix-darwin) writes into this directory
+  # (automatic_backups/ is gitignored), and does not play nice with a partial
+  # link of just karabiner.json.
+  xdg.configFile."karabiner".source = live "karabiner";
+
   # Pi (pi.dev) config: symlink live files from this repo instead of copying
   # into the nix store, so edits take effect immediately without a rebuild.
   # Secrets (auth.json, mcp-auth.json) and pi-managed state (install/, npm/,
@@ -202,6 +208,15 @@ in
   home.activation.nvimConfigSymlink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     if [ -L "$HOME/.config/nvim" ]; then
       run rm "$HOME/.config/nvim"
+    fi
+  '';
+
+  # One-time migration: ~/.config/karabiner used to be a manual symlink straight
+  # to ~/Dotfiles/karabiner (per old setup.md). Remove it (only if it is a
+  # symlink) so Home Manager can install its own out-of-store link instead.
+  home.activation.karabinerConfigSymlink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -L "$HOME/.config/karabiner" ]; then
+      run rm "$HOME/.config/karabiner"
     fi
   '';
 
